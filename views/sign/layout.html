@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <% if (config.site_icon) { %>
+  <link rel="icon" href="<%- staticFile(config.site_icon) %>" type="image/x-icon"/>
+  <% } %>
+  <title>Document</title>
+</head>
+<body>
+  <%- body %>
+</body>
+</html>
