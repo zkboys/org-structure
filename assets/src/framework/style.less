@@ -1,14 +1,23 @@
 @headerHeight: 50px;
-@sideBarWidth: 240px;
+@sideBarWidth: 200px;
 
 @headerLogoBgColor: #0083cd;
 @headerLogoFontColor: #fff;
-@sideBarToggleButtonFontColor: #0083cd;
-@headerBgColor: #fff;
-@headerMenuFontColor: #666;
-@headerMenuActiveFontColor: #2db7f5;
+@sideBarToggleButtonFontColor: #fff;
+@headerBgColor: #0083cd;
+@headerMenuFontColor: #fff;
+@headerMenuActiveFontColor: #fff;
 
-@headerRightMenuFontColor: #666;
+@headerRightMenuFontColor: #fff;
+
+@sideBarBgColor: #f0f0f0;
+@sideBarMenuBgColor: #f0f0f0;
+@sideBarMenuFontColor: #515151;
+@sideBarMenuActiveBgColor: #f5f5f5;
+@sideBarMenuActiveFontColor: #2db7f5;
+
+@sideBarSubMenuFontColor: #999;
+
 .admin-header {
   position: fixed;
   z-index: 100;
@@ -133,15 +142,16 @@
     .admin-page-header {
       position: absolute;
       top: 0;
-      left: 5px;
+      left: 0;
       right: 20px;
       padding: 10px 5px 0 10px;
       z-index: 99;
       background-color: #fff;
       .admin-page-header-title {
         height: 42px;
-        padding-bottom: 5px;
+        padding: 10px 0 5px 15px;
         border-bottom: 1px solid #eee;
+        font-size: 18px;
       }
       .ant-breadcrumb {
         float: right;
@@ -170,11 +180,6 @@
 }
 
 /*左侧菜单样式*/
-@sideBarBgColor: #f0f0f0;
-@sideBarMenuBgColor: #f0f0f0;
-@sideBarMenuFontColor: #666;
-@sideBarMenuActiveBgColor: #f5f5f5;
-@sideBarMenuActiveFontColor: #2db7f5;
 .admin-sidebar {
   position: fixed;
   z-index: 100;
@@ -211,7 +216,7 @@
       }
     }
     .ant-menu-submenu-title {
-      font-weight: bold;
+      color: @sideBarSubMenuFontColor;
       &:hover {
         background-color: @sideBarMenuActiveBgColor;
         color: @sideBarMenuActiveFontColor;

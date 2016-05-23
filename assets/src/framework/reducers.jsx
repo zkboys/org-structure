@@ -12,7 +12,7 @@ import {
 
 let minLogo = 'super',
     maxLogo = '超级管理系统',
-    maxWidth = 240,
+    maxWidth = 200,
     minWidth = 60,
     scrollBarWidth = getScrollBarWidth(),
     isSidebarCollapsed = Settings.collapseSidebar(),

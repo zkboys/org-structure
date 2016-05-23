@@ -97,7 +97,7 @@ exports.authUser = function (req, res, next) {
     });
 
     if (req.session.user) {
-        // TODO n长时间没有操作，退出登录。
+        // 30分钟没有操作，退出登录。
         if (req.session.lastVisitAt && (new Date().getTime() - req.session.lastVisitAt >= 1000 * 60 * 30)) {
             req.session.user = null;
             res.clearCookie(config.auth_cookie_name, {path: '/'});
