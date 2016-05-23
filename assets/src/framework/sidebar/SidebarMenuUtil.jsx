@@ -137,4 +137,4 @@ function getMenuJsx(node) {
     }
 }
 
-export {getSidebarMenus, getCurrentSidebarMenu}
+export {getSidebarMenus, getCurrentSidebarMenu, convert}

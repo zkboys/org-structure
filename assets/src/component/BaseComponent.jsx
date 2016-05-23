@@ -1,7 +1,7 @@
 import React from "react";
-import Common from "../common/common.jsx";
+import Common from "../common/common";
 import {message} from "antd";
-import request from '../common/request/request';
+import request from '../common/request';
 
 class BaseComponent extends React.Component {
     // 页面上多个请求同时进行，用来记录loading数量

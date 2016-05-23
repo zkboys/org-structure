@@ -1,6 +1,14 @@
 
 export default[
     {
+        path: '/system/menu',
+        getComponent: (location, cb) => {
+            require.ensure([], (require) => {
+                cb(null, require('./menu/SystemMenu.jsx'));
+            })
+        }
+    },
+    {
         path: '/shop/list-page-new',
         getComponent: (location, cb) => {
             require.ensure([], (require) => {
