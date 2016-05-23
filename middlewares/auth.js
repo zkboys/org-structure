@@ -30,9 +30,12 @@ exports.userRequired = function (req, res, next) {
             return next();
         }
         //TODO 区分ajax请求还是http请求
-        if(req.path.indexOf('/api') === 0){
+        if (req.path.indexOf('/api') === 0) {
             res.status(401);
             return res.send({success: false, error_msg: '用户未登录，或登录已过期'});
+        }
+        if (req.path.indexOf('/public') === 0) {
+            return next();
         }
         req.session._loginReferer = req.path;
         return res.redirect('/signin');
@@ -58,7 +61,7 @@ function gen_session(user, res) {
     var auth_token = user._id + '$$$$'; // 以后可能会存储更多信息，用 $$$$ 来分隔
     var opts = {
         path: '/',
-         //maxAge: 1000 * 3, //cookie 有效期30天，30天都不用登录了,记住用户可以用这个做。
+        //maxAge: 1000 * 3, //cookie 有效期30天，30天都不用登录了,记住用户可以用这个做。
         signed: true,
         httpOnly: true
     };
@@ -95,7 +98,7 @@ exports.authUser = function (req, res, next) {
 
     if (req.session.user) {
         // TODO n长时间没有操作，退出登录。
-        if (req.session.lastVisitAt && (new Date().getTime() - req.session.lastVisitAt >= 1000 * 3)) {
+        if (req.session.lastVisitAt && (new Date().getTime() - req.session.lastVisitAt >= 1000 * 60 * 30)) {
             req.session.user = null;
             res.clearCookie(config.auth_cookie_name, {path: '/'});
         }
