@@ -187,6 +187,7 @@ class SystemMenu extends BaseComponent {
             this.setState({
                 gData: data,
             });
+            this.props.form.resetFields();
         });
     };
     handleAddChild = ()=> {
