@@ -36,10 +36,10 @@ router.get('/app/download', site.appDownload);
 
 // sign controller
 if (config.allow_sign_up) {
-  router.get('/signup', sign.showSignup);  // 跳转到注册页面
-  router.post('/signup', sign.signup);  // 提交注册信息
+    router.get('/signup', sign.showSignup);  // 跳转到注册页面
+    router.post('/signup', sign.signup);  // 提交注册信息
 } else {
-  router.get('/signup', configMiddleware.github, passport.authenticate('github'));  // 进行github验证
+    router.get('/signup', configMiddleware.github, passport.authenticate('github'));  // 进行github验证
 }
 router.post('/signout', sign.signout);  // 登出
 router.get('/signin', sign.showLogin);  // 进入登录页面
@@ -109,20 +109,31 @@ router.get('/rss', rss.index);
 // github oauth
 router.get('/auth/github', configMiddleware.github, passport.authenticate('github'));
 router.get('/auth/github/callback',
-  passport.authenticate('github', { failureRedirect: '/signin' }),
-  github.callback);
+    passport.authenticate('github', {failureRedirect: '/signin'}),
+    github.callback);
 router.get('/auth/github/new', github.new);
 router.post('/auth/github/create', github.create);
 
 router.get('/search', search.index);
 
 if (!config.debug) { // 这个兼容破坏了不少测试
-	router.get('/:name', function (req, res) {
-	  res.redirect('/user/' + req.params.name)
-	})
+    router.get('/:name', function (req, res) {
+        res.redirect('/user/' + req.params.name)
+    })
 }
 //所有未截获get请求都跳转到首页
-router.get('*', site.index);
+router.get('*', function (req, res, next) {
+    // TODO 区分不同得请求类型，返回不同的数据。
+    if(req.path.indexOf('/public') === 0){
+        res.status(404);
+        return res.send({success: false, error_msg: '您访问的资源不存在'});
+    }
+    if(req.path.indexOf('/api') === 0){
+        res.status(404);
+        return res.send({success: false, error_msg: '您访问的资源不存在'});
+    }
+    next();
+}, site.index);
 
 
 module.exports = router;
