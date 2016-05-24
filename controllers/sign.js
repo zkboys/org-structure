@@ -110,14 +110,14 @@ exports.login = function (req, res, next) {
 
     if (!loginname || !pass) {
         res.status(422);
-        return res.render('sign/signin', {error: '信息不完整。'});
+        return res.send({error: '信息不完整。'});
     }
 
     var getUser = User.getUserByLoginName;
 
     ep.on('login_error', function (login_error) {
         res.status(403);
-        res.render('sign/signin', {error: '用户名或密码错误'});
+        res.send({error: '用户名或密码错误'});
     });
 
     getUser(loginname, function (err, user) {
