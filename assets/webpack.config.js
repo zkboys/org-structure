@@ -49,7 +49,8 @@ var library = cfg.library;
  * */
 var _entry = {
     //"index": ["./src/home/home.jsx", "./src/home/home-content.jsx"],//会合并成一个index.js
-    "index": './src/entry/index.jsx'
+    "index": './src/entry/index.jsx',
+    "signin": './src/entry/signin.jsx',
 };
 
 /*

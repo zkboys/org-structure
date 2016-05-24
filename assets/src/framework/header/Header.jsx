@@ -3,18 +3,20 @@ import {Badge, Menu, Popconfirm} from 'antd';
 import {Link} from 'react-router'
 import FAIcon from '../../component/faicon/FAIcon';
 import avatar from './86.jpg';
-import request from '../../common/request';
+import Request from '../../common/request';
 
 class Header extends React.Component {
     handleExit = ()=> {
-        request
+        let _csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        Request
             .post('/signout')
+            .send({_csrf})
             .end(function (err, res) {
                 console.log(res);
                 if (err || !res.ok) {
                     alert('退出登录失败');
                 } else {
-                    location.href='/signin';
+                    location.href = '/signin';
                 }
             });
     };
@@ -23,11 +25,11 @@ class Header extends React.Component {
         const {
             headerLogoWidth,
             headerLogo,
-            } = this.props.style;
+        } = this.props.style;
         const {
             current,
             headMenus //TODO item.subMenus如果有子菜单，再处理
-            } = this.props.headerNav;
+        } = this.props.headerNav;
 
         let headMenusJsx = [];
         headMenus.forEach((item)=> {

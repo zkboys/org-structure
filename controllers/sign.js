@@ -113,12 +113,7 @@ exports.login = function (req, res, next) {
         return res.render('sign/signin', {error: '信息不完整。'});
     }
 
-    var getUser;
-    if (loginname.indexOf('@') !== -1) {
-        getUser = User.getUserByMail;
-    } else {
-        getUser = User.getUserByLoginName;
-    }
+    var getUser = User.getUserByLoginName;
 
     ep.on('login_error', function (login_error) {
         res.status(403);
@@ -140,7 +135,6 @@ exports.login = function (req, res, next) {
             // store session cookie
             authMiddleWare.gen_session(user, res);
             //check at some page just jump to home page
-            console.log(req.session._loginReferer)
             var refer = req.session._loginReferer || '/';
             for (var i = 0, len = notJump.length; i !== len; ++i) {
                 if (refer.indexOf(notJump[i]) >= 0) {
@@ -148,8 +142,8 @@ exports.login = function (req, res, next) {
                     break;
                 }
             }
-            console.log(refer.red)
-            res.redirect(refer);
+            //TODO 获取用户菜单，返回给前端
+            res.send({success: true, refer: refer});
         }));
     });
 };
