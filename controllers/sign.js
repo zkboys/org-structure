@@ -1,7 +1,9 @@
 var validator = require('validator');
 var eventproxy = require('eventproxy');
 var config = require('../config');
-var User = require('../proxy').User;
+var proxy = require('../proxy');
+var User = proxy.User;
+var Menu = proxy.Menu;
 var mail = require('../common/mail');
 var tools = require('../common/tools');
 var utility = require('utility');
@@ -143,7 +145,10 @@ exports.login = function (req, res, next) {
                 }
             }
             //TODO 获取用户菜单，返回给前端
-            res.send({success: true, refer: refer});
+            Menu.getMenusByUser(user, function (err, menus) {
+                if (err) return next(err);
+                res.send({success: true, refer: refer, menus: menus});
+            })
         }));
     });
 };

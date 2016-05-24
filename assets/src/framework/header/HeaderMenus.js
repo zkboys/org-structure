@@ -1,7 +1,7 @@
 import menus from '../menus';
-
+import {hasParent} from '../../common/common'
 let headMenus = menus.filter((menu, index, arr)=> {
-    return !hasParent(arr, menu.parentKey);
+    return !hasParent(arr, menu);
 });
 headMenus.forEach((headMenu)=> {
     headMenu.path = getFirstPath(headMenu) || '/';
@@ -23,11 +23,5 @@ function getFirstPath(node) {
     } else {
         return;
     }
-}
-function hasParent(rows, parentKey) {
-    for (let i = 0; i < rows.length; i++) {
-        if (rows[i].key === parentKey) return true;
-    }
-    return false;
 }
 export default headMenus;

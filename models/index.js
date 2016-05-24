@@ -13,11 +13,13 @@ mongoose.connect(config.db, {
 
 // models
 require('./user');
+require('./menu');
 require('./topic');
 require('./reply');
 require('./topic_collect');
 require('./message');
 
+exports.Menu         = mongoose.model('Menu');
 exports.User         = mongoose.model('User');
 exports.Topic        = mongoose.model('Topic');
 exports.Reply        = mongoose.model('Reply');

@@ -130,17 +130,17 @@ class BaseComponent extends React.Component {
                 } else if(this.type === 'put') {
                     request
                         .put(this.url, this.withNoMchId)
-                        .query(this.paramsData)
+                        .send(this.paramsData)
                         .end(endCb);
                 }else if(this.type === 'delete') {
                     request
                         .delete(this.url, this.withNoMchId)
-                        .query(this.paramsData)
+                        .send(this.paramsData)
                         .end(endCb);
                 }else {
                     request
                         .post(this.url, this.withNoMchId)
-                        .query(this.paramsData)
+                        .send(this.paramsData)
                         .end(endCb);
                 }
 

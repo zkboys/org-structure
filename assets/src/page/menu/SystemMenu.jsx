@@ -1,9 +1,8 @@
 import React from 'react';
-import { Button, Form, Input, Tree, Row, Col} from 'antd';
+import {Button, Form, Input, Tree, Row, Col, Alert} from 'antd';
 import BaseComponent from '../../component/BaseComponent';
 import Page from '../../framework/page/Page';
-import menus from '../../framework/menus';
-import {convert} from '../../framework/sidebar/SidebarMenuUtil';
+import {convertToTree} from '../../common/common';
 import FIcon from '../../component/faicon/FAIcon'
 
 const TreeNode = Tree.TreeNode;
@@ -20,12 +19,25 @@ class SystemMenu extends BaseComponent {
     };
 
     componentDidMount() {
-        let menusData = menus;//TODO 这个menus需要通过ajax请求，实时请求后台数据。
-        this.setState({
-            menus: menusData,
-            gData: convert(menusData),
-        })
+        this.request()
+            .get('/menus')
+            .success((data, res)=> {
+                let menus = data || [{
+                        key: 'test',
+                        parentKey: undefined,
+                        text: '未设置',
+                        icon: '',
+                        path: '',
+                        order: 1,
+                    }];
+                this.setState({
+                    menus,
+                    gData: convertToTree(menus),
+                })
+                ;
 
+            })
+            .end();
     };
 
     onDragEnter = (info)=> {
@@ -86,7 +98,7 @@ class SystemMenu extends BaseComponent {
         });
         if (!selectNodeData) return;
         console.log(selectNodeData);
-        const { setFieldsValue} = this.props.form;
+        const {setFieldsValue} = this.props.form;
         this.setState({
             disableEditPath: selectNodeData.children && selectNodeData.children.length && selectNodeData.parentKey,
         });
@@ -104,7 +116,7 @@ class SystemMenu extends BaseComponent {
         e.preventDefault();
         this.props.form.resetFields();
         this.setState({
-            gData: convert(this.state.menus),
+            gData: convertToTree(this.state.menus),
         })
     };
 
@@ -142,11 +154,16 @@ class SystemMenu extends BaseComponent {
             }
         });
         loop(data);
-        //TODO 发起ajax请求，保存成功之后
-        this.setState({
-            menus: painData,
-        });
-        console.log(painData);
+        this.request()
+            .post('/menus')
+            .params({menus: painData})
+            .success((data, res)=> {
+                console.log(data);
+                this.setState({
+                    menus: painData,
+                });
+            })
+            .end();
     };
     handleDelete = ()=> {
         alert('delete');
@@ -174,7 +191,7 @@ class SystemMenu extends BaseComponent {
                 />
             );
         });
-        const { getFieldProps, getFieldError, isFieldValidating } = this.props.form;
+        const {getFieldProps, getFieldError, isFieldValidating} = this.props.form;
         const keyProps = getFieldProps('key', {
             rules: [],
         });
@@ -203,9 +220,22 @@ class SystemMenu extends BaseComponent {
             labelCol: {span: 4},
             wrapperCol: {span: 10},
         };
+        let tip = (
+            <ul>
+                <li>菜单存在Storage.session中，修改该保存之后，重新登陆会获取最新菜单。</li>
+                <li>菜单数据的key，唯一不可重复，有可能和权限关联，添加后不可修改。</li>
+            </ul>
+        )
         return (
             <Page header={'auto'} loading={this.state.loading}>
                 <Row>
+                    <Col span={6}>
+                        <Alert
+                            message="提示"
+                            description={tip}
+                            type="warning"
+                            showIcon/>
+                    </Col>
                     <Col span={6}>
                         <Tree
                             defaultExpandedKeys={this.state.expandedKeys}
@@ -219,7 +249,7 @@ class SystemMenu extends BaseComponent {
                             {loop(this.state.gData)}
                         </Tree>
                     </Col>
-                    <Col span={18}>
+                    <Col span={12}>
                         <Form horizontal form={this.props.form}>
                             <FormItem
                                 {...formItemLayout}
@@ -232,7 +262,7 @@ class SystemMenu extends BaseComponent {
                                         keyProps.onChange(e);
                                         this.handleSubmit(e);
                                     }}
-                                    placeholder="菜单数据的key，唯一不可重复"
+                                    placeholder="菜单数据的key，唯一不可重复。"
                                 />
                             </FormItem>
                             <FormItem

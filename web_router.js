@@ -24,7 +24,7 @@ var search = require('./controllers/search');
 var passport = require('passport');
 var configMiddleware = require('./middlewares/conf');
 var config = require('./config');
-
+var menu = require('./controllers/menu')
 var router = express.Router();
 
 // home page
@@ -41,6 +41,11 @@ if (config.allow_sign_up) {
 } else {
     router.get('/signup', configMiddleware.github, passport.authenticate('github'));  // 进行github验证
 }
+
+router.get('/menus', menu.getAllMenus);  // 获取所有菜单数据
+router.post('/menus', menu.updateAllMenus);  // 修改所有菜单
+
+
 router.post('/signout', sign.signout);  // 登出
 router.get('/signin', sign.showLogin);  // 进入登录页面
 router.post('/signin', sign.login);  // 登录校验
@@ -124,11 +129,11 @@ if (!config.debug) { // 这个兼容破坏了不少测试
 //所有未截获get请求都跳转到首页
 router.get('*', function (req, res, next) {
     // TODO 区分不同得请求类型，返回不同的数据。
-    if(req.path.indexOf('/public') === 0){
+    if (req.path.indexOf('/public') === 0) {
         res.status(404);
         return res.send({success: false, error_msg: '您访问的资源不存在'});
     }
-    if(req.path.indexOf('/api') === 0){
+    if (req.path.indexOf('/api') === 0) {
         res.status(404);
         return res.send({success: false, error_msg: '您访问的资源不存在'});
     }

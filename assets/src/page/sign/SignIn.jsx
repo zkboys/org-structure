@@ -1,6 +1,7 @@
 import React from "react";
 import Request from '../../common/request';
 import {Button, Form, Input} from 'antd';
+import Storage from '../../common/storage';
 const createForm = Form.create;
 const FormItem = Form.Item;
 
@@ -40,7 +41,9 @@ class SignIn extends React.Component {
                         return 'error'
                     }
                     let refer = res.body.refer || '/';
+                    let menus = res.body.menus || [];
                     if (res.body.success) {
+                        Storage.session.set('menus', menus);
                         location.href = refer;
                     }
                 });
