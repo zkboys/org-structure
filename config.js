@@ -8,7 +8,7 @@ var developmentConfig = {
     debug: true,
     site_static_host: 'http://localhost:8088/s/', // 静态文件存储域名
     // mongodb 配置
-    db: 'mongodb://127.0.0.1/org_dev',
+    db: 'mongodb://139.129.38.172/org_dev',
 
     // redis 配置，默认是本地
     redis_host: '127.0.0.1',
