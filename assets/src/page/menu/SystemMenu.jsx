@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Form, Input, Tree, Row, Col, Alert} from 'antd';
+import {Button, Form, Input, Tree, Row, Col, Alert, Modal, message} from 'antd';
 import BaseComponent from '../../component/BaseComponent';
 import Page from '../../framework/page/Page';
 import {convertToTree} from '../../common/common';
@@ -11,6 +11,7 @@ const FormItem = Form.Item;
 
 class SystemMenu extends BaseComponent {
     state = {
+        showModal: false,
         menus: [],
         gData: [],
         disableEditPath: false,
@@ -122,7 +123,7 @@ class SystemMenu extends BaseComponent {
 
     handleSubmit = (e)=> {
         e.preventDefault();
-        this.props.form.validateFields((errors, values) => {
+        this.props.form.validateFields(['key', 'text', 'icon', 'path'], (errors, values) => {
             if (!!errors) {
                 return;
             }
@@ -158,7 +159,7 @@ class SystemMenu extends BaseComponent {
             .post('/menus')
             .params({menus: painData})
             .success((data, res)=> {
-                console.log(data);
+                message.success('保存成功');
                 this.setState({
                     menus: painData,
                 });
@@ -166,10 +167,91 @@ class SystemMenu extends BaseComponent {
             .end();
     };
     handleDelete = ()=> {
-        alert('delete');
+        this.props.form.validateFields(['key'], (errors, values) => {
+            if (!!errors) {
+                return;
+            }
+            const key = values.key;
+            let data = [...this.state.gData];
+            let loop = (data)=> {
+                data.forEach((v, i, arr)=> {
+                    if (v.key === key) {
+                        arr.splice(i, 1)
+                    }
+                    if (v.children && v.children.length) {
+                        loop(v.children)
+                    }
+                })
+            };
+            loop(data);
+            this.setState({
+                gData: data,
+            });
+        });
     };
     handleAddChild = ()=> {
-        alert('addChild');
+        this.props.form.validateFields(['key'], (errors, values) => {
+            if (!!errors) {
+                return;
+            }
+            const {setFieldsValue} = this.props.form;
+            setFieldsValue({
+                newKey: values.key,
+                newText: '',
+                newPath: '',
+                newIcon: '',
+            });
+            this.showModal();
+        });
+    };
+    handleAddSubmit = (e)=> {
+        this.props.form.validateFields(['key', 'newKey', 'newText', 'newIcon', 'newPath'], (errors, values) => {
+            if (!!errors) {
+                return;
+            }
+            let data = [...this.state.gData];
+            this.findNodeByKey(data, values.key, (item)=> {
+                if (!item.children) {
+                    item.children = [];
+                }
+                item.children.push({
+                    parentKey: values.key,
+                    key: values.newKey,
+                    text: values.newText,
+                    icon: values.newIcon,
+                    path: values.newPath,
+                });
+            });
+            this.setState({
+                gData: data,
+            });
+            this.hideModal();
+        });
+    };
+
+    showModal = ()=> {
+        this.setState({showModal: true});
+    };
+
+    hideModal = ()=> {
+        this.setState({showModal: false});
+    };
+
+    nodeExists = (rule, value, callback)=> {
+        if (!value) {
+            callback();
+        } else {
+            const data = [...this.state.gData];
+            let isFind = false;
+            this.findNodeByKey(data, value, (item)=> {
+                isFind = true;
+            });
+            if (isFind) {
+                callback([new Error('抱歉，该key已被占用。')]);
+            } else {
+                callback();
+            }
+        }
     };
 
     render() {
@@ -192,24 +274,46 @@ class SystemMenu extends BaseComponent {
             );
         });
         const {getFieldProps, getFieldError, isFieldValidating} = this.props.form;
-        const keyProps = getFieldProps('key', {
-            rules: [],
-        });
-        const textProps = getFieldProps('text', {
+
+        const keyFieldProps = {
+            rules: [
+                {required: true, message: 'key 不能为空！'},
+            ],
+        };
+        const newKeyFieldProps = {
+            rules: [
+                {required: true, message: 'key 不能为空！'},
+                {validator: this.nodeExists},
+            ],
+        };
+        const textFieldProps = {
             rules: [
                 {required: true, min: 2, message: '标题至少为 2 个字符'},
             ],
-        });
-        const iconProps = getFieldProps('icon', {
+        };
+        const iconFieldProps = {
             rules: [
                 //{required: true, min: 5, message: '用户名至少为 5 个字符'},
             ],
-        });
-        const pathProps = getFieldProps('path', {
+        };
+        const pathFieldProps = {
             rules: [
                 //{required: true, min: 5, message: '用户名至少为 5 个字符'},
             ],
-        });
+        };
+
+        const keyProps = getFieldProps('key', keyFieldProps);
+        const newKeyProps = getFieldProps('newKey', newKeyFieldProps);
+
+        const textProps = getFieldProps('text', textFieldProps);
+        const newTextProps = getFieldProps('newText', textFieldProps);
+
+        const iconProps = getFieldProps('icon', iconFieldProps);
+        const newIconProps = getFieldProps('newIcon', iconFieldProps);
+
+        const pathProps = getFieldProps('path', pathFieldProps);
+        const newPathProps = getFieldProps('newPath', pathFieldProps);
+
         if (this.state.disableEditPath) {
             pathProps.disabled = true;
         }
@@ -228,6 +332,7 @@ class SystemMenu extends BaseComponent {
         )
         return (
             <Page header={'auto'} loading={this.state.loading}>
+                <br/>
                 <Row>
                     <Col span={6}>
                         <Alert
@@ -236,7 +341,14 @@ class SystemMenu extends BaseComponent {
                             type="warning"
                             showIcon/>
                     </Col>
-                    <Col span={6}>
+                    <Col span={1}/>
+                    <Col span={5}>
+                        <div style={{marginBottom:'10px'}}>
+                            &nbsp;&nbsp;&nbsp;
+                            <Button type="primary" size="large" onClick={this.handleSave}>保存</Button>
+                            &nbsp;&nbsp;&nbsp;
+                            <Button type="ghost" size="large" onClick={this.handleReset}>重置</Button>
+                        </div>
                         <Tree
                             defaultExpandedKeys={this.state.expandedKeys}
                             openAnimation={{}}
@@ -251,6 +363,11 @@ class SystemMenu extends BaseComponent {
                     </Col>
                     <Col span={12}>
                         <Form horizontal form={this.props.form}>
+                            <FormItem wrapperCol={{ span: 20, offset: 4 }}>
+                                <Button type="primary" onClick={this.handleDelete}>删除</Button>
+                                &nbsp;&nbsp;&nbsp;
+                                <Button type="ghost" onClick={this.handleAddChild}>添加子节点</Button>
+                            </FormItem>
                             <FormItem
                                 {...formItemLayout}
                                 label="key："
@@ -307,19 +424,53 @@ class SystemMenu extends BaseComponent {
                                     placeholder="菜单跳转路径"
                                 />
                             </FormItem>
-
-                            <FormItem wrapperCol={{ span: 20, offset: 4 }}>
-                                <Button type="primary" onClick={this.handleDelete}>删除</Button>
-                                &nbsp;&nbsp;&nbsp;
-                                <Button type="ghost" onClick={this.handleAddChild}>添加子节点</Button>
-                                &nbsp;&nbsp;&nbsp;
-                                <Button type="primary" onClick={this.handleSave}>保存</Button>
-                                &nbsp;&nbsp;&nbsp;
-                                <Button type="ghost" onClick={this.handleReset}>重置</Button>
-                            </FormItem>
                         </Form>
                     </Col>
                 </Row>
+                <Modal title="添加子节点" visible={this.state.showModal} onOk={this.handleAddSubmit} onCancel={this.hideModal}>
+                    <Form horizontal form={this.props.form}>
+                        <FormItem
+                            {...formItemLayout}
+                            label="key："
+                            hasFeedback
+                        >
+                            <Input
+                                {...newKeyProps}
+                                placeholder="唯一不可重复，添加之后不可修改！"
+                            />
+                        </FormItem>
+                        <FormItem
+                            {...formItemLayout}
+                            label="标题："
+                            hasFeedback
+                        >
+                            <Input
+                                {...newTextProps}
+                                placeholder="菜单标题，必填"
+                            />
+                        </FormItem>
+
+                        <FormItem
+                            {...formItemLayout}
+                            label="图标："
+                            hasFeedback>
+                            <Input
+                                {...newIconProps}
+                                placeholder="菜单的icon，选填"
+                            />
+                        </FormItem>
+
+                        <FormItem
+                            {...formItemLayout}
+                            label="路径："
+                            hasFeedback>
+                            <Input
+                                {...newPathProps}
+                                placeholder="菜单跳转路径"
+                            />
+                        </FormItem>
+                    </Form>
+                </Modal>
             </Page>
         )
     }
