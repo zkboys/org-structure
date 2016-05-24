@@ -1,4 +1,12 @@
-// 快速push 到git服务器脚本
+/*
+*
+* 快速push 到git服务器脚本
+* 
+* node push.js -m  ''
+*
+* node push.js -h
+*
+* */
 var exec = require('child_process').exec;
 var program = require('commander');
 var fs = require('fs');
