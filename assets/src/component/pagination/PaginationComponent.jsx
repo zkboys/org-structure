@@ -41,7 +41,7 @@ class PaginationComponent extends React.Component {
         showQuickJumper && (props.showQuickJumper = true);
 
         return (
-            <div className="pagination-component">
+            <div className="pagination-component" style={this.props.style}>
                 <Pagination
                     {...props}
                     onShowSizeChange={this.handleChange}

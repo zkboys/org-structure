@@ -3,7 +3,6 @@ import assign from 'object-assign'
 import QueryTerms from '../query-terms/QueryTerms';
 import PaginationComponent from '../pagination/PaginationComponent'
 import Page from '../../framework/page/Page';
-import Request from 'superagent';
 
 import {
     Table,
@@ -29,13 +28,6 @@ class ListPage extends React.Component {
     handleSearch = (queryData)=> {
         const currentPage = queryData.currentPage;
         const pageSize = queryData.pageSize;
-
-        Request
-            .get('/api/v1/topics')
-            .end(function (err, res) {
-                console.log(res);
-            });
-
         // 这里可以发请求，获取后端得数据
         let tableData = [];
         for (let i = 0; i < pageSize; i++) {

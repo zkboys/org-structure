@@ -3,7 +3,7 @@ import {Button, Form, Input, Tree, Row, Col, Alert, Modal, message} from 'antd';
 import BaseComponent from '../../component/BaseComponent';
 import Page from '../../framework/page/Page';
 import {convertToTree} from '../../common/common';
-import FIcon from '../../component/faicon/FAIcon'
+import FIcon from '../../component/faicon/FAIcon';
 
 const TreeNode = Tree.TreeNode;
 const createForm = Form.create;
@@ -22,27 +22,30 @@ class SystemMenu extends BaseComponent {
     componentDidMount() {
         this.request()
             .get('/menus')
-            .success((data, res)=> {
-                let menus = data || [{
-                        key: 'test',
-                        parentKey: undefined,
-                        text: '未设置',
-                        icon: '',
-                        path: '',
-                        order: 1,
-                    }];
+            .success((data) => {
+                let defaultMenu = {
+                    key: 'super',
+                    parentKey: undefined,
+                    text: '未设置',
+                    icon: '',
+                    path: '',
+                    order: 1,
+                };
+                let menus = [defaultMenu];
+                if (data && data.length) {
+                    menus = data;
+                }
+                // menus = require('../../framework/menus.back.js');
                 this.setState({
                     menus,
                     gData: convertToTree(menus),
-                })
-                ;
-
+                });
             })
             .end();
-    };
+    }
 
-    onDragEnter = (info)=> {
-        //console.log(info);
+    onDragEnter = (info) => {
+        console.log(info);
         // expandedKeys 需要受控时设置
         // this.setState({
         //   expandedKeys: info.expandedKeys,
@@ -58,7 +61,7 @@ class SystemMenu extends BaseComponent {
             }
         });
     };
-    onDrop = (info)=> {
+    onDrop = (info) => {
         const dropKey = info.node.props.eventKey;
         const dragKey = info.dragNode.props.eventKey;
         // const dragNodesKeys = info.dragNodesKeys;
@@ -90,11 +93,11 @@ class SystemMenu extends BaseComponent {
             gData: data,
         });
     };
-    handleTreeNodeClick = (selectedKeys, e)=> {
+    handleTreeNodeClick = (selectedKeys) => {
         let data = [...this.state.gData];
         let selectedKey = selectedKeys[0];
         let selectNodeData;
-        this.findNodeByKey(data, selectedKey, (item, index, arr) => {
+        this.findNodeByKey(data, selectedKey, (item) => {
             selectNodeData = item;
         });
         if (!selectNodeData) return;
@@ -108,27 +111,27 @@ class SystemMenu extends BaseComponent {
             text: selectNodeData.text,
             path: selectNodeData.path,
             icon: selectNodeData.icon,
-        })
+        });
     };
-    handleRightClick = (e)=> {
+    handleRightClick = (e) => {
         console.log(e.node.props.eventKey);
     };
-    handleReset = (e)=> {
+    handleReset = (e) => {
         e.preventDefault();
         this.props.form.resetFields();
         this.setState({
             gData: convertToTree(this.state.menus),
-        })
+        });
     };
 
-    handleSubmit = (e)=> {
+    handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields(['key', 'text', 'icon', 'path'], (errors, values) => {
             if (!!errors) {
                 return;
             }
             let data = [...this.state.gData];
-            this.findNodeByKey(data, values.key, (item)=> {
+            this.findNodeByKey(data, values.key, (item) => {
                 item.path = values.path;
                 item.icon = values.icon;
                 item.text = values.text;
@@ -138,10 +141,10 @@ class SystemMenu extends BaseComponent {
             });
         });
     };
-    handleSave = ()=> {
+    handleSave = () => {
         let data = [...this.state.gData];
         let painData = [];
-        const loop = data => data.forEach((item) => {
+        const loop = d => d.forEach((item) => {
             painData.push({
                 key: item.key,
                 parentKey: item.parentKey,
@@ -151,14 +154,14 @@ class SystemMenu extends BaseComponent {
                 order: item.order,
             });
             if (item.children && item.children.length) {
-                loop(item.children)
+                loop(item.children);
             }
         });
         loop(data);
         this.request()
             .post('/menus')
             .params({menus: painData})
-            .success((data, res)=> {
+            .success((/* data, res */) => {
                 message.success('保存成功');
                 this.setState({
                     menus: painData,
@@ -166,22 +169,22 @@ class SystemMenu extends BaseComponent {
             })
             .end();
     };
-    handleDelete = ()=> {
+    handleDelete = () => {
         this.props.form.validateFields(['key'], (errors, values) => {
             if (!!errors) {
                 return;
             }
             const key = values.key;
             let data = [...this.state.gData];
-            let loop = (data)=> {
-                data.forEach((v, i, arr)=> {
+            let loop = (d) => {
+                d.forEach((v, i, arr) => {
                     if (v.key === key) {
-                        arr.splice(i, 1)
+                        arr.splice(i, 1);
                     }
                     if (v.children && v.children.length) {
-                        loop(v.children)
+                        loop(v.children);
                     }
-                })
+                });
             };
             loop(data);
             this.setState({
@@ -190,7 +193,7 @@ class SystemMenu extends BaseComponent {
             this.props.form.resetFields();
         });
     };
-    handleAddChild = ()=> {
+    handleAddChild = () => {
         this.props.form.validateFields(['key'], (errors, values) => {
             if (!!errors) {
                 return;
@@ -205,13 +208,13 @@ class SystemMenu extends BaseComponent {
             this.showModal();
         });
     };
-    handleAddSubmit = (e)=> {
+    handleAddSubmit = () => {
         this.props.form.validateFields(['key', 'newKey', 'newText', 'newIcon', 'newPath'], (errors, values) => {
             if (!!errors) {
                 return;
             }
             let data = [...this.state.gData];
-            this.findNodeByKey(data, values.key, (item)=> {
+            this.findNodeByKey(data, values.key, (item) => {
                 if (!item.children) {
                     item.children = [];
                 }
@@ -230,21 +233,21 @@ class SystemMenu extends BaseComponent {
         });
     };
 
-    showModal = ()=> {
+    showModal = () => {
         this.setState({showModal: true});
     };
 
-    hideModal = ()=> {
+    hideModal = () => {
         this.setState({showModal: false});
     };
 
-    nodeExists = (rule, value, callback)=> {
+    nodeExists = (rule, value, callback) => {
         if (!value) {
             callback();
         } else {
             const data = [...this.state.gData];
             let isFind = false;
-            this.findNodeByKey(data, value, (item)=> {
+            this.findNodeByKey(data, value, () => {
                 isFind = true;
             });
             if (isFind) {
@@ -274,7 +277,7 @@ class SystemMenu extends BaseComponent {
                 />
             );
         });
-        const {getFieldProps, getFieldError, isFieldValidating} = this.props.form;
+        const {getFieldProps} = this.props.form;
 
         const keyFieldProps = {
             rules: [
@@ -294,12 +297,12 @@ class SystemMenu extends BaseComponent {
         };
         const iconFieldProps = {
             rules: [
-                //{required: true, min: 5, message: '用户名至少为 5 个字符'},
+                // {required: true, min: 5, message: '用户名至少为 5 个字符'},
             ],
         };
         const pathFieldProps = {
             rules: [
-                //{required: true, min: 5, message: '用户名至少为 5 个字符'},
+                // {required: true, min: 5, message: '用户名至少为 5 个字符'},
             ],
         };
 
@@ -330,7 +333,7 @@ class SystemMenu extends BaseComponent {
                 <li>菜单存在Storage.session中，修改该保存之后，重新登陆会获取最新菜单。</li>
                 <li>菜单数据的key，唯一不可重复，有可能和权限关联，添加后不可修改。</li>
             </ul>
-        )
+        );
         return (
             <Page header={'auto'} loading={this.state.loading}>
                 <br/>
@@ -344,7 +347,7 @@ class SystemMenu extends BaseComponent {
                     </Col>
                     <Col span={1}/>
                     <Col span={5}>
-                        <div style={{marginBottom:'10px'}}>
+                        <div style={{marginBottom: '10px'}}>
                             &nbsp;&nbsp;&nbsp;
                             <Button type="primary" size="large" onClick={this.handleSave}>保存</Button>
                             &nbsp;&nbsp;&nbsp;
@@ -357,7 +360,7 @@ class SystemMenu extends BaseComponent {
                             onDragEnter={this.onDragEnter}
                             onDrop={this.onDrop}
                             onSelect={this.handleTreeNodeClick}
-                            //onRightClick={this.handleRightClick}
+                            // onRightClick={this.handleRightClick}
                         >
                             {loop(this.state.gData)}
                         </Tree>
@@ -376,7 +379,7 @@ class SystemMenu extends BaseComponent {
                             >
                                 <Input
                                     {...keyProps}
-                                    onChange={(e)=>{
+                                    onChange={(e) => {
                                         keyProps.onChange(e);
                                         this.handleSubmit(e);
                                     }}
@@ -390,7 +393,7 @@ class SystemMenu extends BaseComponent {
                             >
                                 <Input
                                     {...textProps}
-                                    onChange={(e)=>{
+                                    onChange={(e) => {
                                         textProps.onChange(e);
                                         this.handleSubmit(e);
                                     }}
@@ -404,7 +407,7 @@ class SystemMenu extends BaseComponent {
                                 hasFeedback>
                                 <Input
                                     {...iconProps}
-                                    onChange={(e)=>{
+                                    onChange={(e) => {
                                         iconProps.onChange(e);
                                         this.handleSubmit(e);
                                     }}
@@ -418,7 +421,7 @@ class SystemMenu extends BaseComponent {
                                 hasFeedback>
                                 <Input
                                     {...pathProps}
-                                    onChange={(e)=>{
+                                    onChange={(e) => {
                                         pathProps.onChange(e);
                                         this.handleSubmit(e);
                                     }}
@@ -473,8 +476,7 @@ class SystemMenu extends BaseComponent {
                     </Form>
                 </Modal>
             </Page>
-        )
+        );
     }
 }
-SystemMenu = createForm()(SystemMenu);
-export default SystemMenu;
+export default createForm()(SystemMenu);

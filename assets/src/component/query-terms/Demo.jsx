@@ -5,11 +5,14 @@ class Demo extends React.Component {
 
     render() {
         let options = {
-            onDidMount:(data)=>{},            //可选，查询组件DidMount之后，会触发，data为初始化时，各个元素的值。
+            onChange: (data) => {// 可选 元素onchange后触发，data为所有得元素数据
+            },
+            onDidMount: (data)=> {
+            },            //可选，查询组件DidMount之后，会触发，data为初始化时，各个元素的值。
             showSearchBtn: true,              // 可选，默认true 是否显示查询按钮
             searchBtnText: '查询',            // 可选，默认 查询 ，查询按钮的text
-            extraButtons: '',                 // 可选，默认 undefined，跟在查询按钮之后的按钮，比如<Button>导出</Button>
-            labelWidth: '100px',              // 可选，默认：‘80px’,全局设置label长度，每个条件可以覆盖这个属性。
+            extraAfterSearchButton: '',       // 可选，默认 undefined，跟在查询按钮之后的内容，比如<Button>导出</Button>
+            labelWidth: 'auto',               // 可选，默认：‘auto’,全局设置label长度，每个条件可以覆盖这个属性。
             fieldWidth: '150px',              // 可选，默认：‘150px’,全局元素长度，每个条件可以覆盖这个属性。
             resultDateToString: true,         // 可选，默认 true，查询条件日期相关数据是否转为字符串
             onSubmit: function (data) {       // 必选，点击查询按钮时的回调函数 data为所有的查询条件数据，可以在这个函数中发起请求等操作。
@@ -23,7 +26,7 @@ class Demo extends React.Component {
                     name: 'tabsCardName',
                     defaultValue: 'tab2',
                     searchOnChange: true,
-                    onChange: function (v) {
+                    onChange: function (v) {// v为当前组件的数据。
                         alert(v);
                     },
                     options: [
@@ -248,7 +251,7 @@ class Demo extends React.Component {
                     label: '单选按钮',
                     fieldWidth: 'auto',
                     searchOnChange: true,
-                    defaultValue: 'all',
+                    defaultValue: 1,
                     url: '/api/m/1/stores.json',
                     optionsFilter(res){// 对ajax返回的数据进行处理
                         return res.body.results.map((v)=> {
@@ -257,7 +260,7 @@ class Demo extends React.Component {
                     },
                     options: [
                         {value: 'all', label: '全部'},
-                        {value: 1, label: '单选一'},
+                        {value: 1, label: '单选一', disabled: true},
                         {value: 2, label: '单选二'},
                         {value: 3, label: '单选三'},
                         {value: 4, label: '单选四'},

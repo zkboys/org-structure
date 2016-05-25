@@ -10,7 +10,7 @@ var Menu = require('../models').Menu;
  * - docs，返回的数据
  * */
 exports.getAllMenus = function (callback) {
-  Menu.find(callback);
+    Menu.find(callback);
 };
 /**
  *
@@ -18,9 +18,9 @@ exports.getAllMenus = function (callback) {
  * @param newMenu
  */
 exports.updateAllMenus = function (newMenu, callback) {
-  Menu.remove({}, function (err, docs) {
-    Menu.create(newMenus, callback)
-  });
+    Menu.remove({}, function (err, docs) {
+        Menu.create(newMenu, callback);
+    });
 }
 /**
  * 根据用户，获取此用户有权限得菜单
@@ -29,6 +29,6 @@ exports.updateAllMenus = function (newMenu, callback) {
  * - docs，返回的数据
  * */
 exports.getMenusByUser = function (user, callback) {
-  // TODO 添加权限判断
-  Menu.find(callback);
+    // TODO 添加权限判断
+    Menu.find(callback);
 };

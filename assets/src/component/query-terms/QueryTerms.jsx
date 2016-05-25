@@ -25,10 +25,10 @@ class QueryTerms extends React.Component {
 
     componentDidMount() {
         let onDidMount = this.props.options.onDidMount;
-        if (onDidMount) {
-            const formData = this.getFormData();
-            onDidMount(formData);
-        }
+        let onChange = this.props.options.onChange;
+        const formData = this.getFormData();
+        onDidMount && onDidMount(formData);
+        onChange && onChange(formData);
     }
 
     static defaultProps = {};
@@ -127,7 +127,7 @@ class QueryTerms extends React.Component {
             formData = values;
         });
         return formData;
-    }
+    };
     handleSubmit = (e)=> {
         e && e.preventDefault();
         const formData = this.getFormData();
@@ -150,7 +150,7 @@ class QueryTerms extends React.Component {
     getItem = (options, itemOptions)=> {
         itemOptions = assign({}, {
             fieldWidth: '150px',
-            labelWidth: options.labelWidth || '80px'
+            labelWidth: options.labelWidth || 'auto'
         }, itemOptions);
         const searchOnChange = itemOptions.searchOnChange;
         const itemType = itemOptions.type;
@@ -225,6 +225,7 @@ class QueryTerms extends React.Component {
                 searchOnChange && this.handleSubmit();
             }
             itemOptions.onChange && itemOptions.onChange(value);
+            options.onChange && options.onChange(this.getFormData());
         };
         switch (itemType) {
             case 'input':
@@ -353,14 +354,20 @@ class QueryTerms extends React.Component {
                 if (expandable) {
                     eleProps.expandable = true;
                 }
+                let marginLeft = '0px';
+                if (labelWidth !== 'auto') {
+                    marginLeft = labelWidth;
+                } else if (label) {
+                    marginLeft = (label.length + 1) * 12 + 'px'; // FIXME 12 为字体大小，这个计算要该一下，不友好
+                }
                 return (
 
                     <Col>
                         <FormItem  {...itemProps} >
-                            <div className="text-label">
+                            <div className="text-label" ref='label'>
                                 {labelJsx}
                             </div>
-                            <div style={{marginLeft:labelWidth}}>
+                            <div style={{marginLeft:marginLeft}}>
                                 <Element
                                     type={type}
                                     size={size}
@@ -486,7 +493,7 @@ class QueryTerms extends React.Component {
     render() {
         const options = this.props.options;
         const searchBtnText = options.searchBtnText || '查询';
-        const extraButtons = options.extraButtons;
+        const extraAfterSearchButton = options.extraAfterSearchButton;
         const items = options.items.map((value, index, array)=> {
             if (value.hidden) return '';
             const rowProps = {
@@ -499,17 +506,17 @@ class QueryTerms extends React.Component {
                 if (options.showSearchBtn) {
                     buttons.push(
                         <Col key='search-btn'>
-                            <FormItem className="query-terms-item" style={{paddingLeft: '10px'}}>
+                            <FormItem className="query-terms-item" style={{marginTop: '-1px'}}>
                                 <Button type="primary" onClick={this.handleSubmit}>{searchBtnText}</Button>
                             </FormItem>
                         </Col>
                     );
                 }
-                if (extraButtons) {
+                if (extraAfterSearchButton) {
                     buttons.push(
                         <Col key='extra-btn'>
-                            <FormItem className="query-terms-item" style={{paddingLeft: '10px'}}>
-                                {extraButtons}
+                            <FormItem className="query-terms-item" style={{marginTop: '-1px'}}>
+                                {extraAfterSearchButton}
                             </FormItem>
                         </Col>
                     );

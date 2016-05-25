@@ -52,9 +52,6 @@ class RadioItem extends React.Component {
                         const newOptions = optionsFilter(res);
                         options = options.concat(newOptions);
                     }
-                    options = options.map((v)=> {
-                        return {value: v.value.toString(), label: v.label}
-                    });
                     this.setState({
                         options
                     })
@@ -99,13 +96,17 @@ class RadioItem extends React.Component {
                 <RadioGroup {...this.props}>
                     {options.map((v, i)=> {
                         const key = i;
+                        let radioProps = {};
+                        if (v.disabled) {
+                            radioProps.disabled = true;
+                        }
                         if (v.value === this.loadingValue) {
                             return <span key={key}>{v.label}</span>;
                         }
                         if (button) {
-                            return <RadioButton key={key} value={v.value}>{v.label}</RadioButton>;
+                            return <RadioButton key={key} value={v.value} {...radioProps}>{v.label}</RadioButton>;
                         } else {
-                            return <Radio key={key} value={v.value}>{v.label}</Radio>;
+                            return <Radio key={key} value={v.value} {...radioProps}>{v.label}</Radio>;
                         }
 
                     })}

@@ -161,7 +161,6 @@ class RadioItem extends React.Component {
         if (isTimeArea) {
             startPicker = (
                 <TimePicker
-                    size="large"
                     {...startFieldPropsOptions}
                     defaultValue={startDefaultValue}
                     format={format}
@@ -170,7 +169,6 @@ class RadioItem extends React.Component {
             );
             endPicker = (
                 <TimePicker
-                    size="large"
                     {...endFieldPropsOptions}
                     defaultValue={endDefaultValue}
                     format={format}
