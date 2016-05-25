@@ -4,7 +4,7 @@
  * 先不加后台，这里先硬编码。
  * 结构扁平化，虽然MongoDB等nosql数据库有更好的方式，比如直接存json，但是扁平化得数据结构，支持面更广。
  * */
-import Storage from  '../common/storage';
+import Storage from '../common/storage';
 export default Storage.session.get('menus') || [];
 /*
  export default [
