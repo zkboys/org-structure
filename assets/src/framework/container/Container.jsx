@@ -10,7 +10,7 @@ import Settings from './../settings/Settings';
 import {
     toggleSidebar,
     setHeaderCurrentMenu,
-    setSidebarMenus,
+    setSidebarMenusShowOrHide,
     setSidebarMenuStatus
 } from '../actions'
 
@@ -32,13 +32,13 @@ class Container extends React.Component {
 
     componentDidMount() {
         let dispatch = this.props.dispatch;
-        PubSubMsg.subscribeAcceptOldMsg('current-header-menu', function (current) {
-            dispatch(setHeaderCurrentMenu(current));
+        PubSubMsg.subscribeAcceptOldMsg('current-header-menu', (currentHeadMenuKey) => {
+            dispatch(setHeaderCurrentMenu(currentHeadMenuKey));
         });
-        PubSubMsg.subscribeAcceptOldMsg('set-sidebar-menus', function (current) {
-            dispatch(setSidebarMenus(current))
+        PubSubMsg.subscribeAcceptOldMsg('set-sidebar-menus', (currentHeadMenuKey) => {
+            dispatch(setSidebarMenusShowOrHide(currentHeadMenuKey));
         });
-        PubSubMsg.subscribeAcceptOldMsg('current-sidebar-menu', function (data) {
+        PubSubMsg.subscribeAcceptOldMsg('current-sidebar-menu', (data) => {
             dispatch(setSidebarMenuStatus(data));
         });
     }

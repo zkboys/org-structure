@@ -1,17 +1,16 @@
 import './style.css';
 import React from 'react';
-import { Breadcrumb } from 'antd'
+import { Breadcrumb } from 'antd';
+import BaseComponent from '../../component/BaseComponent';
 import Page from '../../framework/page/Page';
 
-const Home = React.createClass({
-    getInitialState(){
-        console.log('mixin 中的 getInitialState');
-        return {
-            loading: false
-        }
-    },
+class Home extends BaseComponent {
+    state = {
+        loading: false,
+    }
+
     render() {
-        let pageHeader =
+        let pageHeader = (
             <div>
                 <h1 className="admin-page-header-title">Dashboard</h1>
                 <Breadcrumb>
@@ -20,7 +19,8 @@ const Home = React.createClass({
                     <Breadcrumb.Item href="">应用列表</Breadcrumb.Item>
                     <Breadcrumb.Item>某应用</Breadcrumb.Item>
                 </Breadcrumb>
-            </div>;
+            </div>
+        );
         return (
             <Page header={pageHeader} loading={this.state.loading}>
                 <h1>首页</h1>
@@ -30,6 +30,6 @@ const Home = React.createClass({
             </Page>
         );
     }
-});
 
+}
 export default Home;

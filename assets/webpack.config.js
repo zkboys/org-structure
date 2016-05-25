@@ -12,6 +12,7 @@ var configs = {
         path: '../public',
         publicPath: 'http://localhost:8088/s/',
         library: [
+            {from: './favicon.png'},
             {from: 'node_modules/antd/dist/antd.css', to: 'antd.min.css'},
             {from: 'node_modules/antd/dist/antd.js', to: 'antd.min.js'},
             {from: 'node_modules/react/dist/react.js', to: 'react.min.js'},
@@ -26,6 +27,7 @@ var configs = {
         path: '../public',
         publicPath: '/s/',
         library: [
+            {from: './favicon.png'},
             {from: 'node_modules/antd/dist/antd.min.css'},
             {from: 'node_modules/antd/dist/antd.min.js'},
             {from: 'node_modules/react/dist/react.min.js'},

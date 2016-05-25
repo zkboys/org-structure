@@ -1,12 +1,6 @@
 import menus from '../menus';
-import {hasParent} from '../../common/common'
-let headMenus = menus.filter((menu, index, arr)=> {
-    return !hasParent(arr, menu);
-});
-headMenus.forEach((headMenu)=> {
-    headMenu.path = getFirstPath(headMenu) || '/';
+import {hasParent} from '../../common/common';
 
-});
 
 function getFirstPath(node) {
     if (node.path) return node.path;
@@ -19,9 +13,17 @@ function getFirstPath(node) {
         }
     }
     if (firstChild) {
-        return firstChild.path || getFirstPath(firstChild)
-    } else {
-        return;
+        return firstChild.path || getFirstPath(firstChild);
     }
+    return null;
 }
+
+const headMenus = menus.filter((menu, index, arr) => {
+    return !hasParent(arr, menu);
+});
+headMenus.forEach((headMenu) => {
+    headMenu.path = getFirstPath(headMenu) || '/';
+});
+
 export default headMenus;
+
