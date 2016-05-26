@@ -7,7 +7,7 @@ import {getSidebarMenus} from './sidebar/SidebarMenuUtil';
 import {
     TOGGLE_SIDEBAR,
     SET_HEADER_CURRENT_MENU,
-    SET_SIDEBAR_MENUS_SHOW_OR_HIDE,
+    SET_SIDEBAR_MENUS,
     SET_SIDEBAR_MENU_STATUS,
 } from './actions';
 
@@ -43,6 +43,7 @@ let defaultState = {
         headMenus: headerMenus,
     },
     sidebar: {
+        sidebarMenus: [],
         hidden: false,
         openKeys: [],
         selectedKeys: '',
@@ -63,10 +64,12 @@ export default combineReducers({
     },
 
     headerNav(state = defaultState.headerNav, action) {
+        let pathNames = location.pathname.split('/');
+        let currentHeadMenuKey = pathNames && pathNames.length && pathNames[1];
         switch (action.type) {
         case SET_HEADER_CURRENT_MENU :// 设置头部菜单选中状态
             return assign({}, state, {
-                current: action.currentHeadMenuKey,
+                current: currentHeadMenuKey,
             });
         default:
             return state;
@@ -74,15 +77,16 @@ export default combineReducers({
     },
 
     sidebar(state = defaultState.sidebar, action) {
-        const sideBarMenu = getSidebarMenus();
+        const sidebarMenus = getSidebarMenus();
         switch (action.type) {
-        case SET_SIDEBAR_MENUS_SHOW_OR_HIDE :// 是否显示或者隐藏左侧菜单
-            if (!action.currentHeaderMenuKey || !sideBarMenu || !sideBarMenu.length) {
+        case SET_SIDEBAR_MENUS :// 是否显示或者隐藏左侧菜单
+            if (!sidebarMenus || !sidebarMenus.length) {
                 return assign({}, state, {
                     hidden: true,
                 });
             }
             return assign({}, state, {
+                sidebarMenus,
                 hidden: false,
             });
         case SET_SIDEBAR_MENU_STATUS:// 设置左侧菜单状态，展开状态以及选中状态

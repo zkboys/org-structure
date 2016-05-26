@@ -1,6 +1,5 @@
 import React from 'react';
 import {Menu} from 'antd';
-import {getSidebarMenus} from './SidebarMenuUtil';
 import assign from 'object-assign';
 class Sidebar extends React.Component {
     handleToggle = (info) => {
@@ -15,10 +14,10 @@ class Sidebar extends React.Component {
             } = this.props.style;
         let {
             hidden,
+            sidebarMenus,
             openKeys,
             selectedKeys,
             } = this.props.sidebar;
-        let menus = getSidebarMenus();
         let style = assign({}, sidebarStyle, hidden ? {width: 0} : {});
         let innerStyle = assign({}, sidebarInnerStyle, hidden ? {width: 0} : {});
 
@@ -34,14 +33,14 @@ class Sidebar extends React.Component {
                         onClose={this.handleToggle}
                         mode={sidebarMode}
                     >
-                        {menus}
+                        {sidebarMenus}
                     </Menu>
                     <Menu
                         style={{display: sidebarMode === 'vertical' && !hidden ? 'block' : 'none'}}
                         selectedKeys={[selectedKeys]}
                         mode={sidebarMode}
                     >
-                        {menus}
+                        {sidebarMenus}
                     </Menu>
                 </div>
             </div>

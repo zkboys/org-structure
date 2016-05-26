@@ -1,6 +1,6 @@
 export const TOGGLE_SIDEBAR = 'TOGGLE_SIDEBAR ';
 export const SET_HEADER_CURRENT_MENU = 'SET-HEADER-CURRENT-MENU ';
-export const SET_SIDEBAR_MENUS_SHOW_OR_HIDE = 'SET_SIDEBAR_MENUS_SHOW_OR_HIDE';
+export const SET_SIDEBAR_MENUS = 'SET_SIDEBAR_MENUS';
 export const SET_SIDEBAR_MENU_STATUS = 'SET_SIDEBAR_MENU_STATUS';
 
 export function toggleSidebar() {
@@ -8,18 +8,16 @@ export function toggleSidebar() {
         type: TOGGLE_SIDEBAR,
     };
 }
-export function setHeaderCurrentMenu(currentHeadMenuKey) {
+export function setHeaderCurrentMenu() {
     return {
         type: SET_HEADER_CURRENT_MENU,
-        currentHeadMenuKey,
     };
 }
 
 
-export function setSidebarMenusShowOrHide(currentHeaderMenuKey) {
+export function setSidebarMenus() {
     return {
-        type: SET_SIDEBAR_MENUS_SHOW_OR_HIDE,
-        currentHeaderMenuKey,
+        type: SET_SIDEBAR_MENUS,
     };
 }
 export function setSidebarMenuStatus(status) {

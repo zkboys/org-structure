@@ -1,42 +1,39 @@
 import './../style.less';
 import assign from 'object-assign';
 import React from 'react';
-import {connect} from 'react-redux'
-import {Menu, Icon} from 'antd';
+import {connect} from 'react-redux';
 import HeaderBar from '../header/Header';
 import Sidebar from '../sidebar/Sidebar';
 import PubSubMsg from '../../common/pubsubmsg';
-import Settings from './../settings/Settings';
 import {
     toggleSidebar,
     setHeaderCurrentMenu,
-    setSidebarMenusShowOrHide,
-    setSidebarMenuStatus
-} from '../actions'
+    setSidebarMenus,
+    setSidebarMenuStatus,
+} from '../actions';
 
 class Container extends React.Component {
 
-    handleToggleSidebar = ()=> {
+    handleToggleSidebar = () => {
         this.props.dispatch(toggleSidebar());
     };
 
-    handleToggleMenu = (info)=> {
-        console.log('info', info);
+    handleToggleMenu = (info) => {
         let selectedKeys = this.props.sidebar.selectedKeys;
         let data = {
-            selectedKeys: selectedKeys,
-            openKeys: info.openKeys
+            selectedKeys,
+            openKeys: info.openKeys,
         };
         this.props.dispatch(setSidebarMenuStatus(data));
     };
 
     componentDidMount() {
         let dispatch = this.props.dispatch;
-        PubSubMsg.subscribeAcceptOldMsg('current-header-menu', (currentHeadMenuKey) => {
-            dispatch(setHeaderCurrentMenu(currentHeadMenuKey));
+        PubSubMsg.subscribeAcceptOldMsg('current-header-menu', () => {
+            dispatch(setHeaderCurrentMenu());
         });
-        PubSubMsg.subscribeAcceptOldMsg('set-sidebar-menus', (currentHeadMenuKey) => {
-            dispatch(setSidebarMenusShowOrHide(currentHeadMenuKey));
+        PubSubMsg.subscribeAcceptOldMsg('set-sidebar-menus', () => {
+            dispatch(setSidebarMenus());
         });
         PubSubMsg.subscribeAcceptOldMsg('current-sidebar-menu', (data) => {
             dispatch(setSidebarMenuStatus(data));
@@ -49,7 +46,7 @@ class Container extends React.Component {
             <div>
                 <HeaderBar {...this.props} onToggleSidebar={this.handleToggleSidebar}/>
                 <Sidebar {...this.props} onToggle={this.handleToggleMenu}/>
-                <div className="admin-container" style={{left:centerLeft}}>
+                <div className="admin-container" style={{left: centerLeft}}>
                     {this.props.children}
                 </div>
             </div>

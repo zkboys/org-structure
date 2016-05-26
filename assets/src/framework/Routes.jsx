@@ -43,11 +43,9 @@ pageRouts.push(
 /*
  * 监听地址栏改变，通过左侧菜单状态
  * */
-browserHistory.listen((data) => {
-    let pathNames = data.pathname.split('/');
-    let headerMenuCurrent = pathNames && pathNames.length && pathNames[1];
-    PubSubMsg.publish('current-header-menu', headerMenuCurrent);
-    PubSubMsg.publish('set-sidebar-menus', headerMenuCurrent);
+browserHistory.listen((/* data */) => {
+    PubSubMsg.publish('current-header-menu');
+    PubSubMsg.publish('set-sidebar-menus');
 
     let currentSidebarMenu = getCurrentSidebarMenu();
     let selectedKeys = currentSidebarMenu ? currentSidebarMenu.key : '';
