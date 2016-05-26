@@ -199,7 +199,6 @@ passport.deserializeUser(function (user, done) {
 passport.use(new GitHubStrategy(config.GITHUB_OAUTH, githubStrategyMiddleware));
 
 
-
 // custom middleware
 app.use(auth.authUser);// 如果用户登录了，存用户到session中，如果未登录，next
 app.use(auth.blockUser());//是否已锁定，未锁定，next
@@ -244,7 +243,6 @@ app.use(busboy({
 }));
 app.use('/api/v1', cors(), apiRouterV1);
 app.use('/', webRouter);
-
 
 
 // error handler
