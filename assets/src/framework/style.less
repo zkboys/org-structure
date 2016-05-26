@@ -19,248 +19,254 @@
 @sideBarSubMenuFontColor: #999;
 
 .admin-header {
-  position: fixed;
-  z-index: 100;
-  width: 100%;
-  height: @headerHeight;
-  background-color: @headerBgColor;
-  box-sizing: border-box;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-  /*logo*/
-  .admin-logo {
-    display: inline-block;
-    height: 100%;
-    line-height: @headerHeight;
-    background-color: @headerLogoBgColor;
-    text-align: center;
-    font-size: 18px;
-    vertical-align: middle;
-    float: left;
-    & > a,
-    & > a:visited,
-    & > a:active,
-    & > a:hover {
-      display: block;
-      color: @headerLogoFontColor;
-    }
-  }
-  /*收起展开菜单按钮*/
-  .admin-sidebar-toggle {
-    display: inline-block;
-    padding: 0 15px;
-    height: 100%;
-    line-height: @headerHeight;
-    font-size: 14px;
-    color: @sideBarToggleButtonFontColor;
-    vertical-align: middle;
-    float: left;
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.1);
-    }
-  }
-  /*导航菜单*/
-  .admin-header-sys {
-    &.ant-menu {
-      display: inline-block;
-      height: 100%;
-      line-height: @headerHeight;
-      float: left;
-      background: none;
-      border: none;
-      .ant-menu-item {
-        height: 47px;
-        a {
-          font-size: 14px;
-          color: @headerMenuFontColor;
-          & > i {
-            float: left;
-            margin-right: 7px;
-            margin-top: 18px;
-          }
-        }
-      }
-    }
-    .ant-menu-item-active.ant-menu-item,
-    .ant-menu-item-selected.ant-menu-item {
-      a,
-      a:hover {
-        color: @headerMenuActiveFontColor;
-      }
-      border-bottom: 2px solid @headerMenuActiveFontColor;
-    }
-  }
-  /*头部右侧菜单*/
-  .admin-header-menu {
-    float: right;
-    display: inline-block;
-    .admin-header-menu-item {
-      display: inline-block;
-      .fa {
-        font-weight: bold;
-      }
-      a {
+    position: fixed;
+    z-index: 100;
+    width: 100%;
+    height: @headerHeight;
+    background-color: @headerBgColor;
+    box-sizing: border-box;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    /*logo*/
+    .admin-logo {
         display: inline-block;
-        padding: 15px;
-        height: 50px;
-        line-height: 20px;
-        color: @headerRightMenuFontColor;
-        font-size: 14px;
-        &:hover {
-          background-color: rgba(0, 0, 0, 0.1);
-        }
-        & > span {
-          margin-left: 7px;
-        }
-      }
-      .admin-user-avatar {
-        margin-top: -2px;
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
+        height: 100%;
+        line-height: @headerHeight;
+        background-color: @headerLogoBgColor;
+        text-align: center;
+        font-size: 18px;
         vertical-align: middle;
-      }
+        float: left;
+        & > a,
+        & > a:visited,
+        & > a:active,
+        & > a:hover {
+            display: block;
+            color: @headerLogoFontColor;
+        }
     }
-  }
+    /*收起展开菜单按钮*/
+    .admin-sidebar-toggle {
+        display: inline-block;
+        padding: 0 15px;
+        height: 100%;
+        line-height: @headerHeight;
+        font-size: 14px;
+        color: @sideBarToggleButtonFontColor;
+        vertical-align: middle;
+        float: left;
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+    }
+    /*导航菜单*/
+    .admin-header-sys {
+        &.ant-menu {
+            display: inline-block;
+            height: 100%;
+            line-height: @headerHeight;
+            float: left;
+            background: none;
+            border: none;
+            .ant-menu-item {
+                height: 47px;
+                a {
+                    font-size: 14px;
+                    color: @headerMenuFontColor;
+                    & > i {
+                        float: left;
+                        margin-right: 7px;
+                        margin-top: 18px;
+                    }
+                }
+            }
+        }
+        .ant-menu-item-active.ant-menu-item,
+        .ant-menu-item-selected.ant-menu-item {
+            a,
+            a:hover {
+                color: @headerMenuActiveFontColor;
+            }
+            border-bottom: 2px solid @headerMenuActiveFontColor;
+        }
+    }
+    /*头部右侧菜单*/
+    .admin-header-menu {
+        float: right;
+        display: inline-block;
+        .admin-header-menu-item {
+            display: inline-block;
+            .fa {
+                font-weight: bold;
+            }
+            a {
+                display: inline-block;
+                padding: 15px;
+                height: 50px;
+                line-height: 20px;
+                color: @headerRightMenuFontColor;
+                font-size: 14px;
+                &:hover {
+                    background-color: rgba(0, 0, 0, 0.1);
+                }
+                & > span {
+                    margin-left: 7px;
+                }
+            }
+            .admin-user-avatar {
+                display: inline-block;
+                margin-top: -2px;
+                width: 24px;
+                height: 24px;
+                line-height: 24px;
+                border-radius: 50%;
+                vertical-align: middle;
+                text-align: center;
+                color: #fff;
+                font-size: 18px;
+                background-color: #0e4ea7;
+            }
+        }
+    }
 }
 
 /*中间主体部分样式*/
 .admin-container {
-  position: absolute;
-  top: @headerHeight;
-  right: 0;
-  bottom: 0;
-  left: @sideBarWidth;
-  padding: 15px;
-  overflow: hidden;
-  box-sizing: border-box;
-  .admin-page {
     position: absolute;
-    left: 0;
+    top: @headerHeight;
     right: 0;
-    top: 0;
     bottom: 0;
-    .admin-page-header {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 20px;
-      padding: 10px 5px 0 10px;
-      z-index: 99;
-      background-color: #fff;
-      .admin-page-header-title {
-        height: 42px;
-        padding: 10px 0 5px 15px;
-        border-bottom: 1px solid #eee;
-        font-size: 18px;
-      }
-      .ant-breadcrumb {
-        float: right;
-        margin-top: -25px;
-        margin-right: 10px;
-      }
+    left: @sideBarWidth;
+    padding: 15px;
+    overflow: hidden;
+    box-sizing: border-box;
+    .admin-page {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        .admin-page-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 20px;
+            padding: 10px 5px 0 10px;
+            z-index: 99;
+            background-color: #fff;
+            .admin-page-header-title {
+                height: 42px;
+                padding: 10px 0 5px 15px;
+                border-bottom: 1px solid #eee;
+                font-size: 18px;
+            }
+            .ant-breadcrumb {
+                float: right;
+                margin-top: -25px;
+                margin-right: 10px;
+            }
 
-    }
-
-    .admin-page-content {
-      z-index: 88;
-      height: 100%;
-      width: 100%;
-      padding-top: @headerHeight;
-      overflow: auto;
-      background-color: #fff;
-      .admin-page-content-inner {
-        min-width: 768px;
-        padding: 10px;
-        .ant-spin-nested-loading .ant-spin {
-          top: 100px;
         }
-      }
+
+        .admin-page-content {
+            z-index: 88;
+            height: 100%;
+            width: 100%;
+            padding-top: @headerHeight;
+            overflow: auto;
+            background-color: #fff;
+            .admin-page-content-inner {
+                min-width: 768px;
+                padding: 10px;
+                .ant-spin-nested-loading .ant-spin {
+                    top: 100px;
+                }
+            }
+        }
     }
-  }
 }
 
 /*左侧菜单样式*/
 .admin-sidebar {
-  position: fixed;
-  z-index: 100;
-  top: @headerHeight;
-  bottom: 0;
-  left: 0;
-  width: @sideBarWidth;
-  background-color: @sideBarBgColor;
-  overflow: hidden;
-  box-sizing: border-box;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-  .admin-sidebar-inner {
-    position: relative;
-    z-index: 999;
-    height: 100%;
-    overflow-x: visible;
-    overflow-y: scroll;
-    .ant-menu,
-    .ant-menu-submenu > .ant-menu {
-      color: @sideBarMenuFontColor;
-      background-color: @sideBarMenuBgColor;
-      border-right: none;
-      .fa {
-        margin-right: 5px;
-      }
-      .ant-menu-item {
-        border-right: 3px solid @sideBarMenuBgColor;
-        left: 0;
-        margin-left: 0;
-        padding-right: 0; /*扩大Link可点击区域*/
-        a {
-          color: @sideBarMenuFontColor;
+    position: fixed;
+    z-index: 100;
+    top: @headerHeight;
+    bottom: 0;
+    left: 0;
+    width: @sideBarWidth;
+    background-color: @sideBarBgColor;
+    overflow: hidden;
+    box-sizing: border-box;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    .admin-sidebar-inner {
+        position: relative;
+        z-index: 999;
+        height: 100%;
+        overflow-x: visible;
+        overflow-y: scroll;
+        .ant-menu,
+        .ant-menu-submenu > .ant-menu {
+            color: @sideBarMenuFontColor;
+            background-color: @sideBarMenuBgColor;
+            border-right: none;
+            .fa {
+                margin-right: 5px;
+            }
+            .ant-menu-item {
+                border-right: 3px solid @sideBarMenuBgColor;
+                left: 0;
+                margin-left: 0;
+                padding-right: 0; /*扩大Link可点击区域*/
+                a {
+                    color: @sideBarMenuFontColor;
+                }
+            }
         }
-      }
-    }
-    .ant-menu-submenu-title {
-      color: @sideBarSubMenuFontColor;
-      &:hover {
-        background-color: @sideBarMenuActiveBgColor;
-        color: @sideBarMenuActiveFontColor;
-      }
-    }
-    .ant-menu-item-active {
-      background-color: lighten(@sideBarMenuActiveBgColor, 5%);
-      border-right-color: lighten(@sideBarMenuActiveFontColor, 10%) !important;
-      a {
-        color: lighten(@sideBarMenuActiveFontColor, 20%) !important;
-      }
-    }
-    .ant-menu-submenu-active {
-      background-color: lighten(@sideBarMenuActiveBgColor, 2%);
-    }
-    .ant-menu-item-selected {
-      background-color: @sideBarMenuActiveBgColor;
-      border-right-color: @sideBarMenuActiveFontColor !important;
-      a {
-        color: @sideBarMenuActiveFontColor !important;
-      }
-    }
+        .ant-menu-submenu-title {
+            color: @sideBarSubMenuFontColor;
+            &:hover {
+                background-color: @sideBarMenuActiveBgColor;
+                color: @sideBarMenuActiveFontColor;
+            }
+        }
+        .ant-menu-item-active {
+            background-color: lighten(@sideBarMenuActiveBgColor, 5%);
+            border-right-color: lighten(@sideBarMenuActiveFontColor, 10%) !important;
+            a {
+                color: lighten(@sideBarMenuActiveFontColor, 20%) !important;
+            }
+        }
+        .ant-menu-submenu-active {
+            background-color: lighten(@sideBarMenuActiveBgColor, 2%);
+        }
+        .ant-menu-item-selected {
+            background-color: @sideBarMenuActiveBgColor;
+            border-right-color: @sideBarMenuActiveFontColor !important;
+            a {
+                color: @sideBarMenuActiveFontColor !important;
+            }
+        }
 
-    & > .ant-menu-vertical > .ant-menu-submenu-vertical > .ant-menu-submenu-title {
-      padding-left: 20px;
-      font-size: 18px;
-      & > span > span { //隐藏文字
-        display: none;
-      }
-      &:after { //隐藏箭头
-        content: ''
-      }
-    }
-    & > .ant-menu-vertical > .ant-menu-item > a { // Link标签样式
-      & > i {
-        margin-left: -6px;
-        font-size: 15px;
-      }
-      & > span { //隐藏文字
-        display: none;
-      }
+        & > .ant-menu-vertical > .ant-menu-submenu-vertical > .ant-menu-submenu-title {
+            padding-left: 20px;
+            font-size: 18px;
+            & > span > span { //隐藏文字
+                display: none;
+            }
+            &:after { //隐藏箭头
+                content: ''
+            }
+        }
+        & > .ant-menu-vertical > .ant-menu-item > a { // Link标签样式
+            & > i {
+                margin-left: -6px;
+                font-size: 15px;
+            }
+            & > span { //隐藏文字
+                display: none;
+            }
 
+        }
     }
-  }
 }
 
 

@@ -37,14 +37,16 @@ class SignIn extends React.Component {
             Request
                 .post('/signin')
                 .send(values)
-                .end((err, res)=> {
+                .end((err, res) => {
                     console.log(err, res);
                     if (err || !res.ok) {
-                        return 'error'
+                        return 'error';
                     }
-                    let refer = res.body.refer || '/';
-                    let menus = res.body.menus || [];
                     if (res.body.success) {
+                        let refer = res.body.refer || '/';
+                        let menus = res.body.menus || [];
+                        let currentLoginUser = res.body.user;
+                        Storage.session.set('currentLoginUser', currentLoginUser)
                         Storage.session.set('menus', menus);
                         location.href = refer;
                     }

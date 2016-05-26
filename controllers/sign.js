@@ -144,10 +144,16 @@ exports.login = function (req, res, next) {
                     break;
                 }
             }
-            //TODO 获取用户菜单，返回给前端
+
+            var safeUSer = {
+                name: user.name,
+                loginname: user.loginname,
+                email: user.email,
+                avatar: user.avatar,
+            }
             Menu.getMenusByUser(user, function (err, menus) {
                 if (err) return next(err);
-                res.send({success: true, refer: refer, menus: menus});
+                res.send({success: true, refer: refer, user: safeUSer, menus: menus});
             })
         }));
     });

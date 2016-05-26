@@ -52,7 +52,6 @@ let defaultState = {
 };
 
 export default combineReducers({
-
     style(state = defaultState.style, action) {
         switch (action.type) {
         case TOGGLE_SIDEBAR :// 展开收起左侧菜单栏
