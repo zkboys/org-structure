@@ -126,6 +126,50 @@ router.get('*', function (req, res, next) {
 import {Link} from 'react-router'
 <Link to="/xxxxx">XXXXX</Link>
 ```
+### 前端路由结构规范
+*特殊情况，不能按照规范实现，与各位leader商榷*
+
+1. 多单词使用“_”链接，不要使用“-”，或其他特殊字符。
+1. 根据菜单结构，定义url结构，RestFull 约定，具体看下面例子。
+
+例如：
+```
+菜单结构：
+系统 # system
+    -用户管理 # user 
+        -添加用户
+        -用户列表
+
+对应的菜单为  
+
+列表页：
+http:localhost:8080/users
+详情页 12为id
+http:localhost:8080/users/12
+添加页
+http:localhost:8080/users/new
+修改页
+http:localhost:8080/users/12/edit
+```
+菜单结构
+```
+门店  # store
+    -订单 # order 一级
+        -外卖订单 # take_out 二级
+            -新订单 # new_order 可点击跳转页面
+            -所有订单 # all_order 可点击跳转页面
+```
+对应的菜单为：
+```
+列表页
+http:localhost:8080/store/order/take_out/new_orders
+详情页
+http:localhost:8080/store/order/take_out/new_orders/12
+添加页
+http:localhost:8080/store/order/take_out/new_orders/new
+修改页
+http:localhost:8080/store/order/take_out/new_orders/21/edit
+```
 
 #### 菜单数据来源：
 > 左侧菜单数据由后台提供，会包含path，路由前端单独维护，通过path跟菜单（或者Link）关联。
