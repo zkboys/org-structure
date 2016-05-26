@@ -60,6 +60,7 @@ class Demo extends React.Component {
                     name: 'userName',          // 必须，查询条件数据name
                     label: '普通输入框',        // 可选，查询条件显示的label，缺省将不显示label
                     labelWidth: '100px',       // 可选，默认为 全局labelWidth，如果是Number类型，默认单位为px
+                    labelUnifiedFontCount: 5,  // 可选，用于上下两行label对其，比如上一行label5个字，下一行label2个字，那么下一行设置labelUnifiedFontCount：5即可
                     fieldWidth: '250px',       // 可选，默认为 全局fieldWidth，控制输入框等大小，如果是Number类型，默认单位为px, 可以为auto
                     searchOnChange: true,      // 可选，默认：false， 值改变是否出发onSearch函数
                     //placeholder: '我是提示',  // 可选，默认为请输入[label],如果是select等选择类型，默认为：请选择[label]

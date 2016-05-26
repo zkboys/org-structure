@@ -160,7 +160,13 @@ class QueryTerms extends React.Component {
         const endName = itemOptions.endName;
         const props = itemOptions.props;
         const fieldWidth = itemOptions.fieldWidth;
-        const labelWidth = itemOptions.labelWidth;
+        let labelWidth = itemOptions.labelWidth;
+        const labelUnifiedFontCount = itemOptions.labelUnifiedFontCount;
+        const labelFontSize = 12;
+        // 优先级 px > labelUnifiedFontCount > auto
+        if (labelWidth === 'auto' && labelUnifiedFontCount) {
+            labelWidth = `${(labelUnifiedFontCount + 1) * labelFontSize}px`;
+        }
         let placeholder = itemOptions.placeholder;
         if (placeholder === undefined) {
             if (['input', 'inputNumber', 'combobox'].includes(itemType)) {
@@ -358,7 +364,7 @@ class QueryTerms extends React.Component {
                 if (labelWidth !== 'auto') {
                     marginLeft = labelWidth;
                 } else if (label) {
-                    marginLeft = (label.length + 1) * 12 + 'px'; // FIXME 12 为字体大小，这个计算要该一下，不友好
+                    marginLeft = (label.length + 1) * labelFontSize + 'px';
                 }
                 return (
 
