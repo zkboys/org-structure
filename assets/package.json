@@ -50,8 +50,7 @@
     "pre-commit": "~1.1.2",
     "rc-queue-anim": "^0.11.9",
     "react": "^15.0.2",
-    "react-color": "^2.0.0",
-    "react-color-picker": "^3.1.0",
+    "react-color": "^2.1.0",
     "react-dom": "^15.0.2",
     "react-redux": "^4.4.1",
     "react-router": "^1.0.3",
@@ -86,8 +85,5 @@
   "bugs": {
     "url": "https://github.com/zkboys/webpack-demo/issues"
   },
-  "homepage": "https://github.com/zkboys/webpack-demo#readme",
-  "dependencies": {
-    "react-color-picker": "^3.1.0"
-  }
+  "homepage": "https://github.com/zkboys/webpack-demo#readme"
 }

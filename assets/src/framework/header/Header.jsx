@@ -1,21 +1,19 @@
 import React from 'react';
-import {Badge, Menu, Popconfirm} from 'antd';
+import {Badge, Menu, Popconfirm, message} from 'antd';
 import {Link} from 'react-router';
 import FAIcon from '../../component/faicon/FAIcon';
-import avatar from './86.jpg';
 import Request from '../../common/request';
-import {getCurrentLoginUser} from '../../common/common';
+import {getCurrentLoginUser, getCsrf} from '../../common/common';
 import UserAvatar from '../../component/user-avatar/UserAvatar';
+import TipMessage from '../../common/tip-message';
 class Header extends React.Component {
     handleExit = () => {
-        let csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         Request
             .post('/signout')
-            .send({_csrf: csrf})
+            .send({_csrf: getCsrf()})
             .end((err, res) => {
-                console.log(res);
                 if (err || !res.ok) {
-                    alert('退出登录失败');
+                    message.error(TipMessage.logoutError);
                 } else {
                     location.href = '/signin';
                 }
@@ -26,11 +24,11 @@ class Header extends React.Component {
         const {
             headerLogoWidth,
             headerLogo,
-        } = this.props.style;
+            } = this.props.style;
         const {
             current,
             headMenus, // TODO item.subMenus如果有子菜单，再处理
-        } = this.props.headerNav;
+            } = this.props.headerNav;
 
         let headMenusJsx = [];
         headMenus.forEach((item) => {

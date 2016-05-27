@@ -57,4 +57,4 @@ class Container extends React.Component {
 function mapStateToProps(state) {
     return assign({}, state);
 }
-export default connect(mapStateToProps)(Container)
+export default connect(mapStateToProps)(Container);

@@ -1,7 +1,11 @@
 import menus from '../menus';
 import {hasParent} from '../../common/common';
 
-
+/**
+ * 获取node中第一个含有path节点的path
+ * @param node {object}
+ * @returns {*}
+ */
 function getFirstPath(node) {
     if (node.path) return node.path;
     let firstChild;

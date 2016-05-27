@@ -1,48 +1,51 @@
 import superagent from 'superagent';
-import cookies from './Cookie.js';
+import {getCsrf} from './common';
 
-
-var filter = (req) => {
+const filter = (req) => {
     req.on('response', (res) => {
         if (res.status === 401) {
-            window.location.href = '/singin'
+            window.location.href = '/singin';
         }
     });
 
-    //req.on('request', () => {
+    // req.on('request', () => {
     //    console.log(req);
-    //});
+    // });
 
-    //设置超时
+    // 设置超时
     req.timeout(1000 * 30);
-    //打断
+    // 打断
     req.on('abort', () => {
     });
 
-    //req.on('end', () => {
+    // req.on('end', () => {
     //    console.log('我是end');
     //    req.timeout(Number.MAX_SAFE_INTEGER);
     //    //req.abort(123);
-    //})
+    // })
 };
 export default {
-    get(url){
+    get(url) {
         return superagent
             .get(url)
             .use(filter);
     },
-    post(url){
-        let _csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    post(url) {
         return superagent
             .post(url)
             .use(filter)
-            .send({_csrf});
+            .send({_csrf: getCsrf()});
     },
-    put(url){
-
+    put(url) {
+        return superagent
+            .put(url)
+            .use(filter)
+            .send({_csrf: getCsrf()});
     },
-    delete(){
-
+    delete(url) {
+        return superagent
+            .del(url)
+            .use(filter)
+            .send({_csrf: getCsrf()});
     },
 };
- 

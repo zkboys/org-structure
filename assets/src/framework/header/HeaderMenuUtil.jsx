@@ -1,7 +1,9 @@
 import headMenus from './HeaderMenus';
-/*
- * 获取头部需要设为当前状态的菜单数据.
- * */
+
+/**
+ * 根据url获取对应的头部当行菜单数据
+ * @returns {*}
+ */
 export const getCurrentHeaderMenuByUrl = function () {
     let pathNames = location.pathname.split('/');
     let headerMenuCurrent = null;

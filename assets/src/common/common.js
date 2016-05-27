@@ -1,6 +1,10 @@
 import assign from 'object-assign';
 import Storage from './storage';
 
+export function getCsrf() {
+    return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+}
+
 /**
  * 获取当前登陆用户数据
  * @returns {object}
