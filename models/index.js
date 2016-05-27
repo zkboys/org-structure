@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var config   = require('../config');
 var logger = require('../common/logger')
+var BaseModel = require("./base_model");
 
 mongoose.connect(config.db, {
   server: {poolSize: 20}
@@ -10,6 +11,8 @@ mongoose.connect(config.db, {
     process.exit(1);
   }
 });
+mongoose.plugin(BaseModel);
+
 
 // models
 require('./user');
