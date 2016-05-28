@@ -73,7 +73,7 @@ exports.getUsersByIds = function (ids, callback) {
  * Callback:
  * - err, 数据库异常
  * - users, 用户列表
- * @param {String} query 关键字
+ * @param {Object} query 关键字
  * @param {Object} opt 选项
  * @param {Function} callback 回调函数
  */
@@ -81,8 +81,11 @@ exports.getUsersByQuery = function (query, opt, callback) {
     User.find(query, '', opt, callback);
 };
 
+exports.getUsersCountByQuery = function (query, callback) {
+    User.count(query, callback);
+};
 
-exports.newAndSave = function (name, loginname, pass, salt, email, avatar_url, callback) {
+exports.newAndSave = function (name, loginname, pass, salt, email, avatar_url, mobile, gender, position, org_id, is_locked, callback) {
     var user = new User();
     user.name = name;
     user.loginname = loginname;
@@ -90,6 +93,13 @@ exports.newAndSave = function (name, loginname, pass, salt, email, avatar_url, c
     user.email = email;
     user.avatar = avatar_url;
     user.salt = salt;
+    user.mobile = mobile
+    user.gender = gender
+    user.position = position
+    user.org_id = org_id
+    user.is_locked = is_locked
+
+
     user.save(callback);
 };
 

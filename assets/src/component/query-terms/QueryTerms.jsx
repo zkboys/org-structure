@@ -234,6 +234,11 @@ class QueryTerms extends React.Component {
             itemOptions.onChange && itemOptions.onChange(value);
             options.onChange && options.onChange(this.getFormData());
         };
+        eleProps.onKeyDown = (e) => {
+            if (e.key === 'Enter') {
+                this.handleSubmit();
+            }
+        }
         switch (itemType) {
             case 'input':
             {

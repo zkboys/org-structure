@@ -96,7 +96,7 @@ class BaseComponent extends React.Component {
                         }
                     } else {
                         if (res.type === 'text/html') {
-                            console.error('The url maybe invalid!');
+                            throw Error('The url maybe invalid!');
                         } else {
                             let result;
                             let results;

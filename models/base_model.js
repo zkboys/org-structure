@@ -6,7 +6,6 @@ var tools = require('../common/tools');
 
 module.exports = function (schema) {
     schema.add({
-        id: {type: String, default: this._id},
         is_deleted: {type: Boolean, default: false},
         create_at: {type: Date, default: Date.now},
         update_at: {type: Date, default: Date.now},

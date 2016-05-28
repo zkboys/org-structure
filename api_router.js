@@ -10,6 +10,7 @@ var limit             = require('./middlewares/limit');
 
 var menu = require('./api/menu');
 var organization = require('./api/organization');
+var user = require('./api/user');
 
 var config            = require('./config');
 
@@ -20,10 +21,10 @@ router.post('/system/menus', menu.updateAllMenus);  // 修改所有菜单
 
 router.get('/organization/organizations', organization.getAllOrganizations);
 router.post('/organization/organizations', organization.updateAllOrganizations);
-router.post('/organization/users', organization.updateAllOrganizations);
 
-
-
+router.get('/organization/users', user.getAllUsersByPage);
+router.post('/organization/users', user.addAndSave);
+router.get('/organization/users/loginname/:loginname', user.getUserByLoinName);
 
 // 主题
 router.get('/topics', topicController.index);
