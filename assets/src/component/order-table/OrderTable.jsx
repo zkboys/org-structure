@@ -54,45 +54,51 @@ class OrderTable extends React.Component {
             }
         });
         return (
-            <div className="ant-table order-table">
-                <table>
-                    <thead>
-                    <tr>
-                        {head.map((v, i, a)=> {
-                            return <th key={v.key}>{v.title}</th>
-                        })}
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {data.map((v, i, a)=> {
-                        return [
-                            <tr className="blank-row">
-                                <td colSpan={subHeadColSpan}>&nbsp;</td>
-                            </tr>,
-                            <tr className="sub-head">
-                                <td colSpan={subHeadColSpan}>
-                                    {subHead.map((vv, ii, aa)=> {
+            <div>
+                <div className="ant-table order-table">
+                    <table>
+                        <thead>
+                        <tr>
+                            {head.map((v, i, a)=> {
+                                return <th key={v.key}>{v.title}</th>
+                            })}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {data.map((v, i, a)=> {
+                            return [
+                                <tr className="blank-row">
+                                    <td colSpan={subHeadColSpan}>&nbsp;</td>
+                                </tr>,
+                                <tr className="sub-head">
+                                    <td colSpan={subHeadColSpan}>
+                                        {subHead.map((vv, ii, aa)=> {
+                                            return (
+                                                <div key={i+'-'+ii} style={{width:100/aa.length +'%'}}>{vv.title}：{this.getValue(v, i, vv)}</div>
+                                            )
+                                        })}
+                                    </td>
+                                </tr>,
+                                <tr>
+                                    {head.map((vv, ii, aa)=> {
                                         return (
-                                            <div key={i+'-'+ii} style={{width:100/aa.length +'%'}}>{vv.title}：{this.getValue(v, i, vv)}</div>
-                                        )
+                                            <td key={i + '-' + ii}>
+                                                <div>
+                                                    {this.getValue(v, i, vv)}
+                                                </div>
+                                            </td>
+                                        );
                                     })}
-                                </td>
-                            </tr>,
-                            <tr>
-                                {head.map((vv, ii, aa)=> {
-                                    return (
-                                        <td key={i+'-'+ii} >
-                                            <div>
-                                                {this.getValue(v, i, vv)}
-                                            </div>
-                                        </td>
-                                    );
-                                })}
-                            </tr>
-                        ]
-                    })}
-                    </tbody>
-                </table>
+                                </tr>,
+                            ];
+                        })}
+                        </tbody>
+                    </table>
+                </div>
+                <div className="ant-table-placeholder" style={{position: 'static', display: ((data && data.length) ? 'none' : 'block')}}>
+                    <i className=" anticon anticon-frown"/>
+                    暂无数据
+                </div>
             </div>
         );
     };

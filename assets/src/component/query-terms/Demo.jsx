@@ -100,6 +100,17 @@ class Demo extends React.Component {
                         'xx.com',
                     ],
                 },
+                [
+                    {
+                        type: 'month',
+                        name: 'monthName',
+                        label: '月份',
+                        searchOnChange: true,
+                        // fieldWidth: '300px',
+                        // defaultValue: new Date(), // 这样也可以
+                        defaultValue: '2016-05-08',
+                    },
+                ],
 
                 [
                     {

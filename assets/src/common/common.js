@@ -10,7 +10,8 @@ export function getCsrf() {
  * @returns {object}
  */
 export function getCurrentLoginUser() {
-    return Storage.session.get('currentLoginUser');
+    const currentLoginUser = Storage.session.get('currentLoginUser');
+    return currentLoginUser;
 }
 
 /**

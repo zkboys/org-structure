@@ -6,6 +6,7 @@ var tools = require('../common/tools');
 
 module.exports = function (schema) {
     schema.add({
+        id: {type: String, default: this._id},
         is_deleted: {type: Boolean, default: false},
         create_at: {type: Date, default: Date.now},
         update_at: {type: Date, default: Date.now},
@@ -13,7 +14,6 @@ module.exports = function (schema) {
     schema.methods.create_at_ago = function () {// 查询结果，每条数据就会带有这个方法。
         return tools.formatDate(this.create_at, true);
     };
-
     schema.methods.update_at_ago = function () {
         return tools.formatDate(this.update_at, true);
     };

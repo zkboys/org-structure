@@ -50,11 +50,12 @@ class QueryTerms extends React.Component {
             timeArea: 'HH:mm',
             dateTime: 'yyyy-MM-dd HH:mm',
             dateTimeArea: 'yyyy-MM-dd HH:mm',
+            month: 'yyyy-MM',
         };
         itemOptions.format = itemOptions.format || format[type];
 
         // 日期相关的默认值，如果时string，转为date，方便处理
-        if (['date', 'time', 'dateTime'].includes(type)) {
+        if (['date', 'time', 'dateTime', 'month'].includes(type)) {
             if (typeof defaultValue === 'string') {
                 defaultValue = this.stringToDate(defaultValue, format[type]);
             }
@@ -392,9 +393,13 @@ class QueryTerms extends React.Component {
             case 'date':
             case 'dateTime':
             case 'time':
+            case 'month':
             {
                 let format = itemOptions.format;
                 let Element = DatePicker;
+                if (itemType === 'month') {
+                    Element = DatePicker.MonthPicker;
+                }
                 if (itemType === 'time') {
                     Element = TimePicker;
                 }
@@ -439,12 +444,19 @@ class QueryTerms extends React.Component {
                     </Col>
                 )
             }
+            case 'tabsCard':
             case 'tabs':
             {
+                let props = {};
+                // 统一tab样式
+                /*if(itemType === 'tabsCard'){
+                 props.type = 'card';
+                 }*/
                 return (
                     <Tabs
                         onChange={eleProps.onChange}
                         defaultActiveKey={itemOptions.defaultValue}
+                        {...props}
                     >
                         {itemOptions.options.map((v, i)=> {
                             return (
@@ -453,24 +465,6 @@ class QueryTerms extends React.Component {
                         })}
                     </Tabs>
                 )
-
-            }
-            case 'tabsCard':
-            {
-                return (
-                    <Tabs
-                        onChange={eleProps.onChange}
-                        defaultActiveKey={itemOptions.defaultValue}
-                        type="card"
-                    >
-                        {itemOptions.options.map((v, i)=> {
-                            return (
-                                <TabPane tab={v.label} key={v.value}/>
-                            )
-                        })}
-                    </Tabs>
-                )
-
             }
             case 'customer':
             {
