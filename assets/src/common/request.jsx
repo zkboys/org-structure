@@ -42,7 +42,7 @@ export default {
             .use(filter)
             .send({_csrf: getCsrf()});
     },
-    delete(url) {
+    del(url) {
         return superagent
             .del(url)
             .use(filter)

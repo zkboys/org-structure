@@ -22,7 +22,7 @@ class SystemMenu extends BaseComponent {
 
     componentDidMount() {
         this.request()
-            .get('/api/system/menus')
+            .get('/system/menus')
             .success((data) => {
                 let defaultMenu = {
                     key: 'super',
@@ -158,7 +158,7 @@ class SystemMenu extends BaseComponent {
         });
         loop(data);
         this.request()
-            .post('/api/system/menus')
+            .post('/system/menus')
             .params({menus: painData})
             .success((/* data, res */) => {
                 message.success('保存成功');

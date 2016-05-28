@@ -47,17 +47,13 @@ class BaseComponent extends React.Component {
                 this.type = 'put';
                 return this;
             },
-            delete(url) {
+            del(url) {
                 this.url = url;
                 this.type = 'delete';
                 return this;
             },
             params(params) {
                 this.paramsData = params;
-                return this;
-            },
-            noMchId() {
-                this.withNoMchId = true;
                 return this;
             },
             noLoading() {
@@ -84,6 +80,9 @@ class BaseComponent extends React.Component {
                 if (!this.url) {
                     console.error('request need a url!');
                     return this;
+                }
+                if (this.url.indexOf('/api') !== 0) {
+                    this.url = `/api${this.url}`
                 }
 
                 // ajax结束回调函数
@@ -130,22 +129,22 @@ class BaseComponent extends React.Component {
                 }
                 if (this.type === 'get') {
                     Request
-                        .get(this.url, this.withNoMchId)
+                        .get(this.url)
                         .query(this.paramsData)
                         .end(endCb);
                 } else if (this.type === 'put') {
                     Request
-                        .put(this.url, this.withNoMchId)
+                        .put(this.url)
                         .send(this.paramsData)
                         .end(endCb);
                 } else if (this.type === 'delete') {
                     Request
-                        .delete(this.url, this.withNoMchId)
+                        .del(this.url)
                         .send(this.paramsData)
                         .end(endCb);
                 } else {
                     Request
-                        .post(this.url, this.withNoMchId)
+                        .post(this.url)
                         .send(this.paramsData)
                         .end(endCb);
                 }

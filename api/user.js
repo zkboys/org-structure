@@ -49,6 +49,21 @@ exports.getUserByLoinName = function (req, res, next) {
         })
     });
 };
+
+exports.delete = function (req, res, next) {
+    var id = req.body.id;
+    User.delete(id, function (err, docs){
+        if (err) {
+            res.status(422);
+            return res.send({message: '删除失败'});
+        }
+        res.send({
+            success: true,
+            result: {},
+        })
+    });
+};
+
 exports.addAndSave = function (req, res, next) {
     function error(msg) {
         res.status(422);

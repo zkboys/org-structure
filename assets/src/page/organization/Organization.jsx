@@ -22,7 +22,7 @@ class Organization extends BaseComponent {
 
     componentDidMount() {
         this.request()
-            .get('/api/organization/organizations')
+            .get('/organization/organizations')
             .success((data) => {
                 if (data && data.length) {
                     let organizations = data.map(v => {
@@ -151,7 +151,7 @@ class Organization extends BaseComponent {
         loop(data);
         console.log(painData);
         this.request()
-            .post('/api/organization/organizations')
+            .post('/organization/organizations')
             .params({organizations: painData})
             .success((/* data, res */) => {
                 message.success('保存成功');

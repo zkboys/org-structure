@@ -39,7 +39,7 @@ class UserEdit extends BaseComponent {
 
     componentWillMount() {
         this.request()
-            .get('/api/organization/organizations')
+            .get('/organization/organizations')
             .success((data) => {
                 if (data && data.length) {
                     let organizations = data.map(v => {
@@ -82,7 +82,7 @@ class UserEdit extends BaseComponent {
                 return;
             }
             this.request()
-                .post('/api/organization/users')
+                .post('/organization/users')
                 .params(values)
                 .success((data, res) => {
                     message.success('保存成功！');

@@ -4,14 +4,11 @@ import QueryTerms from '../../component/query-terms/QueryTerms';
 import PaginationComponent from '../../component/pagination/PaginationComponent';
 import Page from '../../framework/page/Page';
 import BaseComponent from '../../component/BaseComponent';
-import {Table, Button, Modal, Form, Input, Radio, Icon, TreeSelect} from 'antd';
-import ValidationRule from '../../common/validation-rule';
-import {convertToTree} from '../../common/common';
+import {Table, Button, Modal, Form, message} from 'antd';
 import UserEdit from './UserEdit';
 
 const createForm = Form.create;
-const FormItem = Form.Item;
-const RadioGroup = Radio.Group;
+const confirm = Modal.confirm;
 
 class UserList extends BaseComponent {
     state = {
@@ -125,10 +122,10 @@ class UserList extends BaseComponent {
         {
             title: '操作',
             key: 'operator',
-            render(text, record) {
+            render: (text, record) => {
                 return (
                     <div>
-                        <a href="#">编辑</a> | <a href="#">删除</a> | <a href="#">锁定</a>
+                        <a href="#">编辑</a> | <a href="#" onClick={(e) =>this.handleDelete(record._id)}>删除</a> | <a href="#">锁定</a>
                     </div>
                 );
             },
@@ -138,7 +135,7 @@ class UserList extends BaseComponent {
     componentWillMount() {
         this.handleSearch(this.state.queryData);
         this.request()
-            .get('/api/organization/organizations')
+            .get('/organization/organizations')
             .success((data) => {
                 if (data && data.length) {
                     this.setState({
@@ -149,13 +146,13 @@ class UserList extends BaseComponent {
             .end();
     }
 
-    handleSearch = (queryData) => {
+    handleSearch = (queryData = this.state.queryData) => {
         this.hideAddModal();
         queryData.size = queryData.pageSize;
         queryData.offset = (queryData.currentPage - 1) * queryData.pageSize;
         console.log(queryData);
         this.request()
-            .get('/api/organization/users')
+            .get('/organization/users')
             .params(queryData)
             .success((data, res) => {
                 console.log(data, res);
@@ -186,6 +183,25 @@ class UserList extends BaseComponent {
     }
     handleAdd = () => {
         this.showAddModal();
+    }
+
+    handleDelete = (id) => {
+        confirm({
+            title: '您确定要删除此人员？',
+            content: '',
+            onOk: () => {
+                this.request()
+                    .del('/organization/users')
+                    .params({id})
+                    .success((data, res) => {
+                        message.success('删除成功！');
+                        this.handleSearch();
+                    })
+                    .end();
+            },
+            onCancel() {
+            },
+        });
     }
 
     render() {

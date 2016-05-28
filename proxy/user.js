@@ -78,12 +78,26 @@ exports.getUsersByIds = function (ids, callback) {
  * @param {Function} callback 回调函数
  */
 exports.getUsersByQuery = function (query, opt, callback) {
+    if (query.is_deleted === undefined) {
+        query.is_deleted = false;
+    }
     User.find(query, '', opt, callback);
 };
 
 exports.getUsersCountByQuery = function (query, callback) {
+    if (query.is_deleted === undefined) {
+        query.is_deleted = false;
+    }
     User.count(query, callback);
 };
+/**
+ * 逻辑删除用户
+ * @param id {String}
+ * @param callback {Function}
+ */
+exports.delete = function (id, callback) {
+    User.findOneAndUpdate({_id: id}, {is_deleted: true}, callback)
+}
 
 exports.newAndSave = function (name, loginname, pass, salt, email, avatar_url, mobile, gender, position, org_id, is_locked, callback) {
     var user = new User();
@@ -103,11 +117,3 @@ exports.newAndSave = function (name, loginname, pass, salt, email, avatar_url, m
     user.save(callback);
 };
 
-var makeGravatar = function (email) {
-    return 'http://www.gravatar.com/avatar/' + utility.md5(email.toLowerCase()) + '?size=48';
-};
-exports.makeGravatar = makeGravatar;
-
-exports.getGravatar = function (user) {
-    return user.avatar || makeGravatar(user);
-};

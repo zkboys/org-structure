@@ -21,9 +21,10 @@ router.post('/system/menus', menu.updateAllMenus);  // 修改所有菜单
 
 router.get('/organization/organizations', organization.getAllOrganizations);
 router.post('/organization/organizations', organization.updateAllOrganizations);
-
+// 用户
 router.get('/organization/users', user.getAllUsersByPage);
 router.post('/organization/users', user.addAndSave);
+router.delete('/organization/users', user.delete);
 router.get('/organization/users/loginname/:loginname', user.getUserByLoinName);
 
 // 主题
