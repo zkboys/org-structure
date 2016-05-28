@@ -8,6 +8,14 @@ export default[
         },
     },
     {
+        path: '/organization/organizations',
+        getComponent: (location, cb) => {
+            require.ensure([], (require) => {
+                cb(null, require('./organization/Organization.jsx'));
+            });
+        },
+    },
+    {
         path: '/shop/list-page-new',
         getComponent: (location, cb) => {
             require.ensure([], (require) => {

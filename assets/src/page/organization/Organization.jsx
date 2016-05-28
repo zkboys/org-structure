@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Form, Input, Tree, Row, Col, Alert, Modal, message} from 'antd';
+import {Button, Form, Input, Tree, Row, Col, Modal, message} from 'antd';
 import BaseComponent from '../../component/BaseComponent';
 import Page from '../../framework/page/Page';
 import {convertToTree} from '../../common/common';
@@ -9,38 +9,31 @@ const TreeNode = Tree.TreeNode;
 const createForm = Form.create;
 const FormItem = Form.Item;
 
-class SystemMenu extends BaseComponent {
+class Organization extends BaseComponent {
     state = {
         showModal: false,
-        menus: [],
+        organizations: [],
         gData: [],
-        disableEditPath: false,
+        disableEditRemark: false,
         disableEditKey: true,
         expandedKeys: [],
-        isAddTopMenu: false,
+        isAddTopOrg: false,
     };
 
     componentDidMount() {
         this.request()
-            .get('/menus')
+            .get('/organizations')
             .success((data) => {
-                let defaultMenu = {
-                    key: 'super',
-                    parentKey: undefined,
-                    text: '未设置',
-                    icon: '',
-                    path: '',
-                    order: 1,
-                };
-                let menus = [defaultMenu];
                 if (data && data.length) {
-                    menus = data;
+                    let organizations = data.map(v => {
+                        v.text = v.name;
+                        return v;
+                    });
+                    this.setState({
+                        organizations,
+                        gData: convertToTree(organizations),
+                    });
                 }
-                // menus = require('../../framework/menus.back.js');
-                this.setState({
-                    menus,
-                    gData: convertToTree(menus),
-                });
             })
             .end();
     }
@@ -95,6 +88,7 @@ class SystemMenu extends BaseComponent {
         });
     };
     handleTreeNodeClick = (selectedKeys) => {
+        console.log(selectedKey);
         let data = [...this.state.gData];
         let selectedKey = selectedKeys[0];
         let selectNodeData;
@@ -105,13 +99,13 @@ class SystemMenu extends BaseComponent {
         console.log(selectNodeData);
         const {setFieldsValue} = this.props.form;
         this.setState({
-            disableEditPath: selectNodeData.children && selectNodeData.children.length && selectNodeData.parentKey,
+            disableEditRemark: selectNodeData.children && selectNodeData.children.length && selectNodeData.parentKey,
         });
         setFieldsValue({
             key: selectNodeData.key,
             text: selectNodeData.text,
-            path: selectNodeData.path,
-            icon: selectNodeData.icon,
+            remark: selectNodeData.remark,
+            description: selectNodeData.description,
         });
     };
     handleRightClick = (e) => {
@@ -121,20 +115,20 @@ class SystemMenu extends BaseComponent {
         e.preventDefault();
         this.props.form.resetFields();
         this.setState({
-            gData: convertToTree(this.state.menus),
+            gData: convertToTree(this.state.organizations),
         });
     };
 
     handleSubmit = (e) => {
         e.preventDefault();
-        this.props.form.validateFields(['key', 'text', 'icon', 'path'], (errors, values) => {
+        this.props.form.validateFields(['key', 'text', 'description', 'remark'], (errors, values) => {
             if (!!errors) {
                 return;
             }
             let data = [...this.state.gData];
             this.findNodeByKey(data, values.key, (item) => {
-                item.path = values.path;
-                item.icon = values.icon;
+                item.remark = values.remark;
+                item.description = values.description;
                 item.text = values.text;
             });
             this.setState({
@@ -149,10 +143,9 @@ class SystemMenu extends BaseComponent {
             painData.push({
                 key: item.key,
                 parentKey: item.parentKey,
-                text: item.text,
-                icon: item.icon,
-                path: item.path,
-                order: item.order,
+                name: item.text,
+                description: item.description,
+                remark: item.remark,
             });
             if (item.children && item.children.length) {
                 loop(item.children);
@@ -160,12 +153,12 @@ class SystemMenu extends BaseComponent {
         });
         loop(data);
         this.request()
-            .post('/menus')
-            .params({menus: painData})
+            .post('/organizations')
+            .params({organizations: painData})
             .success((/* data, res */) => {
                 message.success('保存成功');
                 this.setState({
-                    menus: painData,
+                    organizations: painData,
                 });
             })
             .end();
@@ -194,52 +187,51 @@ class SystemMenu extends BaseComponent {
             this.props.form.resetFields();
         });
     };
+    handleAddTopOrg = () => {
+        const {setFieldsValue} = this.props.form;
+        setFieldsValue({
+            newText: '',
+            newRemark: '',
+            newDescription: '',
+        });
+        this.setState({
+            isAddTopOrg: true,
+        });
+        this.showModal();
+    };
     handleAddChild = () => {
-        this.props.form.validateFields(['key'], (errors, values) => {
+        this.props.form.validateFields(['key', 'text'], (errors, values) => {
             if (!!errors) {
+                message.info('请先选择一个组织');
                 return;
             }
             const {setFieldsValue} = this.props.form;
             setFieldsValue({
-                newKey: values.key,
                 newText: '',
-                newPath: '',
-                newIcon: '',
+                newRemark: '',
+                newDescription: '',
             });
             this.setState({
-                isAddTopMenu: false,
-            })
+                isAddTopOrg: false,
+            });
             this.showModal();
         });
     };
-    handleAddTopMenu = () => {
-        const {setFieldsValue} = this.props.form;
-        setFieldsValue({
-            newKey: '',
-            newText: '',
-            newPath: '',
-            newIcon: '',
-        });
-        this.setState({
-            isAddTopMenu: true,
-        });
-        this.showModal();
-    }
-    handleAddSubmit = () => {
-        this.props.form.validateFields(['newKey', 'newText', 'newIcon', 'newPath'], (errors, values) => {
+    handleModalOk = () => {
+        this.props.form.validateFields(['newText', 'newDescription', 'newRemark'], (errors, values) => {
             if (!!errors) {
                 return;
             }
             let data = [...this.state.gData];
             let parentKey = this.props.form.getFieldValue('key');
-            let newNode = {
+            const newNode = {
                 parentKey,
-                key: values.newKey,
+                key: String(new Date().getTime()),
                 text: values.newText,
-                icon: values.newIcon,
-                path: values.newPath,
-            }
-            if (this.state.isAddTopMenu) {
+                description: values.newDescription,
+                remark: values.newRemark,
+            };
+            if (this.state.isAddTopOrg) {
                 newNode.parentKey = undefined;
                 data.push(newNode);
             } else {
@@ -250,7 +242,7 @@ class SystemMenu extends BaseComponent {
                     item.children.push(newNode);
                 });
             }
-
+            console.log(data);
             this.setState({
                 gData: data,
             });
@@ -289,7 +281,7 @@ class SystemMenu extends BaseComponent {
                 return (
                     <TreeNode
                         key={item.key}
-                        title={<span><FIcon type={item.icon}/> {item.text}</span>}
+                        title={<span><FIcon type={item.description}/> {item.text}</span>}
                     >
                         {loop(item.children)}
                     </TreeNode>
@@ -298,7 +290,7 @@ class SystemMenu extends BaseComponent {
             return (
                 <TreeNode
                     key={item.key}
-                    title={<span><FIcon type={item.icon}/> {item.text}</span>}
+                    title={<span><FIcon type={item.description}/> {item.text}</span>}
                 />
             );
         });
@@ -309,42 +301,35 @@ class SystemMenu extends BaseComponent {
                 {required: true, message: 'key 不能为空！'},
             ],
         };
-        const newKeyFieldProps = {
-            rules: [
-                {required: true, message: 'key 不能为空！'},
-                {validator: this.nodeExists},
-            ],
-        };
         const textFieldProps = {
             rules: [
                 {required: true, min: 2, message: '标题至少为 2 个字符'},
             ],
         };
-        const iconFieldProps = {
+        const descriptionFieldProps = {
             rules: [
                 // {required: true, min: 5, message: '用户名至少为 5 个字符'},
             ],
         };
-        const pathFieldProps = {
+        const remarkFieldProps = {
             rules: [
                 // {required: true, min: 5, message: '用户名至少为 5 个字符'},
             ],
         };
 
         const keyProps = getFieldProps('key', keyFieldProps);
-        const newKeyProps = getFieldProps('newKey', newKeyFieldProps);
 
         const textProps = getFieldProps('text', textFieldProps);
         const newTextProps = getFieldProps('newText', textFieldProps);
 
-        const iconProps = getFieldProps('icon', iconFieldProps);
-        const newIconProps = getFieldProps('newIcon', iconFieldProps);
+        const descriptionProps = getFieldProps('description', descriptionFieldProps);
+        const newDescriptionProps = getFieldProps('newDescription', descriptionFieldProps);
 
-        const pathProps = getFieldProps('path', pathFieldProps);
-        const newPathProps = getFieldProps('newPath', pathFieldProps);
+        const remarkProps = getFieldProps('remark', remarkFieldProps);
+        const newRemarkProps = getFieldProps('newRemark', remarkFieldProps);
 
-        if (this.state.disableEditPath) {
-            pathProps.disabled = true;
+        if (this.state.disableEditRemark) {
+            remarkProps.disabled = true;
         }
         if (this.state.disableEditKey) {
             keyProps.disabled = true;
@@ -355,13 +340,11 @@ class SystemMenu extends BaseComponent {
         };
         return (
             <Page header={'auto'} loading={this.state.loading}>
-                <Alert message="菜单存在Storage.session中，修改该保存之后，重新登陆会获取最新菜单。 菜单数据的key，唯一不可重复，有可能和权限关联，添加后不可修改。" type="warning" showIcon/>
                 <Row>
-
                     <Col span={12} style={{textAlign: 'right'}}>
                         <div style={{textAlign: 'left', display: 'inline-block'}}>
                             <div style={{marginBottom: '10px'}}>
-                                <Button type="primary" size="large" onClick={this.handleAddTopMenu}>添加顶级菜单</Button>
+                                <Button type="primary" size="large" onClick={this.handleAddTopOrg}>添加顶级组织</Button>
                                 &nbsp;&nbsp;&nbsp;
                                 <Button type="primary" size="large" onClick={this.handleSave}>保存</Button>
                                 &nbsp;&nbsp;&nbsp;
@@ -391,6 +374,7 @@ class SystemMenu extends BaseComponent {
                                 {...formItemLayout}
                                 label="key："
                                 hasFeedback
+                                style={{display: 'none'}}
                             >
                                 <Input
                                     {...keyProps}
@@ -398,12 +382,12 @@ class SystemMenu extends BaseComponent {
                                         keyProps.onChange(e);
                                         this.handleSubmit(e);
                                     }}
-                                    placeholder="菜单数据的key，唯一不可重复。"
+                                    placeholder="唯一不可重复。"
                                 />
                             </FormItem>
                             <FormItem
                                 {...formItemLayout}
-                                label="标题："
+                                label="名称："
                                 hasFeedback
                             >
                                 <Input
@@ -412,80 +396,70 @@ class SystemMenu extends BaseComponent {
                                         textProps.onChange(e);
                                         this.handleSubmit(e);
                                     }}
-                                    placeholder="菜单标题，必填"
+                                    placeholder="请输入组织名称"
                                 />
                             </FormItem>
 
                             <FormItem
                                 {...formItemLayout}
-                                label="图标："
+                                label="描述："
                                 hasFeedback>
                                 <Input
-                                    {...iconProps}
+                                    {...descriptionProps}
                                     onChange={(e) => {
-                                        iconProps.onChange(e);
+                                        descriptionProps.onChange(e);
                                         this.handleSubmit(e);
                                     }}
-                                    placeholder="菜单的icon，选填"
+                                    placeholder="请输入组织描述"
                                 />
                             </FormItem>
 
                             <FormItem
                                 {...formItemLayout}
-                                label="路径："
+                                label="备注："
                                 hasFeedback>
                                 <Input
-                                    {...pathProps}
+                                    {...remarkProps}
                                     onChange={(e) => {
-                                        pathProps.onChange(e);
+                                        remarkProps.onChange(e);
                                         this.handleSubmit(e);
                                     }}
-                                    placeholder="菜单跳转路径"
+                                    placeholder="请输入备注"
                                 />
                             </FormItem>
                         </Form>
                     </Col>
                 </Row>
-                <Modal title="添加子节点" visible={this.state.showModal} onOk={this.handleAddSubmit} onCancel={this.hideModal}>
+                <Modal title="添加子组织" visible={this.state.showModal} onOk={this.handleModalOk} onCancel={this.hideModal}>
                     <Form horizontal form={this.props.form}>
                         <FormItem
                             {...formItemLayout}
-                            label="key："
-                            hasFeedback
-                        >
-                            <Input
-                                {...newKeyProps}
-                                placeholder="唯一不可重复，添加之后不可修改！"
-                            />
-                        </FormItem>
-                        <FormItem
-                            {...formItemLayout}
-                            label="标题："
+                            label="名称："
                             hasFeedback
                         >
                             <Input
                                 {...newTextProps}
-                                placeholder="菜单标题，必填"
+                                placeholder="请输入组织名称"
                             />
                         </FormItem>
 
                         <FormItem
                             {...formItemLayout}
-                            label="图标："
+                            label="描述："
                             hasFeedback>
                             <Input
-                                {...newIconProps}
-                                placeholder="菜单的icon，选填"
+                                {...newDescriptionProps}
+                                placeholder="请输入组织描述"
                             />
                         </FormItem>
 
                         <FormItem
                             {...formItemLayout}
-                            label="路径："
+                            label="备注："
                             hasFeedback>
                             <Input
-                                {...newPathProps}
-                                placeholder="菜单跳转路径"
+                                {...newRemarkProps}
+                                placeholder="请输入备注"
                             />
                         </FormItem>
                     </Form>
@@ -494,4 +468,4 @@ class SystemMenu extends BaseComponent {
         );
     }
 }
-export default createForm()(SystemMenu);
+export default createForm()(Organization);

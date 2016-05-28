@@ -1,7 +1,7 @@
 import React from 'react';
-import Common from '../common/common';
 import {message} from 'antd';
 import Request from '../common/request';
+import TipMessage from '../common/tip-message';
 
 class BaseComponent extends React.Component {
     // 页面上多个请求同时进行，用来记录loading数量
@@ -65,7 +65,7 @@ class BaseComponent extends React.Component {
                 return this;
             },
             setErrorMsg(errorMsg) {
-                this.errorMsg = Common.messageContent[errorMsg];
+                this.errorMsg = TipMessage[errorMsg];
                 return this;
             },
             start(cb) {
@@ -92,7 +92,7 @@ class BaseComponent extends React.Component {
                         if (this.errorCb) {
                             this.errorCb(err, res);
                         } else {
-                            message.error(this.errorMsg || res && res.body && res.body.message || '未知系统错误', 1);
+                            message.error(this.errorMsg || res && res.body && res.body.error || '未知系统错误', 1);
                         }
                     } else {
                         if (res.type === 'text/html') {
@@ -128,7 +128,6 @@ class BaseComponent extends React.Component {
                 if (!this.withNoLoading) {
                     self.startLoading();
                 }
-                console.log('aaaa', this.paramsData);
                 if (this.type === 'get') {
                     Request
                         .get(this.url, this.withNoMchId)
