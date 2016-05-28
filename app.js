@@ -56,7 +56,7 @@ var webRouter = require('./web_router');
 /*
  * apirouter
  * */
-var apiRouterV1 = require('./api_router_v1');
+var apiRouter = require('./api_router');
 
 /*
  * 用户是否登陆，身份验证（是否管理员）等
@@ -241,7 +241,7 @@ app.use(busboy({
         fileSize: bytes(config.file_limit)
     }
 }));
-app.use('/api/v1', cors(), apiRouterV1);
+app.use('/api', cors(), apiRouter);
 app.use('/', webRouter);
 
 

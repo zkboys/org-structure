@@ -7,9 +7,22 @@ var replyController   = require('./api/v1/reply');
 var messageController = require('./api/v1/message');
 var middleware        = require('./api/v1/middleware');
 var limit             = require('./middlewares/limit');
+
+var menu = require('./api/menu');
+var organization = require('./api/organization');
+
 var config            = require('./config');
 
 var router            = express.Router();
+
+router.get('/system/menus', menu.getAllMenus);  // 获取所有菜单数据
+router.post('/system/menus', menu.updateAllMenus);  // 修改所有菜单
+
+router.get('/organization/organizations', organization.getAllOrganizations);
+router.post('/organization/organizations', organization.updateAllOrganizations);
+router.post('/organization/users', organization.updateAllOrganizations);
+
+
 
 
 // 主题

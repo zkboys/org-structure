@@ -22,7 +22,7 @@ class SystemMenu extends BaseComponent {
 
     componentDidMount() {
         this.request()
-            .get('/menus')
+            .get('/api/system/menus')
             .success((data) => {
                 let defaultMenu = {
                     key: 'super',
@@ -80,7 +80,6 @@ class SystemMenu extends BaseComponent {
                 ar = arr;
                 i = index;
             });
-            console.log(dragObj);
             ar.splice(i, 0, dragObj);
         } else {
             this.findNodeByKey(data, dropKey, (item) => {
@@ -102,7 +101,6 @@ class SystemMenu extends BaseComponent {
             selectNodeData = item;
         });
         if (!selectNodeData) return;
-        console.log(selectNodeData);
         const {setFieldsValue} = this.props.form;
         this.setState({
             disableEditPath: selectNodeData.children && selectNodeData.children.length && selectNodeData.parentKey,
@@ -160,7 +158,7 @@ class SystemMenu extends BaseComponent {
         });
         loop(data);
         this.request()
-            .post('/menus')
+            .post('/api/system/menus')
             .params({menus: painData})
             .success((/* data, res */) => {
                 message.success('保存成功');

@@ -22,7 +22,7 @@ class Organization extends BaseComponent {
 
     componentDidMount() {
         this.request()
-            .get('/organizations')
+            .get('/api/organization/organizations')
             .success((data) => {
                 if (data && data.length) {
                     let organizations = data.map(v => {
@@ -73,7 +73,6 @@ class Organization extends BaseComponent {
                 ar = arr;
                 i = index;
             });
-            console.log(dragObj);
             ar.splice(i, 0, dragObj);
         } else {
             this.findNodeByKey(data, dropKey, (item) => {
@@ -88,7 +87,6 @@ class Organization extends BaseComponent {
         });
     };
     handleTreeNodeClick = (selectedKeys) => {
-        console.log(selectedKey);
         let data = [...this.state.gData];
         let selectedKey = selectedKeys[0];
         let selectNodeData;
@@ -96,7 +94,6 @@ class Organization extends BaseComponent {
             selectNodeData = item;
         });
         if (!selectNodeData) return;
-        console.log(selectNodeData);
         const {setFieldsValue} = this.props.form;
         this.setState({
             disableEditRemark: selectNodeData.children && selectNodeData.children.length && selectNodeData.parentKey,
@@ -152,8 +149,9 @@ class Organization extends BaseComponent {
             }
         });
         loop(data);
+        console.log(painData);
         this.request()
-            .post('/organizations')
+            .post('/api/organization/organizations')
             .params({organizations: painData})
             .success((/* data, res */) => {
                 message.success('保存成功');
@@ -242,7 +240,6 @@ class Organization extends BaseComponent {
                     item.children.push(newNode);
                 });
             }
-            console.log(data);
             this.setState({
                 gData: data,
             });

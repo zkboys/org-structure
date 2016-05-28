@@ -24,8 +24,6 @@ var search = require('./controllers/search');
 var passport = require('passport');
 var configMiddleware = require('./middlewares/conf');
 var config = require('./config');
-var menu = require('./controllers/menu');
-var organization = require('./controllers/organization');
 var router = express.Router();
 
 // home page
@@ -43,11 +41,6 @@ if (config.allow_sign_up) {
     router.get('/signup', configMiddleware.github, passport.authenticate('github'));  // 进行github验证
 }
 
-router.get('/menus', menu.getAllMenus);  // 获取所有菜单数据
-router.post('/menus', menu.updateAllMenus);  // 修改所有菜单
-
-router.get('/organizations', organization.getAllOrganizations);
-router.post('/organizations', organization.updateAllOrganizations);
 
 router.post('/signout', sign.signout);  // 登出
 router.get('/signin', sign.showLogin);  // 进入登录页面

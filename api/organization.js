@@ -1,4 +1,4 @@
-var Organization = require('../proxy').Organization;
+var Organization = require('../proxy/index').Organization;
 exports.getAllOrganizations = function (req, res, next) {
     Organization.getAllOrganizations(function (err, organizations) {
         if (err) {

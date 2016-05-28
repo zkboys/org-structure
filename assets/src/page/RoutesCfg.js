@@ -1,17 +1,17 @@
 export default[
     {
-        path: '/system/menu',
-        getComponent: (location, cb) => {
-            require.ensure([], (require) => {
-                cb(null, require('./menu/SystemMenu.jsx'));
-            });
-        },
-    },
-    {
         path: '/organization/organizations',
         getComponent: (location, cb) => {
             require.ensure([], (require) => {
                 cb(null, require('./organization/Organization.jsx'));
+            });
+        },
+    },
+    {
+        path: '/organization/users',
+        getComponent: (location, cb) => {
+            require.ensure([], (require) => {
+                cb(null, require('./user/UserList.jsx'));
             });
         },
     },
@@ -23,7 +23,14 @@ export default[
             });
         },
     },
-
+    {
+        path: '/system/menu',
+        getComponent: (location, cb) => {
+            require.ensure([], (require) => {
+                cb(null, require('./menu/SystemMenu.jsx'));
+            });
+        },
+    },
     {
         path: '/shop/query-terms',
         getComponent: (location, cb) => {

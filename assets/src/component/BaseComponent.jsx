@@ -1,26 +1,27 @@
-import React from "react";
-import Common from "../common/common.jsx";
-import {message} from "antd";
-import request from '../common/request/request';
+import React from 'react';
+import {message} from 'antd';
+import Request from '../common/request';
+import TipMessage from '../common/tip-message';
+
 class BaseComponent extends React.Component {
     // 页面上多个请求同时进行，用来记录loading数量
     loadings = 0;
-    startLoading = ()=> {
+    startLoading = () => {
         this.setState({
-            loading: true
+            loading: true,
         });
         this.loadings++;
     };
-    endLoading = ()=> {
+    endLoading = () => {
         this.loadings--;
         if (this.loadings === 0) {
             this.setState({
-                loading: false
+                loading: false,
             });
         }
     };
-    request = ()=> {
-        let _this = this;
+    request = () => {
+        let self = this;
         return {
             url: null,
             withNoMchId: false,
@@ -31,12 +32,12 @@ class BaseComponent extends React.Component {
             startCb: null,
             errorCb: null,
             successCb: null,
-            get(url){
+            get(url) {
                 this.url = url;
                 this.type = 'get';
                 return this;
             },
-            post(url){
+            post(url) {
                 this.url = url;
                 this.type = 'post';
                 return this;
@@ -51,47 +52,47 @@ class BaseComponent extends React.Component {
                 this.type = 'delete';
                 return this;
             },
-            params(params){
+            params(params) {
                 this.paramsData = params;
                 return this;
             },
-            noMchId(){
+            noMchId() {
                 this.withNoMchId = true;
                 return this;
             },
-            noLoading(){
+            noLoading() {
                 this.withNoLoading = true;
                 return this;
             },
-            setErrorMsg(errorMsg){
-                this.errorMsg = Common.messageContent[errorMsg];
+            setErrorMsg(errorMsg) {
+                this.errorMsg = TipMessage[errorMsg];
                 return this;
             },
-            start(cb){
+            start(cb) {
                 this.startCb = cb;
                 return this;
             },
-            error(cb){
+            error(cb) {
                 this.errorCb = cb;
                 return this;
             },
-            success(cb){
+            success(cb) {
                 this.successCb = cb;
                 return this;
             },
-            end(cb){
+            end(cb) {
                 if (!this.url) {
                     console.error('request need a url!');
                     return this;
                 }
 
                 // ajax结束回调函数
-                let endCb = (err, res)=> {
+                let endCb = (err, res) => {
                     if (err || !res.ok) {
                         if (this.errorCb) {
                             this.errorCb(err, res);
                         } else {
-                            message.error(this.errorMsg || res.body && res.body.message || '未知系统错误', 1);
+                            message.error(this.errorMsg || res && res.body && res.body.message || '未知系统错误', 1);
                         }
                     } else {
                         if (res.type === 'text/html') {
@@ -103,66 +104,71 @@ class BaseComponent extends React.Component {
                                 results = res.body.results;
                                 result = res.body.result;
                             }
-                            this.successCb && this.successCb(result || results || res.body || res, res);
+                            if (this.successCb) {
+                                this.successCb(result || results || res.body || res, res);
+                            }
                         }
                     }
                     if (!this.withNoLoading) {
-                        _this.endLoading();
+                        self.endLoading();
                     }
 
-                    //所有处理完成之后的操作
-                    cb && cb(err, res);
+                    // 所有处理完成之后的操作
+                    if (cb) {
+                        cb(err, res);
+                    }
                 };
 
-                //ajax开始之前的一些自定义操作
-                this.startCb && this.startCb();
+                // ajax开始之前的一些自定义操作
 
-                if (!this.withNoLoading) {
-                    _this.startLoading();
+                if (this.startCb) {
+                    this.startCb();
                 }
 
+                if (!this.withNoLoading) {
+                    self.startLoading();
+                }
                 if (this.type === 'get') {
-                    request
+                    Request
                         .get(this.url, this.withNoMchId)
                         .query(this.paramsData)
                         .end(endCb);
                 } else if (this.type === 'put') {
-                    request
+                    Request
                         .put(this.url, this.withNoMchId)
-                        .query(this.paramsData)
+                        .send(this.paramsData)
                         .end(endCb);
                 } else if (this.type === 'delete') {
-                    request
+                    Request
                         .delete(this.url, this.withNoMchId)
-                        .query(this.paramsData)
+                        .send(this.paramsData)
                         .end(endCb);
                 } else {
-                    request
+                    Request
                         .post(this.url, this.withNoMchId)
-                        .query(this.paramsData)
+                        .send(this.paramsData)
                         .end(endCb);
                 }
-
                 return this;
             },
-        }
+        };
     };
-    exportFile = (url, params)=> {
+    exportFile = (url, params) => {
         let urlParams = [];
-        for (let p in params) {
+        for (let p of Object.keys(params)) {
             let key = p;
             let value = params[p];
             if (value !== undefined && value !== null && value !== '') {
                 urlParams.push({
                     key,
-                    value
+                    value,
                 });
             }
         }
         let exportForm = document.createElement('form');
         exportForm.method = 'get';
         exportForm.action = url;
-        urlParams.forEach((v)=>{
+        urlParams.forEach((v) => {
             let input = document.createElement('input');
             input.type = 'text';
             input.name = v.key;
