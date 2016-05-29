@@ -72,9 +72,8 @@ exports.addAndSave = function (req, res, next) {
     if (!tools.validateId(loginname)) {
         return error('登录名不合法。');
     }
+
     // END 验证信息的正确性
-
-
     User.getUserByLoginName(loginname, function (err, user) {
         if (err) {
             return error(err);
