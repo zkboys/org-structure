@@ -20,9 +20,10 @@ router.post('/organization/organizations', organization.updateAllOrganizations);
 
 // 用户
 router.get('/organization/users', user.getAllUsersByPage);
+router.get('/organization/users/loginname/:loginname', user.getUserByLoinName);
 router.post('/organization/users', user.addAndSave);
 router.delete('/organization/users', user.delete);
-router.get('/organization/users/loginname/:loginname', user.getUserByLoinName);
+router.put('/organization/users/toggle_lock', user.toggleLock);
 
 
 module.exports = router;

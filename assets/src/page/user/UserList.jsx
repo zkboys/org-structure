@@ -4,7 +4,7 @@ import QueryTerms from '../../component/query-terms/QueryTerms';
 import PaginationComponent from '../../component/pagination/PaginationComponent';
 import Page from '../../framework/page/Page';
 import BaseComponent from '../../component/BaseComponent';
-import {Table, Button, Modal, Form, message} from 'antd';
+import {Table, Button, Modal, Form, message, Icon} from 'antd';
 import UserEdit from './UserEdit';
 
 const createForm = Form.create;
@@ -20,6 +20,8 @@ class UserList extends BaseComponent {
         totalCount: 0,
         tableData: [],
         showAddModal: false,
+        isToggleLockingId: null,
+        isDeletingId: null,
     };
     queryOptions = {
         showSearchBtn: true,
@@ -123,9 +125,22 @@ class UserList extends BaseComponent {
             title: '操作',
             key: 'operator',
             render: (text, record) => {
+                const id = record._id;
+                const isLocked = record.is_locked;
+                const dealing = <span style={{padding: '0px 6px'}}><Icon type="loading"/></span>;
+                let isLockedText = isLocked ? '解锁' : '锁定';
+                if (this.state.isToggleLockingId === id) {
+                    isLockedText = dealing;
+                }
+                let deleteText = this.state.isDeletingId === id ? dealing : '删除';
+
                 return (
                     <div>
-                        <a href="#">编辑</a> | <a href="#" onClick={(e) =>this.handleDelete(record._id)}>删除</a> | <a href="#">锁定</a>
+                        <a href="#">编辑</a>
+                        <span className="ant-divider"/>
+                        <a href="#" onClick={() => this.handleDelete(id)}>{deleteText}</a>
+                        <span className="ant-divider"/>
+                        <a href="#" onClick={() => this.handleToggleLock(id, isLocked)}>{isLockedText}</a>
                     </div>
                 );
             },
@@ -185,10 +200,16 @@ class UserList extends BaseComponent {
     }
 
     handleDelete = (id) => {
+        if (this.state.isDeletingId) {
+            return;
+        }
         confirm({
             title: '您确定要删除此人员？',
             content: '',
             onOk: () => {
+                this.setState({
+                    isDeletingId: id,
+                });
                 this.request()
                     .del('/organization/users')
                     .params({id})
@@ -196,11 +217,44 @@ class UserList extends BaseComponent {
                         message.success('删除成功！');
                         this.handleSearch();
                     })
-                    .end();
+                    .end(() => {
+                        this.setState({
+                            isDeletingId: null,
+                        });
+                    });
             },
             onCancel() {
             },
         });
+    }
+
+    handleToggleLock = (id, isLocked) => {
+        if (this.state.isToggleLockingId) {
+            return;
+        }
+        this.setState({
+            isToggleLockingId: id,
+        });
+        this.request()
+            .put('/organization/users/toggle_lock')
+            .params({id, isLocked})
+            .success((data, res) => {
+                let tableData = this.state.tableData.map(v => assign({}, v));
+                for (let d of tableData) {
+                    if (d._id === id) {
+                        d.is_locked = !isLocked;
+                        break;
+                    }
+                }
+                this.setState({
+                    tableData,
+                });
+            })
+            .end(() => {
+                this.setState({
+                    isToggleLockingId: null,
+                });
+            });
     }
 
     render() {
@@ -232,7 +286,12 @@ class UserList extends BaseComponent {
                     pagination={false}
                 />
                 <PaginationComponent options={paginationOptions}/>
-                <UserEdit show={this.state.showAddModal} showModal={this.showAddModal} hideModal={this.hideAddModal}/>
+                <UserEdit
+                    show={this.state.showAddModal}
+                    showModal={this.showAddModal}
+                    hideModal={this.hideAddModal}
+                    search={this.handleSearch}
+                />
             </Page>
         );
     }

@@ -99,6 +99,23 @@ exports.delete = function (id, callback) {
     User.findOneAndUpdate({_id: id}, {is_deleted: true}, callback)
 }
 
+/**
+ * 锁定用户
+ * @param id {String}
+ * @param callback {Function}
+ */
+exports.lock = function (id, callback) {
+    User.findOneAndUpdate({_id: id}, {is_locked: true}, callback)
+}
+/**
+ * 解锁用户
+ * @param id {String}
+ * @param callback {Function}
+ */
+exports.unlock = function (id, callback) {
+    User.findOneAndUpdate({_id: id}, {is_locked: false}, callback)
+}
+
 exports.newAndSave = function (user, callback) {
     new User(user).save(callback);
 };

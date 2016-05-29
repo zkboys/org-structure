@@ -50,6 +50,26 @@ exports.delete = function (req, res, next) {
     });
 };
 
+exports.toggleLock = function (req, res, next) {
+    var id = req.body.id;
+    var isLocked = req.body.isLocked;
+    if (isLocked) {
+        User.unlock(id, function (err, docs) {
+            if (err) {
+                return res.sendError(err, '解锁用户失败！', 422);
+            }
+            res.send({})
+        });
+    } else {
+        User.lock(id, function (err, docs) {
+            if (err) {
+                return res.sendError(err, '锁定用户失败！', 422);
+            }
+            res.send({})
+        });
+    }
+};
+
 exports.addAndSave = function (req, res, next) {
     function error(msg) {
         res.sendError('', msg);

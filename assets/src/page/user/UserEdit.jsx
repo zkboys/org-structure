@@ -10,24 +10,8 @@ const RadioGroup = Radio.Group;
 
 class UserEdit extends BaseComponent {
     state = {
-        orgData: [{
-            label: '节点一',
-            value: '0-0',
-            key: '0-0',
-            children: [{
-                label: '子节点一',
-                value: '0-0-1',
-                key: '0-0-1',
-            }, {
-                label: '子节点二',
-                value: '0-0-2',
-                key: '0-0-2',
-            }],
-        }, {
-            label: '节点二',
-            value: '0-1',
-            key: '0-1',
-        }],
+        isSaving: false,
+        orgData: [],
     };
 
     componentWillMount() {
@@ -64,19 +48,33 @@ class UserEdit extends BaseComponent {
     }
 
     handleSubmit = () => {
+        if (this.state.loading) {
+            return;
+        }
         this.props.form.validateFieldsAndScroll((errors, values) => {
-            console.log(values);
             if (!!errors) {
                 console.log('Errors in form!!!');
                 return;
             }
+            this.setState({
+                isSaving: true,
+            });
             this.request()
                 .post('/organization/users')
                 .params(values)
                 .success((data, res) => {
                     message.success('保存成功！');
+                    const search = this.props.search;
+                    if (search) {
+                        search();
+                    }
+                    this.hideModal();
                 })
-                .end();
+                .end(() => {
+                    this.setState({
+                        isSaving: false,
+                    });
+                });
         });
     }
 
@@ -120,6 +118,8 @@ class UserEdit extends BaseComponent {
             <Modal
                 title="添加人员"
                 visible={this.props.show}
+                confirmLoading={this.state.isSaving}
+                okText="保存"
                 onOk={this.handleSubmit}
                 onCancel={this.hideModal}
             >
