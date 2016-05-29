@@ -32,7 +32,6 @@ exports.userRequired = function (req, res, next) {
             || req.path === '/api/signin'
             || req.path === '/api/signup'
             || req.path === '/favicon.ico') {
-            console.log(req.path);
             return next();
         }
         //TODO 区分ajax请求还是http请求
@@ -42,6 +41,7 @@ exports.userRequired = function (req, res, next) {
         if (req.path.indexOf('/public') === 0) {
             return next();
         }
+        console.log(req.path);
         req.session._loginReferer = req.path;
         return res.redirect('/signin');
     }
@@ -50,12 +50,17 @@ exports.userRequired = function (req, res, next) {
 
 exports.blockUser = function () {
     return function (req, res, next) {
-        if (req.path === '/signout') {
+        if (req.path === '/signout'
+            || req.path === '/signin'
+            || req.path === '/signup'
+            || req.path === '/api/signout'
+            || req.path === '/api/signin'
+            || req.path === '/api/signup'
+            || req.path === '/favicon.ico') {
             return next();
         }
-
-        if (req.session && req.session.user && req.session.user.is_block && req.method !== 'GET') {
-            return res.status(403).send('您已被管理员屏蔽了。有疑问请联系 @alsotang。');
+        if (req.session && req.session.user && req.session.user.is_locked) {
+            return res.sendError('','您已被管理员屏蔽了。有疑问请联系 管理员。', 403);
         }
         next();
     };
@@ -103,7 +108,7 @@ exports.authUser = function (req, res, next) {
 
     if (req.session.user) {
         // 30分钟没有操作，退出登录。
-        if (req.session.lastVisitAt && (new Date().getTime() - req.session.lastVisitAt >= 1000 * 60 * 30)) {
+        if (req.session.lastVisitAt && (new Date().getTime() - req.session.lastVisitAt >= 1000 * 3)) {
             req.session.user = null;
             res.clearCookie(config.auth_cookie_name, {path: '/'});
         }

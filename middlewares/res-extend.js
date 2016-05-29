@@ -4,7 +4,7 @@
  * @param res
  * @param next
  */
-exports.errorPage = function (req, res, next) {
+exports.resExtend = function (req, res, next) {
 
     res.render404 = function (error) {
         return res.status(404).render('notify/notify', {error: error});

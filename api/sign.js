@@ -40,7 +40,7 @@ exports.login = function (req, res, next) {
     }
 
     ep.on('login_error', function (login_error) {
-        res.sendError(null, '用户名或密码错误', 403);
+        res.sendError(null, login_error, 403);
     });
 
     User.getUserByLoginName(loginname, function (err, user) {
@@ -48,15 +48,16 @@ exports.login = function (req, res, next) {
             return res.sendError(null,'登录失败！', 422);
         }
         if (!user) {
-            return ep.emit('login_error');
+            return ep.emit('login_error', '用户名或密码错误！');
+        }
+        if(user.is_locked){
+            return ep.emit('login_error','您已经被管理员屏蔽，如有疑问，请与管理员联系！')
         }
         var passhash = user.pass;
         tools.bcompare(pass + user.salt, passhash, ep.done(function (bool) {
             if (!bool) {
-                return ep.emit('login_error');
+                return ep.emit('login_error', '用户名或密码错误！');
             }
-            // store session cookie
-            authMiddleWare.gen_session(user, res);
             //check at some page just jump to home page
             var refer = req.session._loginReferer || '/';
             for (var i = 0, len = notJump.length; i !== len; ++i) {
@@ -65,7 +66,10 @@ exports.login = function (req, res, next) {
                     break;
                 }
             }
-
+            // 清除上一个用户的session
+            req.session.destroy();
+            // store session cookie
+            authMiddleWare.gen_session(user, res);
             var safeUSer = {
                 name: user.name,
                 loginname: user.loginname,

@@ -4,7 +4,9 @@ import {getCsrf} from './common';
 const filter = (req) => {
     req.on('response', (res) => {
         if (res.status === 401) {
-            window.location.href = '/singin';
+            // window.location.href = '/singin';
+            // 重新刷新之后，会根据当前url请求后端，后端发现未登录，会记录当前url，并跳转登录，登录之后会跳转回当前url
+            window.location.reload();
         }
     });
 

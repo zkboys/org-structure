@@ -63,7 +63,8 @@ var apiRouter = require('./api_router');
  * */
 var auth = require('./middlewares/auth');
 
-var errorPageMiddleware = require('./middlewares/error_page');
+// 对res进行扩展方法
+var resExtend = require('./middlewares/res-extend');
 /*
  * 跨站？
  * */
@@ -198,11 +199,11 @@ passport.deserializeUser(function (user, done) {
 });
 passport.use(new GitHubStrategy(config.GITHUB_OAUTH, githubStrategyMiddleware));
 
-
+app.use(resExtend.resExtend);
 // custom middleware
 app.use(auth.authUser);// 如果用户登录了，存用户到session中，如果未登录，next
-app.use(auth.blockUser());//是否已锁定，未锁定，next
 app.use(auth.userRequired);//判断用户是否登录，如果未登录，跳转到登录，否则next
+app.use(auth.blockUser());//是否已锁定，未锁定，next
 app.use(function (req, res, next) {
     if (req.path === '/api' || req.path.indexOf('/api') === -1) {
         csurf()(req, res, next);
@@ -229,7 +230,6 @@ _.extend(app.locals, {
     assets: assets
 });
 
-app.use(errorPageMiddleware.errorPage);
 _.extend(app.locals, require('./common/render_helper'));
 app.use(function (req, res, next) {
     res.locals.csrf = req.csrfToken ? req.csrfToken() : '';
