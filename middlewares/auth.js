@@ -25,14 +25,19 @@ exports.adminRequired = function (req, res, next) {
  */
 exports.userRequired = function (req, res, next) {
     if (!req.session || !req.session.user || !req.session.user._id) {
-        if (req.path === '/signout' || req.path === '/signin' || req.path === '/signup' || req.path === '/favicon.ico') {
+        if (req.path === '/signout'
+            || req.path === '/signin'
+            || req.path === '/signup'
+            || req.path === '/api/signout'
+            || req.path === '/api/signin'
+            || req.path === '/api/signup'
+            || req.path === '/favicon.ico') {
             console.log(req.path);
             return next();
         }
         //TODO 区分ajax请求还是http请求
         if (req.path.indexOf('/api') === 0) {
-            res.status(401);
-            return res.send({success: false, error_msg: '用户未登录，或登录已过期'});
+            return res.sendError(null, '用户未登录，或登录已过期', 401);
         }
         if (req.path.indexOf('/public') === 0) {
             return next();

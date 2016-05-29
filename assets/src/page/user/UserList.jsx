@@ -147,7 +147,6 @@ class UserList extends BaseComponent {
     }
 
     handleSearch = (queryData = this.state.queryData) => {
-        this.hideAddModal();
         queryData.size = queryData.pageSize;
         queryData.offset = (queryData.currentPage - 1) * queryData.pageSize;
         console.log(queryData);
@@ -233,7 +232,7 @@ class UserList extends BaseComponent {
                     pagination={false}
                 />
                 <PaginationComponent options={paginationOptions}/>
-                <UserEdit show={this.state.showAddModal}/>
+                <UserEdit show={this.state.showAddModal} showModal={this.showAddModal} hideModal={this.hideAddModal}/>
             </Page>
         );
     }

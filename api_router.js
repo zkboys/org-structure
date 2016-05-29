@@ -11,10 +11,14 @@ var limit             = require('./middlewares/limit');
 var menu = require('./api/menu');
 var organization = require('./api/organization');
 var user = require('./api/user');
+var sign = require('./api/sign');
 
 var config            = require('./config');
 
 var router            = express.Router();
+
+router.post('/signout', sign.signout);  // 登出
+router.post('/signin', sign.login);  // 登录校验
 
 router.get('/system/menus', menu.getAllMenus);  // 获取所有菜单数据
 router.post('/system/menus', menu.updateAllMenus);  // 修改所有菜单

@@ -10,64 +10,49 @@ exports.getAllUsersByPage = function (req, res, next) {
     var options = {skip: (currentPage - 1) * pageSize, limit: pageSize, sort: '-create_at'};
     var query = {};
     // 如下字段进行模糊查询。
-    ['loginname', 'name', 'mobile'].forEach(function(v){
-       var value = req.query[v];
-        if(value){
+    ['loginname', 'name', 'mobile'].forEach(function (v) {
+        var value = req.query[v];
+        if (value) {
             query[v] = new RegExp(value);
         }
     });
     var ep = new eventProxy();
     ep.all('count', 'results', function (count, results) {
         res.send({
-            result: {
-                results: results,
-                totalCount: count,
-            }
+            results: results,
+            totalCount: count,
         })
     });
     ep.fail(function (err) {
-        res.status(422);
-        res.send({message: '获取人员信息失败'});
+        res.sendError(err, '获取人员信息失败！', 422);
     })
-    User.getUsersByQuery(query, options, ep.done(function (docs) {
-        ep.emit('results', docs);
-    }));
-    User.getUsersCountByQuery(query, ep.done(function (docs) {
-        ep.emit('count', docs);
-    }));
+    User.getUsersByQuery(query, options, ep.done('results'));
+    User.getUsersCountByQuery(query, ep.done('count'));
 };
 
 exports.getUserByLoinName = function (req, res, next) {
     var loginName = req.params.loginname;
     User.getUserByLoginName(loginName, function (err, docs) {
         if (err) {
-            res.status(422);
-            return res.send({message: '获取人员失败'});
+            return res.sendError(err, '获取人员信息失败！', 422);
         }
-        res.send({
-            result: docs
-        })
+        res.send(docs)
     });
 };
 
 exports.delete = function (req, res, next) {
     var id = req.body.id;
-    User.delete(id, function (err, docs){
+    User.delete(id, function (err, docs) {
         if (err) {
-            res.status(422);
-            return res.send({message: '删除失败'});
+            return res.sendError(err, '删除失败！', 422);
         }
-        res.send({
-            success: true,
-            result: {},
-        })
+        res.send({})
     });
 };
 
 exports.addAndSave = function (req, res, next) {
     function error(msg) {
-        res.status(422);
-        res.send({message: msg});
+        res.sendError('', msg);
     }
 
     var loginname = req.body.loginname;
@@ -99,22 +84,15 @@ exports.addAndSave = function (req, res, next) {
         }
         var salt = uuid.v4();
         tools.bhash(pass + salt, function (err, passhash) {
-            var name = req.body.name || loginname;
-            var email = req.body.email;
-            var avatarUrl = '';
-            var mobile = req.body.mobile;
-            var gender = req.body.gender;
-            var position = req.body.position;
-            var org_id = req.body.org_id;
-            var is_locked = req.body.is_locked;
-            User.newAndSave(name, loginname, passhash, salt, email, avatarUrl, mobile, gender, position, org_id, is_locked, function (err, doc) {
+            var user = req.body;
+            user.name = user.name || user.loginname;
+            user.pass = passhash;
+            user.salt = salt;
+            User.newAndSave(user, function (err, doc) {
                 if (err) {
-                    return error(err);
+                    return res.sendError(err, '保存用户信息失败', 422);
                 }
-                return res.send({
-                    success: true,
-                    result: {},
-                })
+                return res.send({})
             });
 
         });

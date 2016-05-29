@@ -26,7 +26,7 @@ export default {
                         .end((err, res) => {
                             if (err || !res.ok) {
                                 callback([new Error(res && res.body && res.body.message || '未知系统错误')]);
-                            } else if (res.body.result && value === res.body.result.loginname) {
+                            } else if (res.body && value === res.body.loginname) {
                                 callback([new Error('抱歉，该登录名已被占用！')]);
                             } else {
                                 callback();

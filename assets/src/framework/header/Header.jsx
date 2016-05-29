@@ -9,9 +9,10 @@ import TipMessage from '../../common/tip-message';
 class Header extends React.Component {
     handleExit = () => {
         Request
-            .post('/signout')
+            .post('/api/signout')
             .send({_csrf: getCsrf()})
             .end((err, res) => {
+                console.log(err, res);
                 if (err || !res.ok) {
                     message.error(TipMessage.logoutError);
                 } else {

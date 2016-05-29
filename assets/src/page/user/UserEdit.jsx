@@ -10,7 +10,6 @@ const RadioGroup = Radio.Group;
 
 class UserEdit extends BaseComponent {
     state = {
-        show: false,
         orgData: [{
             label: '节点一',
             value: '0-0',
@@ -30,12 +29,6 @@ class UserEdit extends BaseComponent {
             key: '0-1',
         }],
     };
-
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            show: nextProps.show,
-        });
-    }
 
     componentWillMount() {
         this.request()
@@ -61,14 +54,10 @@ class UserEdit extends BaseComponent {
     }
 
     showModal = () => {
-        this.setState({
-            show: true,
-        });
+        this.props.showModal();
     }
     hideModal = () => {
-        this.setState({
-            show: false,
-        });
+        this.props.hideModal();
     }
     handleReset = () => {
         this.props.form.resetFields();
@@ -130,7 +119,7 @@ class UserEdit extends BaseComponent {
         return (
             <Modal
                 title="添加人员"
-                visible={this.state.show}
+                visible={this.props.show}
                 onOk={this.handleSubmit}
                 onCancel={this.hideModal}
             >

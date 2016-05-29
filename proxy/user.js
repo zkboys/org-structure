@@ -99,21 +99,7 @@ exports.delete = function (id, callback) {
     User.findOneAndUpdate({_id: id}, {is_deleted: true}, callback)
 }
 
-exports.newAndSave = function (name, loginname, pass, salt, email, avatar_url, mobile, gender, position, org_id, is_locked, callback) {
-    var user = new User();
-    user.name = name;
-    user.loginname = loginname;
-    user.pass = pass;
-    user.email = email;
-    user.avatar = avatar_url;
-    user.salt = salt;
-    user.mobile = mobile
-    user.gender = gender
-    user.position = position
-    user.org_id = org_id
-    user.is_locked = is_locked
-
-
-    user.save(callback);
+exports.newAndSave = function (user, callback) {
+    new User(user).save(callback);
 };
 

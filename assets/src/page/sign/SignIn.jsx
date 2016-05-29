@@ -1,7 +1,7 @@
 import './style.less';
 import React from "react";
 import Request from '../../common/request';
-import {Button, Form, Input} from 'antd';
+import {Button, Form, Input, message} from 'antd';
 import Storage from '../../common/storage';
 const createForm = Form.create;
 const FormItem = Form.Item;
@@ -14,7 +14,7 @@ class SignIn extends React.Component {
         const {setFieldsValue} = this.props.form;
         setFieldsValue({
             name: 'test',
-            pass: '111111'
+            pass: 't123456'
         })
     };
 
@@ -22,27 +22,29 @@ class SignIn extends React.Component {
         loading: false,
     };
 
-    handleSubmit = (e)=> {
+    handleSubmit = (e) => {
+        if (this.state.loading) {
+            return;
+        }
+
         e.preventDefault();
         this.props.form.validateFields((errors, values) => {
             if (!!errors) {
-                console.log('Errors in form!!!');
-                return;
+                return message.error('用户名或密码错误');
             }
-            console.log('Submit!!!');
-            console.log(values);
             this.setState({
                 loading: true,
             });
             Request
-                .post('/signin')
+                .post('/api/signin')
                 .send(values)
                 .end((err, res) => {
-                    console.log(err, res);
+                    this.setState({
+                        loading: false,
+                    });
                     if (err || !res.ok) {
-                        return 'error';
-                    }
-                    if (res.body.success) {
+                        message.error(res.body.message);
+                    } else {
                         let refer = res.body.refer || '/';
                         let menus = res.body.menus || [];
                         let currentLoginUser = res.body.user;
@@ -50,9 +52,6 @@ class SignIn extends React.Component {
                         Storage.session.set('menus', menus);
                         location.href = refer;
                     }
-                    this.setState({
-                        loading: false,
-                    });
                 });
         });
     };

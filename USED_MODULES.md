@@ -78,6 +78,10 @@ Lets you use HTTP verbs such as PUT or DELETE in places where the client doesn't
 ## [cookie-parser](https://www.npmjs.com/package/cookie-parser)
 cookie parsing with signatures
 
+## [eventproxy](https://www.npmjs.com/package/eventproxy)
+事件代理模块，可以解决多层嵌套。
+
+
 
 
 
