@@ -20,8 +20,9 @@ class UserList extends BaseComponent {
         totalCount: 0,
         tableData: [],
         showAddModal: false,
-        isToggleLockingId: null,
-        isDeletingId: null,
+        toggleLockingId: null,
+        deletingId: null,
+        editingUser: null,
     };
     queryOptions = {
         showSearchBtn: true,
@@ -89,11 +90,6 @@ class UserList extends BaseComponent {
             },
         },
         {
-            title: '头像',
-            dataIndex: 'avatar',
-            key: 'avatar',
-        },
-        {
             title: '职位',
             dataIndex: 'position',
             key: 'position',
@@ -129,14 +125,14 @@ class UserList extends BaseComponent {
                 const isLocked = record.is_locked;
                 const dealing = <span style={{padding: '0px 6px'}}><Icon type="loading"/></span>;
                 let isLockedText = isLocked ? '解锁' : '锁定';
-                if (this.state.isToggleLockingId === id) {
+                if (this.state.toggleLockingId === id) {
                     isLockedText = dealing;
                 }
-                let deleteText = this.state.isDeletingId === id ? dealing : '删除';
-
+                let deleteText = this.state.deletingId === id ? dealing : '删除';
+                let editText = this.state.editingUser === id ? dealing : '编辑';
                 return (
                     <div>
-                        <a href="#">编辑</a>
+                        <a href="#" onClick={() => this.handleEdit(id)}>{editText}</a>
                         <span className="ant-divider"/>
                         <a href="#" onClick={() => this.handleDelete(id)}>{deleteText}</a>
                         <span className="ant-divider"/>
@@ -185,22 +181,37 @@ class UserList extends BaseComponent {
             })
             .end();
     };
-    hideAddModal = () => {
+    hideEditModal = () => {
         this.setState({
             showAddModal: false,
         });
+        this.setState({
+            editingUser: null,
+        });
     }
-    showAddModal = () => {
+    showEditModal = () => {
         this.setState({
             showAddModal: true,
         });
     }
     handleAdd = () => {
-        this.showAddModal();
+        this.setState({
+            editingUser: {
+                name: '',
+                loginname: '',
+                email: '',
+                mobile: '',
+                gender: '',
+                position: '',
+                org_id: '',
+                is_locked: '',
+            },
+        });
+        this.showEditModal();
     }
 
     handleDelete = (id) => {
-        if (this.state.isDeletingId) {
+        if (this.state.deletingId) {
             return;
         }
         confirm({
@@ -208,7 +219,7 @@ class UserList extends BaseComponent {
             content: '',
             onOk: () => {
                 this.setState({
-                    isDeletingId: id,
+                    deletingId: id,
                 });
                 this.request()
                     .del('/organization/users')
@@ -219,7 +230,7 @@ class UserList extends BaseComponent {
                     })
                     .end(() => {
                         this.setState({
-                            isDeletingId: null,
+                            deletingId: null,
                         });
                     });
             },
@@ -229,11 +240,11 @@ class UserList extends BaseComponent {
     }
 
     handleToggleLock = (id, isLocked) => {
-        if (this.state.isToggleLockingId) {
+        if (this.state.toggleLockingId) {
             return;
         }
         this.setState({
-            isToggleLockingId: id,
+            toggleLockingId: id,
         });
         this.request()
             .put('/organization/users/toggle_lock')
@@ -252,8 +263,29 @@ class UserList extends BaseComponent {
             })
             .end(() => {
                 this.setState({
-                    isToggleLockingId: null,
+                    toggleLockingId: null,
                 });
+            });
+    }
+    handleEdit = (id, isLocked) => {
+        if (this.state.editingUser) {
+            return;
+        }
+        this.setState({
+            editingUser: id,
+        });
+        this.request()
+            .get(`/organization/users/${id}`)
+            .success((data, res) => {
+                this.setState({
+                    editingUser: data,
+                });
+                this.showEditModal();
+            })
+            .end(() => {
+                //this.setState({
+                //    editingUser: null,
+                //});
             });
     }
 
@@ -288,9 +320,10 @@ class UserList extends BaseComponent {
                 <PaginationComponent options={paginationOptions}/>
                 <UserEdit
                     show={this.state.showAddModal}
-                    showModal={this.showAddModal}
-                    hideModal={this.hideAddModal}
+                    showModal={this.showEditModal}
+                    hideModal={this.hideEditModal}
                     search={this.handleSearch}
+                    user={this.state.editingUser}
                 />
             </Page>
         );

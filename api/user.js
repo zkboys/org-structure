@@ -4,6 +4,16 @@ var eventProxy = require('eventproxy');
 var tools = require('../common/tools');
 var User = require('../proxy/user');
 
+exports.getUserById = function (req, res, next) {
+    var id = req.params.id;
+    User.getUserById(id, function(err, doc){
+        if(err){
+            return res.sendError(err, '获取用户信息失败！', 422);
+        }
+        res.send(doc)
+    })
+}
+
 exports.getAllUsersByPage = function (req, res, next) {
     var currentPage = parseInt(req.query.currentPage, 10) || 1;
     var pageSize = Number(req.query.pageSize);

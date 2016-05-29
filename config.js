@@ -38,7 +38,7 @@ var nodeENVConfig = {
 var config = {
     // debug 为 true 时，用于本地调试
     debug: true,
-
+    session_time_out: 1000 * 60 * 30, // 30分钟没有操作，退出登录。
     get mini_assets() {
         return !this.debug;
     }, // 是否启用静态文件的合并压缩，详见视图中的Loader
