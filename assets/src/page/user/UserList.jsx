@@ -317,7 +317,7 @@ class UserList extends BaseComponent {
                     show={this.state.showAddModal}
                     showModal={this.showEditModal}
                     hideModal={this.hideEditModal}
-                    search={this.handleSearch}
+                    onOk={this.handleSearch}
                     user={this.state.editingUser}
                 />
             </Page>

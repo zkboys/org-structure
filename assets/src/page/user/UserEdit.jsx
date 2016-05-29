@@ -91,9 +91,9 @@ class UserEdit extends BaseComponent {
             request.params(values)
                 .success((data, res) => {
                     message.success('保存成功！');
-                    const search = this.props.search;
-                    if (search) {
-                        search();
+                    const onOk = this.props.onOk;
+                    if (onOk) {
+                        onOk();
                     }
                     this.hideModal();
                 })
