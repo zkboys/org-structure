@@ -21,8 +21,9 @@ router.post('/organization/organizations', organization.updateAllOrganizations);
 // 用户
 router.get('/organization/users', user.getAllUsersByPage);
 router.get('/organization/users/:id', user.getUserById);
-router.get('/organization/users/loginname/:loginname', user.getUserByLoinName);
+router.get('/organization/users/loginname/:loginname', user.getUserByLoginNameFromAllUsers);
 router.post('/organization/users', user.addAndSave);
+router.put('/organization/users', user.update);
 router.delete('/organization/users', user.delete);
 router.put('/organization/users/toggle_lock', user.toggleLock);
 

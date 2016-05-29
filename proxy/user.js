@@ -29,6 +29,10 @@ exports.getUserByLoginName = function (loginName, callback) {
     User.findOne({'loginname': new RegExp('^' + loginName + '$', "i"), is_deleted: false}, callback);
 };
 
+exports.getUserByLoginNameFromAllUsers = function (loginName, callback) {
+    User.findOne({'loginname': new RegExp('^' + loginName + '$', "i")}, callback);
+};
+
 /**
  * 根据用户ID，查找用户
  * Callback:
@@ -90,6 +94,17 @@ exports.getUsersCountByQuery = function (query, callback) {
     }
     User.count(query, callback);
 };
+
+/**
+ * 修改用户
+ * @param user {Object}
+ * @param callback {Function}
+ */
+exports.update = function (user, callback) {
+    user.update_at = new Date();
+    User.findOneAndUpdate({_id: user._id}, user, callback)
+};
+
 /**
  * 逻辑删除用户
  * @param id {String}
@@ -97,7 +112,7 @@ exports.getUsersCountByQuery = function (query, callback) {
  */
 exports.delete = function (id, callback) {
     User.findOneAndUpdate({_id: id}, {is_deleted: true}, callback)
-}
+};
 
 /**
  * 锁定用户
@@ -106,7 +121,7 @@ exports.delete = function (id, callback) {
  */
 exports.lock = function (id, callback) {
     User.findOneAndUpdate({_id: id}, {is_locked: true}, callback)
-}
+};
 /**
  * 解锁用户
  * @param id {String}
@@ -114,8 +129,13 @@ exports.lock = function (id, callback) {
  */
 exports.unlock = function (id, callback) {
     User.findOneAndUpdate({_id: id}, {is_locked: false}, callback)
-}
+};
 
+/**
+ * 新建用户
+ * @param user {Object}
+ * @param callback {Function}
+ */
 exports.newAndSave = function (user, callback) {
     new User(user).save(callback);
 };

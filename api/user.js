@@ -6,8 +6,8 @@ var User = require('../proxy/user');
 
 exports.getUserById = function (req, res, next) {
     var id = req.params.id;
-    User.getUserById(id, function(err, doc){
-        if(err){
+    User.getUserById(id, function (err, doc) {
+        if (err) {
             return res.sendError(err, '获取用户信息失败！', 422);
         }
         res.send(doc)
@@ -40,9 +40,9 @@ exports.getAllUsersByPage = function (req, res, next) {
     User.getUsersCountByQuery(query, ep.done('count'));
 };
 
-exports.getUserByLoinName = function (req, res, next) {
+exports.getUserByLoginNameFromAllUsers = function (req, res, next) {
     var loginName = req.params.loginname;
-    User.getUserByLoginName(loginName, function (err, docs) {
+    User.getUserByLoginNameFromAllUsers(loginName, function (err, docs) {
         if (err) {
             return res.sendError(err, '获取人员信息失败！', 422);
         }
@@ -78,6 +78,17 @@ exports.toggleLock = function (req, res, next) {
             res.send({})
         });
     }
+};
+
+exports.update = function (req, res, next) {
+    var user = req.body;
+    User.update(user, function (err, doc) {
+        if (err) {
+            return res.sendError(err, '修改用户失败！', 422);
+        }
+        res.send(doc)
+    })
+
 };
 
 exports.addAndSave = function (req, res, next) {

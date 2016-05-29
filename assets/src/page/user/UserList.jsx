@@ -22,6 +22,7 @@ class UserList extends BaseComponent {
         showAddModal: false,
         toggleLockingId: null,
         deletingId: null,
+        editingUserId: null,
         editingUser: null,
     };
     queryOptions = {
@@ -65,16 +66,6 @@ class UserList extends BaseComponent {
             key: 'name',
         },
         {
-            title: '邮箱',
-            dataIndex: 'email',
-            key: 'email',
-        },
-        {
-            title: '电话',
-            dataIndex: 'mobile',
-            key: 'mobile',
-        },
-        {
             title: '性别',
             dataIndex: 'gender',
             key: 'gender',
@@ -90,9 +81,14 @@ class UserList extends BaseComponent {
             },
         },
         {
-            title: '职位',
-            dataIndex: 'position',
-            key: 'position',
+            title: '电话',
+            dataIndex: 'mobile',
+            key: 'mobile',
+        },
+        {
+            title: '邮箱',
+            dataIndex: 'email',
+            key: 'email',
         },
         {
             title: '所属部门',
@@ -108,6 +104,11 @@ class UserList extends BaseComponent {
                 }
                 return orgName;
             },
+        },
+        {
+            title: '职位',
+            dataIndex: 'position',
+            key: 'position',
         },
         {
             title: '是否锁定',
@@ -129,14 +130,14 @@ class UserList extends BaseComponent {
                     isLockedText = dealing;
                 }
                 let deleteText = this.state.deletingId === id ? dealing : '删除';
-                let editText = this.state.editingUser === id ? dealing : '编辑';
+                let editText = this.state.editingUserId === id ? dealing : '编辑';
                 return (
                     <div>
-                        <a href="#" onClick={() => this.handleEdit(id)}>{editText}</a>
+                        <a href="javascript:;" onClick={() => this.handleEdit(id)}>{editText}</a>
                         <span className="ant-divider"/>
-                        <a href="#" onClick={() => this.handleDelete(id)}>{deleteText}</a>
+                        <a href="###" onClick={() => this.handleDelete(id)}>{deleteText}</a>
                         <span className="ant-divider"/>
-                        <a href="#" onClick={() => this.handleToggleLock(id, isLocked)}>{isLockedText}</a>
+                        <a href="###" onClick={() => this.handleToggleLock(id, isLocked)}>{isLockedText}</a>
                     </div>
                 );
             },
@@ -186,6 +187,7 @@ class UserList extends BaseComponent {
             showAddModal: false,
         });
         this.setState({
+            editingUserId: null,
             editingUser: null,
         });
     }
@@ -197,14 +199,14 @@ class UserList extends BaseComponent {
     handleAdd = () => {
         this.setState({
             editingUser: {
-                name: '',
+                name: null,
                 loginname: '',
                 email: '',
                 mobile: '',
                 gender: '',
                 position: '',
                 org_id: '',
-                is_locked: '',
+                is_locked: false,
             },
         });
         this.showEditModal();
@@ -267,12 +269,9 @@ class UserList extends BaseComponent {
                 });
             });
     }
-    handleEdit = (id, isLocked) => {
-        if (this.state.editingUser) {
-            return;
-        }
+    handleEdit = (id) => {
         this.setState({
-            editingUser: id,
+            editingUserId: id,
         });
         this.request()
             .get(`/organization/users/${id}`)
@@ -282,11 +281,7 @@ class UserList extends BaseComponent {
                 });
                 this.showEditModal();
             })
-            .end(() => {
-                //this.setState({
-                //    editingUser: null,
-                //});
-            });
+            .end();
     }
 
     render() {

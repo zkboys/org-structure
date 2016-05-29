@@ -1,4 +1,5 @@
 import React from 'react';
+import assign from 'object-assign';
 import BaseComponent from '../../component/BaseComponent';
 import {Form, Input, Radio, Icon, TreeSelect, Row, Col, Modal, message} from 'antd';
 import ValidationRule from '../../common/validation-rule';
@@ -13,6 +14,17 @@ class UserEdit extends BaseComponent {
         isSaving: false,
         orgData: [],
     };
+    user = null;
+
+    componentWillReceiveProps(nextProps) {
+        const {setFieldsValue} = nextProps.form;
+        const user = nextProps.user;
+        // 这里不能使用setFieldsValue，会产生死循环。
+        if (user && !this.user) {
+            setFieldsValue(user);
+        }
+        this.user = user;
+    }
 
     componentWillMount() {
         this.request()
@@ -37,10 +49,8 @@ class UserEdit extends BaseComponent {
         });
     }
 
-    showModal = () => {
-        this.props.showModal();
-    }
     hideModal = () => {
+        this.user = null;
         this.props.hideModal();
     }
     handleReset = () => {
@@ -51,7 +61,17 @@ class UserEdit extends BaseComponent {
         if (this.state.loading) {
             return;
         }
-        this.props.form.validateFieldsAndScroll((errors, values) => {
+        const fields = [
+            'name',
+            'loginname',
+            'email',
+            'mobile',
+            'gender',
+            'position',
+            'org_id',
+            'is_locked',
+        ];
+        this.props.form.validateFieldsAndScroll(fields, (errors, values) => {
             if (!!errors) {
                 console.log('Errors in form!!!');
                 return;
@@ -59,9 +79,16 @@ class UserEdit extends BaseComponent {
             this.setState({
                 isSaving: true,
             });
-            this.request()
-                .post('/organization/users')
-                .params(values)
+            let request = this.request();
+            let url = '/organization/users';
+            let id = this.user._id;
+            if (id) { // 存在id，是修改操作
+                request.put(url);
+                values._id = id;
+            } else {
+                request.post(url);
+            }
+            request.params(values)
                 .success((data, res) => {
                     message.success('保存成功！');
                     const search = this.props.search;
@@ -79,13 +106,19 @@ class UserEdit extends BaseComponent {
     }
 
     render() {
-        const {getFieldProps} = this.props.form;
+        const {getFieldProps, getFieldValue} = this.props.form;
+        let title = '添加人员';
+        let ignoreValues = [];
+        if (this.user && this.user._id) { // _id 存在，修改操作。
+            title = '修改人员';
+            ignoreValues.push(this.user.loginname);
+        }
         const nameProps = getFieldProps('name');
         const loginnameProps = getFieldProps('loginname', {
             rules: [
                 ValidationRule.required('登录名'),
                 ValidationRule.loginName(),
-                ValidationRule.checkLoginNameExist(),
+                ValidationRule.checkLoginNameExist(ignoreValues),
             ],
         });
         const emailProps = getFieldProps('email', {
@@ -116,7 +149,7 @@ class UserEdit extends BaseComponent {
         };
         return (
             <Modal
-                title="添加人员"
+                title={title}
                 visible={this.props.show}
                 confirmLoading={this.state.isSaving}
                 okText="保存"
