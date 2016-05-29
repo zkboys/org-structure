@@ -14,12 +14,13 @@ class UserEdit extends BaseComponent {
         isSaving: false,
         orgData: [],
     };
-    user = null;
+
+    user = null; // 存放要添加，或者要修改的用户信息
 
     componentWillReceiveProps(nextProps) {
         const {setFieldsValue} = nextProps.form;
         const user = nextProps.user;
-        // 这里不能使用setFieldsValue，会产生死循环。
+        // 这里不能正常使用setFieldsValue，会产生死循环。
         if (user && !this.user) {
             setFieldsValue(user);
         }
@@ -73,7 +74,6 @@ class UserEdit extends BaseComponent {
         ];
         this.props.form.validateFieldsAndScroll(fields, (errors, values) => {
             if (!!errors) {
-                console.log('Errors in form!!!');
                 return;
             }
             this.setState({
