@@ -1,5 +1,5 @@
 import './style.less';
-import React from "react";
+import React from 'react';
 import Request from '../../common/request';
 import {Button, Form, Input, message} from 'antd';
 import Storage from '../../common/storage';
@@ -10,14 +10,6 @@ function noop() {
 }
 
 class SignIn extends React.Component {
-    componentDidMount() {
-        const {setFieldsValue} = this.props.form;
-        setFieldsValue({
-            name: 'test',
-            pass: 't123456'
-        })
-    };
-
     state = {
         loading: false,
     };
@@ -48,7 +40,7 @@ class SignIn extends React.Component {
                         let refer = res.body.refer || '/';
                         let menus = res.body.menus || [];
                         let currentLoginUser = res.body.user;
-                        Storage.session.set('currentLoginUser', currentLoginUser)
+                        Storage.session.set('currentLoginUser', currentLoginUser);
                         Storage.session.set('menus', menus);
                         location.href = refer;
                     }
@@ -57,13 +49,15 @@ class SignIn extends React.Component {
     };
 
     render() {
-        const {getFieldProps, getFieldError, isFieldValidating} = this.props.form;
+        const {getFieldProps} = this.props.form;
         const nameProps = getFieldProps('name', {
+            initialValue: 'test',
             rules: [
                 {required: true, message: '请填写用户名'},
             ],
         });
         const passwdProps = getFieldProps('pass', {
+            initialValue: 't123456',
             rules: [
                 {required: true, whitespace: true, message: '请填写密码'},
             ],
@@ -75,7 +69,7 @@ class SignIn extends React.Component {
         return (
             <div>
                 <div className="login-box">
-                    <h1 className='login-title'>用户登陆</h1>
+                    <h1 className="login-title">用户登陆</h1>
                     <Form horizontal form={this.props.form}>
                         <FormItem
                             {...formItemLayout}
@@ -101,7 +95,7 @@ class SignIn extends React.Component {
                         </FormItem>
                         <FormItem wrapperCol={{ span: 17, offset: 7 }}>
                             <Button
-                                style={{width:'100%'}}
+                                style={{width: '100%'}}
                                 type="primary"
                                 loading={this.state.loading}
                                 onClick={this.handleSubmit}
@@ -113,7 +107,5 @@ class SignIn extends React.Component {
         );
     }
 }
-;
 
-SignIn = createForm()(SignIn);
-export default SignIn;
+export default createForm()(SignIn);
