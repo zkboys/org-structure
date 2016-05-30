@@ -77,13 +77,7 @@ class Page extends React.Component {
             }
         }
         if (pageHeaderDate) {
-            let currentHeaderMenu = getCurrentHeaderMenuByUrl();
             let breadcrumbItems = [];
-            if (currentHeaderMenu) {
-                breadcrumbItems.push(
-                    <Breadcrumb.Item key="page-breadcrumb-item-home"><Link to={currentHeaderMenu.path}>{currentHeaderMenu.text}</Link></Breadcrumb.Item>
-                );
-            }
             let items = pageHeaderDate.breadcrumbItems;
             for (let i = 0; i < items.length; i++) {
                 let item = items[i];
