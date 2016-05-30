@@ -115,7 +115,7 @@ exports.addAndSave = function (req, res, next) {
     }
 
     // END 验证信息的正确性
-    User.getUserByLoginName(loginname, function (err, user) {
+    User.getUserByLoginNameFromAllUsers(loginname, function (err, user) {
         if (err) {
             return error(err);
         }
