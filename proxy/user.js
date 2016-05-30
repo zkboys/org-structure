@@ -111,7 +111,7 @@ exports.update = function (user, callback) {
  * @param callback {Function}
  */
 exports.delete = function (id, callback) {
-    User.findOneAndUpdate({_id: id}, {is_deleted: true}, callback)
+    User.findOneAndUpdate({_id: id}, {is_deleted: true, update_at: new Date()}, callback)
 };
 
 /**
@@ -120,7 +120,7 @@ exports.delete = function (id, callback) {
  * @param callback {Function}
  */
 exports.lock = function (id, callback) {
-    User.findOneAndUpdate({_id: id}, {is_locked: true}, callback)
+    User.findOneAndUpdate({_id: id}, {is_locked: true, update_at: new Date()}, callback)
 };
 /**
  * 解锁用户
@@ -128,7 +128,7 @@ exports.lock = function (id, callback) {
  * @param callback {Function}
  */
 exports.unlock = function (id, callback) {
-    User.findOneAndUpdate({_id: id}, {is_locked: false}, callback)
+    User.findOneAndUpdate({_id: id}, {is_locked: false, update_at: new Date()}, callback)
 };
 
 /**

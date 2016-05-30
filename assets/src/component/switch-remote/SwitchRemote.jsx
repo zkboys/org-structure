@@ -60,7 +60,7 @@ class SwitchRemote extends React.Component {
                     this.setState({
                         isLoading: false,
                     });
-                }, 300);
+                }, 335);
                 this.setState({
                     checkedChildren: this.props.checkedChildren,
                     unCheckedChildren: this.props.unCheckedChildren,
