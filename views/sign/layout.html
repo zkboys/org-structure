@@ -5,14 +5,14 @@
     <% if (config.site_icon) { %>
     <link rel="icon" href="<%- staticFile(config.site_icon) %>" type="image/x-icon"/>
     <% } %>
-    <title>Document</title>
+    <title>登录</title>
     <link rel="stylesheet" href="<%- staticFile('antd.min.css') %>">
     <link rel="stylesheet" href="<%- staticFile('signin.min.css') %>">
     <meta content="_csrf" name="csrf-param">
     <meta content="<%= csrf %>" name="csrf-token">
 </head>
 <body>
-<div id="framework"/>
+<div id="framework"></div>
 <script src="<%- staticFile('react.min.js') %>"></script>
 <script src="<%- staticFile('react-dom.min.js') %>"></script>
 <script src="<%- staticFile('antd.min.js') %>"></script>
