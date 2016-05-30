@@ -1,5 +1,4 @@
 import React from 'react';
-import assign from 'object-assign';
 import BaseComponent from '../../component/BaseComponent';
 import {Form, Input, Radio, Icon, TreeSelect, Row, Col, Modal, message} from 'antd';
 import ValidationRule from '../../common/validation-rule';
@@ -14,18 +13,6 @@ class UserEdit extends BaseComponent {
         isSaving: false,
         orgData: [],
     };
-
-    user = null; // 存放要添加，或者要修改的用户信息
-
-    componentWillReceiveProps(nextProps) {
-        const {setFieldsValue} = nextProps.form;
-        const user = nextProps.user;
-        // 这里不能正常使用setFieldsValue，会产生死循环。
-        if (user && !this.user) {
-            setFieldsValue(user);
-        }
-        this.user = user;
-    }
 
     componentWillMount() {
         this.request()
@@ -51,8 +38,9 @@ class UserEdit extends BaseComponent {
     }
 
     hideModal = () => {
-        this.user = null;
         this.props.hideModal();
+        // 关闭需要reset，否则会影响下一次内容
+        this.handleReset();
     }
     handleReset = () => {
         this.props.form.resetFields();
@@ -81,7 +69,7 @@ class UserEdit extends BaseComponent {
             });
             let request = this.request();
             let url = '/organization/users';
-            let id = this.user._id;
+            let id = this.props.user._id;
             if (id) { // 存在id，是修改操作
                 request.put(url);
                 values._id = id;
@@ -89,7 +77,7 @@ class UserEdit extends BaseComponent {
                 request.post(url);
             }
             request.params(values)
-                .success((data, res) => {
+                .success(() => {
                     message.success('保存成功！');
                     const onOk = this.props.onOk;
                     if (onOk) {
@@ -106,15 +94,20 @@ class UserEdit extends BaseComponent {
     }
 
     render() {
-        const {getFieldProps, getFieldValue} = this.props.form;
+        const {getFieldProps} = this.props.form;
         let title = '添加人员';
         let ignoreValues = [];
-        if (this.user && this.user._id) { // _id 存在，修改操作。
-            title = '修改人员';
-            ignoreValues.push(this.user.loginname);
+        let user = this.props.user;
+        if (!user) {
+            user = {};
         }
-        const nameProps = getFieldProps('name');
+        if (user._id) { // _id 存在，修改操作。
+            title = '修改人员';
+            ignoreValues.push(user.loginname);
+        }
+        const nameProps = getFieldProps('name', {initialValue: user.name});
         const loginnameProps = getFieldProps('loginname', {
+            initialValue: user.loginname,
             rules: [
                 ValidationRule.required('登录名'),
                 ValidationRule.loginName(),
@@ -122,25 +115,31 @@ class UserEdit extends BaseComponent {
             ],
         });
         const emailProps = getFieldProps('email', {
+            initialValue: user.email,
             rules: [
                 ValidationRule.email(),
             ],
         });
         const mobileProps = getFieldProps('mobile', {
+            initialValue: user.mobile,
             rules: [
                 ValidationRule.mobile(),
             ],
         });
         const genderProps = getFieldProps('gender', {
+            initialValue: user.gender,
             rules: [],
         });
         const positionProps = getFieldProps('position', {
+            initialValue: user.position,
             rules: [],
         });
         const orgProps = getFieldProps('org_id', {
+            initialValue: user.org_id,
             rules: [],
         });
         const isLockedProps = getFieldProps('is_locked', {
+            initialValue: user.is_locked,
             rules: [],
         });
         const formItemLayout = {

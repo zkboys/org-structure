@@ -133,11 +133,11 @@ class UserList extends BaseComponent {
                 let editText = this.state.editingUserId === id ? dealing : '编辑';
                 return (
                     <div>
-                        <a href="javascript:;" onClick={() => this.handleEdit(id)}>{editText}</a>
+                        <a href="#" onClick={() => this.handleEdit(id)}>{editText}</a>
                         <span className="ant-divider"/>
-                        <a href="###" onClick={() => this.handleDelete(id)}>{deleteText}</a>
+                        <a href="#" onClick={() => this.handleDelete(id)}>{deleteText}</a>
                         <span className="ant-divider"/>
-                        <a href="###" onClick={() => this.handleToggleLock(id, isLocked)}>{isLockedText}</a>
+                        <a href="#" onClick={() => this.handleToggleLock(id, isLocked)}>{isLockedText}</a>
                     </div>
                 );
             },
@@ -188,7 +188,6 @@ class UserList extends BaseComponent {
         });
         this.setState({
             editingUserId: null,
-            editingUser: null,
         });
     }
     showEditModal = () => {
@@ -198,16 +197,7 @@ class UserList extends BaseComponent {
     }
     handleAdd = () => {
         this.setState({
-            editingUser: {
-                name: null,
-                loginname: '',
-                email: '',
-                mobile: '',
-                gender: '',
-                position: '',
-                org_id: '',
-                is_locked: false,
-            },
+            editingUser: null,
         });
         this.showEditModal();
     }
