@@ -5,6 +5,7 @@ import PaginationComponent from '../../component/pagination/PaginationComponent'
 import Page from '../../framework/page/Page';
 import BaseComponent from '../../component/BaseComponent';
 import {Table, Button, Modal, Form, message, Icon} from 'antd';
+import SwitchRemote from '../../component/switch-remote/SwitchRemote';
 import UserEdit from './UserEdit';
 
 const createForm = Form.create;
@@ -51,9 +52,10 @@ class UserList extends BaseComponent {
                     name: 'mobile',
                     label: '电话',
                 },
-            ]
+            ],
         ],
-    }
+    };
+
     columns = [
         {
             title: '登录名',
@@ -69,7 +71,7 @@ class UserList extends BaseComponent {
             title: '性别',
             dataIndex: 'gender',
             key: 'gender',
-            render(text, record) {
+            render(text) {
                 let gender = '未填写';
                 if (text === 'male') {
                     gender = '男';
@@ -94,7 +96,7 @@ class UserList extends BaseComponent {
             title: '所属部门',
             dataIndex: 'org_id',
             key: 'org_id',
-            render: (text, record) => {
+            render: (text) => {
                 let orgName = '未指定';
                 for (let org of this.state.organizations) {
                     if (org._id === text) {
@@ -114,8 +116,18 @@ class UserList extends BaseComponent {
             title: '是否锁定',
             dataIndex: 'is_locked',
             key: 'is_locked',
-            render(text, record) {
-                return text ? '是' : '否';
+            render: (text, record) => {
+                const id = record._id;
+                const isLocked = record.is_locked;
+                return (
+                    <SwitchRemote
+                        key={id} // 一定要加这个key，否则各分页之间有干扰
+                        checked={isLocked}
+                        url="/organization/users/toggle_lock"
+                        params={{id, isLocked}}
+                        onChange={(checked) => record.is_locked = checked} // 同步record，否则下次页面重新渲染，选中状态会错乱。
+                    />
+                );
             },
         },
         {
@@ -123,12 +135,7 @@ class UserList extends BaseComponent {
             key: 'operator',
             render: (text, record) => {
                 const id = record._id;
-                const isLocked = record.is_locked;
                 const dealing = <span style={{padding: '0px 6px'}}><Icon type="loading"/></span>;
-                let isLockedText = isLocked ? '解锁' : '锁定';
-                if (this.state.toggleLockingId === id) {
-                    isLockedText = dealing;
-                }
                 let deleteText = this.state.deletingId === id ? dealing : '删除';
                 let editText = this.state.editingUserId === id ? dealing : '编辑';
                 return (
@@ -136,8 +143,6 @@ class UserList extends BaseComponent {
                         <a href="#" onClick={() => this.handleEdit(id)}>{editText}</a>
                         <span className="ant-divider"/>
                         <a href="#" onClick={() => this.handleDelete(id)}>{deleteText}</a>
-                        <span className="ant-divider"/>
-                        <a href="#" onClick={() => this.handleToggleLock(id, isLocked)}>{isLockedText}</a>
                     </div>
                 );
             },
@@ -216,7 +221,7 @@ class UserList extends BaseComponent {
                 this.request()
                     .del('/organization/users')
                     .params({id})
-                    .success((data, res) => {
+                    .success(() => {
                         message.success('删除成功！');
                         this.handleSearch();
                     })
@@ -231,41 +236,13 @@ class UserList extends BaseComponent {
         });
     }
 
-    handleToggleLock = (id, isLocked) => {
-        if (this.state.toggleLockingId) {
-            return;
-        }
-        this.setState({
-            toggleLockingId: id,
-        });
-        this.request()
-            .put('/organization/users/toggle_lock')
-            .params({id, isLocked})
-            .success((data, res) => {
-                let tableData = this.state.tableData.map(v => assign({}, v));
-                for (let d of tableData) {
-                    if (d._id === id) {
-                        d.is_locked = !isLocked;
-                        break;
-                    }
-                }
-                this.setState({
-                    tableData,
-                });
-            })
-            .end(() => {
-                this.setState({
-                    toggleLockingId: null,
-                });
-            });
-    }
     handleEdit = (id) => {
         this.setState({
             editingUserId: id,
         });
         this.request()
             .get(`/organization/users/${id}`)
-            .success((data, res) => {
+            .success((data) => {
                 this.setState({
                     editingUser: data,
                 });

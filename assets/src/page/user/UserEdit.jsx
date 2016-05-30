@@ -1,6 +1,6 @@
 import React from 'react';
 import BaseComponent from '../../component/BaseComponent';
-import {Form, Input, Radio, Icon, TreeSelect, Row, Col, Modal, message} from 'antd';
+import {Form, Input, Radio, Icon, TreeSelect, Row, Col, Modal, message, Switch} from 'antd';
 import ValidationRule from '../../common/validation-rule';
 import {convertToTree} from '../../common/common';
 
@@ -32,9 +32,6 @@ class UserEdit extends BaseComponent {
                 }
             })
             .end();
-        this.props.form.setFieldsValue({
-            is_locked: false,
-        });
     }
 
     hideModal = () => {
@@ -139,6 +136,7 @@ class UserEdit extends BaseComponent {
             rules: [],
         });
         const isLockedProps = getFieldProps('is_locked', {
+            valuePropName: 'checked',
             initialValue: user.is_locked,
             rules: [],
         });
@@ -244,10 +242,11 @@ class UserEdit extends BaseComponent {
                     <FormItem
                         {...formItemLayout}
                         label="锁定：">
-                        <RadioGroup {...isLockedProps}>
-                            <Radio value={true}>是</Radio>
-                            <Radio value={false}>否</Radio>
-                        </RadioGroup>
+                        <Switch
+                            {...isLockedProps}
+                            checkedChildren="是"
+                            unCheckedChildren="否"
+                        />
                     </FormItem>
                 </Form>
             </Modal>
