@@ -4,7 +4,7 @@ import QueryTerms from '../../component/query-terms/QueryTerms';
 import PaginationComponent from '../../component/pagination/PaginationComponent';
 import Page from '../../framework/page/Page';
 import BaseComponent from '../../component/BaseComponent';
-import {Table, Button, Modal, Form, message, Icon} from 'antd';
+import {Table, Button, Modal, Form, message, Icon, Popconfirm} from 'antd';
 import SwitchRemote from '../../component/switch-remote/SwitchRemote';
 import UserEdit from './UserEdit';
 
@@ -142,7 +142,9 @@ class UserList extends BaseComponent {
                     <div>
                         <a href="#" onClick={() => this.handleEdit(id)}>{editText}</a>
                         <span className="ant-divider"/>
-                        <a href="#" onClick={() => this.handleDelete(id)}>{deleteText}</a>
+                        <Popconfirm title={`您确定要删除“${record.name}”？`} onConfirm={() => this.handleDelete(id)}>
+                            <a href="#">{deleteText}</a>
+                        </Popconfirm>
                     </div>
                 );
             },
@@ -211,29 +213,22 @@ class UserList extends BaseComponent {
         if (this.state.deletingId) {
             return;
         }
-        confirm({
-            title: '您确定要删除此人员？',
-            content: '',
-            onOk: () => {
-                this.setState({
-                    deletingId: id,
-                });
-                this.request()
-                    .del('/organization/users')
-                    .params({id})
-                    .success(() => {
-                        message.success('删除成功！');
-                        this.handleSearch();
-                    })
-                    .end(() => {
-                        this.setState({
-                            deletingId: null,
-                        });
-                    });
-            },
-            onCancel() {
-            },
+
+        this.setState({
+            deletingId: id,
         });
+        this.request()
+            .del('/organization/users')
+            .params({id})
+            .success(() => {
+                message.success('删除成功！');
+                this.handleSearch();
+            })
+            .end(() => {
+                this.setState({
+                    deletingId: null,
+                });
+            });
     }
 
     handleEdit = (id) => {
