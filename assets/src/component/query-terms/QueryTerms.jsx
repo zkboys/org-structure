@@ -1,9 +1,9 @@
-import "./style.less";
-import React from "react";
-import assign from "object-assign";
-import moment from "moment";
-import {CheckBoxItem, RadioItem, SelectItem, ComboboxItem, DateTimeAreaItem} from "../form-item/index";
-import {Button, DatePicker, TimePicker, InputNumber, Input, Form, Cascader, Row, Col, Tabs, Spin} from "antd";
+import './style.less';
+import React from 'react';
+import assign from 'object-assign';
+import moment from 'moment';
+import {CheckBoxItem, RadioItem, SelectItem, ComboboxItem, DateTimeAreaItem} from '../form-item/index';
+import {Button, DatePicker, TimePicker, InputNumber, Input, Form, Cascader, Row, Col, Tabs} from 'antd';
 
 const createForm = Form.create;
 const FormItem = Form.Item;
@@ -11,28 +11,32 @@ const TabPane = Tabs.TabPane;
 
 class QueryTerms extends React.Component {
     componentWillMount() {
-        //默认值要写在这里
-        this.props.options.items.forEach((v)=> {
+        // 默认值要写在这里
+        this.props.options.items.forEach((v) => {
             if (v instanceof Array) {
-                v.forEach((value)=> {
+                v.forEach((value) => {
                     this.setDefaultValue(value);
-                })
+                });
             } else {
                 this.setDefaultValue(v);
             }
         });
-    };
+    }
 
     componentDidMount() {
         let onDidMount = this.props.options.onDidMount;
         let onChange = this.props.options.onChange;
         const formData = this.getFormData();
-        onDidMount && onDidMount(formData);
-        onChange && onChange(formData);
+        if (onDidMount) {
+            onDidMount(formData);
+        }
+        if (onChange) {
+            onChange(formData);
+        }
     }
 
     static defaultProps = {};
-    setDefaultValue = (itemOptions)=> {
+    setDefaultValue = (itemOptions) => {
         const type = itemOptions.type;
         let defaultValue = itemOptions.defaultValue;
         const name = itemOptions.name;
@@ -78,7 +82,7 @@ class QueryTerms extends React.Component {
     };
 
     state = {};
-    getFormData = ()=> {
+    getFormData = () => {
         let formData = null;
         this.props.form.validateFieldsAndScroll((errors, values) => {
             if (!!errors) {
@@ -89,9 +93,9 @@ class QueryTerms extends React.Component {
             const dateToString = options.resultDateToString === undefined ? true : options.resultDateToString;
 
             if (dateToString) {
-                options.items.forEach((value, index, array)=> {
+                options.items.forEach((value) => {
                     if (value instanceof Array) {
-                        value.forEach((v)=> {
+                        value.forEach((v) => {
                             const format = v.format;
                             const name = v.name;
                             const startName = v.startName;
@@ -106,7 +110,7 @@ class QueryTerms extends React.Component {
                             if (values[endName] instanceof Date) {
                                 values[endName] = this.dateToString(values[endName], format);
                             }
-                        })
+                        });
                     } else {
                         const format = value.format;
                         const name = value.name;
@@ -129,15 +133,17 @@ class QueryTerms extends React.Component {
         });
         return formData;
     };
-    handleSubmit = (e)=> {
-        e && e.preventDefault();
+    handleSubmit = (e) => {
+        if (e) {
+            e.preventDefault();
+        }
         const formData = this.getFormData();
         if (formData) {
             this.props.options.onSubmit(formData);
         }
     };
 
-    dateToString = (date, format)=> {
+    dateToString = (date, format) => {
         format = format.replace('yyyy', 'YYYY');
         format = format.replace('dd', 'DD');
         return moment(date).format(format);
@@ -148,10 +154,10 @@ class QueryTerms extends React.Component {
         return moment(str, format).toDate();
     };
 
-    getItem = (options, itemOptions)=> {
+    getItem = (options, itemOptions) => {
         itemOptions = assign({}, {
             fieldWidth: '150px',
-            labelWidth: options.labelWidth || 'auto'
+            labelWidth: options.labelWidth || 'auto',
         }, itemOptions);
         const searchOnChange = itemOptions.searchOnChange;
         const itemType = itemOptions.type;
@@ -180,13 +186,13 @@ class QueryTerms extends React.Component {
             className: 'query-terms-label',
             style: {
                 width: labelWidth,
-            }
+            },
         };
         let itemProps = {
             className: 'query-terms-item',
             style: {
                 width: fieldWidth,
-            }
+            },
         };
         let eleProps = assign(
             {},
@@ -194,12 +200,12 @@ class QueryTerms extends React.Component {
                 placeholder,
                 style: {
                     width: '100%',
-                }
+                },
             },
             props
         );
 
-        const {getFieldProps, setFieldsValue, getFieldValue} = this.props.form;
+        const {getFieldProps, setFieldsValue} = this.props.form;
         let fieldPropsOptions;
         let startFieldPropsOptions;
         let endFieldPropsOptions;
@@ -218,34 +224,42 @@ class QueryTerms extends React.Component {
             </div>
         ) : '';
         const searchDelay = 300;
-        eleProps.onChange = (e)=> {
+        eleProps.onChange = (e) => {
             const value = e && e.target ? e.target.value : e;
             setFieldsValue({
                 [name]: value,
             });
             if (['input', 'inputNumber', 'combobox'].includes(itemType)) {
                 clearTimeout(this.searchTimeout);
-                this.searchTimeout = setTimeout(()=> {
-                    searchOnChange && this.handleSubmit();
+                this.searchTimeout = setTimeout(() => {
+                    if (searchOnChange) {
+                        this.handleSubmit();
+                    }
                 }, searchDelay);
             } else {
-                searchOnChange && this.handleSubmit();
+                if (searchOnChange) {
+                    this.handleSubmit();
+                }
             }
-            itemOptions.onChange && itemOptions.onChange(value);
-            options.onChange && options.onChange(this.getFormData());
+            if (itemOptions.onChange) {
+                itemOptions.onChange(value);
+            }
+            if (options.onChange) {
+                options.onChange(this.getFormData());
+            }
         };
         eleProps.onKeyDown = (e) => {
             if (e.key === 'Enter') {
                 this.handleSubmit();
             }
-        }
+        };
         switch (itemType) {
             case 'input':
             {
                 return (
                     <Col>
                         {labelJsx}
-                        <FormItem  {...itemProps}>
+                        <FormItem {...itemProps}>
                             <Input {...fieldPropsOptions} {...eleProps}/>
                         </FormItem>
                     </Col>
@@ -256,13 +270,16 @@ class QueryTerms extends React.Component {
                 const min = itemOptions.min;
                 const max = itemOptions.max;
                 const inputProps = {};
-                min !== undefined && (inputProps.min = min);
-                max !== undefined && (inputProps.max = max);
-
+                if (min !== undefined) {
+                    inputProps.min = min;
+                }
+                if (max !== undefined) {
+                    inputProps.max = max;
+                }
                 return (
                     <Col>
                         {labelJsx}
-                        <FormItem  {...itemProps}>
+                        <FormItem {...itemProps}>
                             <InputNumber {...fieldPropsOptions} {...inputProps} {...eleProps}/>
                         </FormItem>
                     </Col>
@@ -279,7 +296,7 @@ class QueryTerms extends React.Component {
                 return (
                     <Col>
                         {labelJsx}
-                        <FormItem  {...itemProps}>
+                        <FormItem {...itemProps}>
                             <ComboboxItem
                                 separator={separator}
                                 size={size}
@@ -304,15 +321,15 @@ class QueryTerms extends React.Component {
                 const url = itemOptions.url;
                 const defaultValue = itemOptions.defaultValue;
                 if (itemType === 'selectSearch') {
-                    eleProps = assign({}, {showSearch: true}, eleProps)
+                    eleProps = assign({}, {showSearch: true}, eleProps);
                 }
                 if (itemType === 'selectMultiple') {
-                    eleProps = assign({}, {multiple: true}, eleProps)
+                    eleProps = assign({}, {multiple: true}, eleProps);
                 }
                 return (
                     <Col>
                         {labelJsx}
-                        <FormItem  {...itemProps}>
+                        <FormItem {...itemProps}>
                             <SelectItem
                                 size={size}
                                 url={url}
@@ -322,8 +339,8 @@ class QueryTerms extends React.Component {
                                 {...fieldPropsOptions}
                                 {...eleProps}
                             >
-                                {opts.map((v, i)=> {
-                                    return <Option key={i} value={v.value}>{v.label}</Option>
+                                {opts.map((v, i) => {
+                                    return <Option key={i} value={v.value}>{v.label}</Option>;
                                 })}
                             </SelectItem>
                         </FormItem>
@@ -335,7 +352,7 @@ class QueryTerms extends React.Component {
                 return (
                     <Col>
                         {labelJsx}
-                        <FormItem  {...itemProps}>
+                        <FormItem {...itemProps}>
                             <Cascader
                                 {...fieldPropsOptions}
                                 options={itemOptions.options}
@@ -370,16 +387,16 @@ class QueryTerms extends React.Component {
                 if (labelWidth !== 'auto') {
                     marginLeft = labelWidth;
                 } else if (label) {
-                    marginLeft = (label.length + 1) * labelFontSize + 'px';
+                    marginLeft = `${(label.length + 1) * labelFontSize}px`;
                 }
                 return (
 
                     <Col>
-                        <FormItem  {...itemProps} >
-                            <div className="text-label" ref='label'>
+                        <FormItem {...itemProps} >
+                            <div className="text-label" ref="label">
                                 {labelJsx}
                             </div>
-                            <div style={{marginLeft:marginLeft}}>
+                            <div style={{marginLeft}}>
                                 <Element
                                     type={type}
                                     size={size}
@@ -414,7 +431,7 @@ class QueryTerms extends React.Component {
                 return (
                     <Col>
                         {labelJsx}
-                        <FormItem  {...itemProps}>
+                        <FormItem {...itemProps}>
                             <Element
                                 {...fieldPropsOptions}
                                 format={format}
@@ -437,7 +454,7 @@ class QueryTerms extends React.Component {
                 return (
                     <Col>
                         {labelJsx}
-                        <FormItem  {...itemProps}>
+                        <FormItem {...itemProps}>
                             <DateTimeAreaItem
                                 {...typeProps}
                                 width={fieldWidth}
@@ -447,29 +464,29 @@ class QueryTerms extends React.Component {
                             />
                         </FormItem>
                     </Col>
-                )
+                );
             }
             case 'tabsCard':
             case 'tabs':
             {
-                let props = {};
+                let tabsProps = {};
                 // 统一tab样式
-                /*if(itemType === 'tabsCard'){
+                /* if(itemType === 'tabsCard'){
                  props.type = 'card';
-                 }*/
+                 } */
                 return (
                     <Tabs
                         onChange={eleProps.onChange}
                         defaultActiveKey={itemOptions.defaultValue}
-                        {...props}
+                        {...tabsProps}
                     >
-                        {itemOptions.options.map((v, i)=> {
+                        {itemOptions.options.map((v) => {
                             return (
                                 <TabPane tab={v.label} key={v.value}/>
-                            )
+                            );
                         })}
                     </Tabs>
-                )
+                );
             }
             case 'customer':
             {
@@ -477,7 +494,7 @@ class QueryTerms extends React.Component {
                 return (
                     <Col>
                         {labelJsx}
-                        <FormItem  {...itemProps}>
+                        <FormItem {...itemProps}>
                             <Component
                                 {...fieldPropsOptions}
                                 {...eleProps}
@@ -485,32 +502,31 @@ class QueryTerms extends React.Component {
                         </FormItem>
 
                     </Col>
-                )
+                );
             }
             default:
             {
                 throw Error(`查询条件没有此类型：type:${itemType}`);
             }
         }
-
     };
 
     render() {
         const options = this.props.options;
         const searchBtnText = options.searchBtnText || '查询';
         const extraAfterSearchButton = options.extraAfterSearchButton;
-        const items = options.items.map((value, index, array)=> {
+        const items = options.items.map((value, index, array) => {
             if (value.hidden) return '';
             const rowProps = {
-                type: "flex",
-                justify: "start",
-                align: "top"
+                type: 'flex',
+                justify: 'start',
+                align: 'top',
             };
             let buttons = [];
             if (index === array.length - 1) {
                 if (options.showSearchBtn) {
                     buttons.push(
-                        <Col key='search-btn'>
+                        <Col key="search-btn">
                             <FormItem className="query-terms-item" style={{marginTop: '-1px'}}>
                                 <Button type="primary" onClick={this.handleSubmit}>{searchBtnText}</Button>
                             </FormItem>
@@ -519,7 +535,7 @@ class QueryTerms extends React.Component {
                 }
                 if (extraAfterSearchButton) {
                     buttons.push(
-                        <Col key='extra-btn'>
+                        <Col key="extra-btn">
                             <FormItem className="query-terms-item" style={{marginTop: '-1px'}}>
                                 {extraAfterSearchButton}
                             </FormItem>
@@ -531,23 +547,22 @@ class QueryTerms extends React.Component {
                 // 一行多个查询条件
                 return (
                     <Row key={index} {...rowProps}>
-                        {value.map((v, i, a)=> {
+                        {value.map((v, i, a) => {
                             return [
                                 this.getItem(options, v),
-                                i === a.length - 1 ? buttons : undefined
+                                i === a.length - 1 ? buttons : undefined,
                             ];
                         })}
                     </Row>
-                )
-            } else {
-                // 一行一个查询条件
-                return (
-                    <Row key={index} {...rowProps}>
-                        {this.getItem(options, value)}
-                        {buttons}
-                    </Row>
-                )
+                );
             }
+            // 一行一个查询条件
+            return (
+                <Row key={index} {...rowProps}>
+                    {this.getItem(options, value)}
+                    {buttons}
+                </Row>
+            );
         });
         return (
             <div className="query-terms">
@@ -556,8 +571,7 @@ class QueryTerms extends React.Component {
                 </Form>
             </div>
         );
-    };
+    }
 }
 
-QueryTerms = createForm()(QueryTerms);
-export default QueryTerms;
+export default createForm()(QueryTerms);
