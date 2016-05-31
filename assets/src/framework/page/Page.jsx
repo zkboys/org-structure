@@ -2,7 +2,6 @@ import React from 'react';
 import {Breadcrumb, Spin} from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import {Link} from 'react-router';
-import {getCurrentHeaderMenuByUrl} from '../header/HeaderMenuUtil';
 import {getCurrentSidebarMenu} from '../sidebar/SidebarMenuUtil';
 import Settings from '../settings/Settings';
 import PubSubMsg from '../../common/pubsubmsg';
@@ -134,11 +133,8 @@ class Page extends React.Component {
     }
 
     render() {
-        let pageChildren = (
-            <Spin spinning={this.props.loading}>
-                {this.props.children}
-            </Spin>
-        );
+        let pageChildren = this.props.children;
+
         if (this.state.showPageAnimate) {
             pageChildren = (
                 <QueueAnim animConfig={this.props.animConfig} delay={100}>
@@ -149,14 +145,18 @@ class Page extends React.Component {
             );
         }
         return (
+
             <div className={"admin-page "}>
                 <div className="admin-page-content">
-                    <div className="admin-page-content-inner">
-                        {this.state.pageHeader}
-                        {pageChildren}
-                    </div>
+                    <Spin spinning={this.props.loading}>
+                        <div className="admin-page-content-inner">
+                            {this.state.pageHeader}
+                            {pageChildren}
+                        </div>
+                    </Spin>
                 </div>
             </div>
+
         );
     }
 }

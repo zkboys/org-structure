@@ -1,5 +1,21 @@
 export default[
     {
+        path: '/dev/menus',
+        getComponent: (location, cb) => {
+            require.ensure([], (require) => {
+                cb(null, require('./menu/SystemMenu.jsx'));
+            });
+        },
+    },
+    {
+        path: '/dev/components',
+        getComponent: (location, cb) => {
+            require.ensure([], (require) => {
+                cb(null, require('../component/Index.jsx'));
+            });
+        },
+    },
+    {
         path: '/organization/organizations',
         getComponent: (location, cb) => {
             require.ensure([], (require) => {
@@ -20,14 +36,6 @@ export default[
         getComponent: (location, cb) => {
             require.ensure([], (require) => {
                 cb(null, require('../component/list-page/ListPage.jsx'));
-            });
-        },
-    },
-    {
-        path: '/system/menu',
-        getComponent: (location, cb) => {
-            require.ensure([], (require) => {
-                cb(null, require('./menu/SystemMenu.jsx'));
             });
         },
     },

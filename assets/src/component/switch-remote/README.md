@@ -12,7 +12,7 @@ checkedChildren|否|开启式显示文字|string/jsx|"是"
 unCheckedChildren|否|关闭显示文字|string/jsx|"否"  
                     
 ## 说明
-- url对应的后台接口对状态进行切换，如果传入true，状态改为false，如果传入false，状态改为true
-- 表格中使用是，一定要加上key，否则多页之间有干扰
-- 要通过onChange改变数据状态，否则页面重新渲染之后，Switch状态会不准确。                    
+1. url对应的后台接口对状态进行切换，如果传入true，状态改为false，如果传入false，状态改为true
+1. 表格中使用是，一定要加上key，否则多页之间有干扰
+1. 要通过onChange改变数据状态，否则页面重新渲染之后，Switch状态会不准确。                    
  

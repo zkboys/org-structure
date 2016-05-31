@@ -11,23 +11,6 @@ class Demo extends React.Component {
     }
 
     render() {
-        const columns = [{
-            title: '参数',
-            dataIndex: 'props',
-            key: 'props'
-        }, {
-            title: '说明',
-            dataIndex: 'desc',
-            key: 'desc'
-        }, {
-            title: '类型',
-            dataIndex: 'type',
-            key: 'type'
-        }, {
-            title: '默认值',
-            dataIndex: 'default',
-            key: 'default'
-        }];
         return (
             <div>
                 <h2>单列</h2>
@@ -93,23 +76,6 @@ class Demo extends React.Component {
                         </table>
                     </div>
                 </Panel>
-                <br/>
-                <Table
-                    pagination={false}
-                    dataSource={ [{
-                                      key: '1',
-                                      props: 'header',
-                                      desc: '头部',
-                                      type: 'string | object | array',
-                                      default:'参见Panel.jsx源代码'
-                                    },{
-                                      key: '2',
-                                      props: 'width',
-                                      desc: '宽度',
-                                      type: 'string',
-                                      default:'100%'
-                                    }]}
-                    columns={columns}/>
 
             </div>
         );
