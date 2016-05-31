@@ -31,7 +31,7 @@ class SwitchRemote extends React.Component {
         if (this.state.isLoading) {
             return false;
         }
-        const url = `/api/${this.props.url}`;
+        const url = this.props.url;
         const params = this.props.params;
         const loading = <Icon type="loading"/>;
         this.setState({

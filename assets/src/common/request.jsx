@@ -28,23 +28,28 @@ const filter = (req) => {
 };
 export default {
     get(url) {
+        // 根据约定，所有得ajax请求以api开头
+        url = `/api${url}`;
         return superagent
             .get(url)
             .use(filter);
     },
     post(url) {
+        url = `/api${url}`;
         return superagent
             .post(url)
             .use(filter)
             .send({_csrf: getCsrf()});
     },
     put(url) {
+        url = `/api${url}`;
         return superagent
             .put(url)
             .use(filter)
             .send({_csrf: getCsrf()});
     },
     del(url) {
+        url = `/api${url}`;
         return superagent
             .del(url)
             .use(filter)

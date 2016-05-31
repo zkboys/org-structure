@@ -28,7 +28,7 @@ class SignIn extends React.Component {
                 loading: true,
             });
             Request
-                .post('/api/signin')
+                .post('/signin')
                 .send(values)
                 .end((err, res) => {
                     this.setState({

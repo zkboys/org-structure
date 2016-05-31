@@ -32,7 +32,6 @@ class BaseComponent extends React.Component {
             startCb: null,
             errorCb: null,
             successCb: null,
-            isApiRequest: true,
             get(url) {
                 this.url = url;
                 this.type = 'get';
@@ -61,11 +60,6 @@ class BaseComponent extends React.Component {
                 this.withNoLoading = true;
                 return this;
             },
-            isApi(b) {
-                if (b !== undefined) {
-                    this.isApiRequest = b;
-                }
-            },
             setErrorMsg(errorMsg) {
                 this.errorMsg = TipMessage[errorMsg];
                 return this;
@@ -86,10 +80,6 @@ class BaseComponent extends React.Component {
                 if (!this.url) {
                     throw Error('request need a url!');
                 }
-                if (this.isApiRequest && this.url.indexOf('/api') !== 0) {
-                    this.url = `/api${this.url}`;
-                }
-
                 // ajax结束回调函数
                 let endCb = (err, res) => {
                     if (err || !res.ok) {
