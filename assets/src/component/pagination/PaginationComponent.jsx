@@ -1,17 +1,17 @@
 import './style.less';
 import React from 'react';
 import assign from 'object-assign';
-import {Pagination, Row, Col, Button} from 'antd';
+import {Pagination} from 'antd';
 
 class PaginationComponent extends React.Component {
     state = {
-        pageSize: this.props.options.pageSize
+        pageSize: this.props.options.pageSize,
     };
     static defaultProps = {};
-    handleChange = (currentPage, pageSize)=> {
+    handleChange = (currentPage, pageSize) => {
         if (pageSize) {
             this.setState({
-                pageSize
+                pageSize,
             });
             currentPage = 1;
         } else {
@@ -29,7 +29,7 @@ class PaginationComponent extends React.Component {
             showQuickJumper: true,
             showMessage: true,
         }, options);
-        
+
         const pageSize = options.pageSize;
         const currentPage = options.currentPage;
         const totalCount = options.totalCount;
@@ -37,26 +37,36 @@ class PaginationComponent extends React.Component {
         const showQuickJumper = options.showQuickJumper;
         const showMessage = options.showMessage;
         const props = {};
-        showSizeChanger && (props.showSizeChanger = true);
-        showQuickJumper && (props.showQuickJumper = true);
-
+        if (showSizeChanger) {
+            props.showSizeChanger = true;
+        }
+        if (showQuickJumper) {
+            props.showQuickJumper = true;
+        }
+        const totalPage = Math.ceil(totalCount / pageSize);
+        let style = this.props.style;
+        if (totalPage <= 1) {
+            //style = assign({}, {display: 'none'}, style);
+        }
         return (
-            <div className="pagination-component" style={this.props.style}>
-                <Pagination
-                    {...props}
-                    onShowSizeChange={this.handleChange}
-                    onChange={this.handleChange}
-                    defaultCurrent={1}
-                    pageSize={pageSize}
-                    current={currentPage}
-                    total={totalCount}/>
-                {showMessage ?
-                    <div className="total-count">
-                        共{Math.ceil(totalCount / pageSize)}页 {totalCount}条数据
-                    </div>
-                    : ''
-                }
-                <div style={{clear:'both'}}></div>
+            <div className="pagination-component" style={style}>
+                <div className="pagination-wrap">
+                    <Pagination
+                        {...props}
+                        onShowSizeChange={this.handleChange}
+                        onChange={this.handleChange}
+                        defaultCurrent={1}
+                        pageSize={pageSize}
+                        current={currentPage}
+                        total={totalCount}/>
+                    {showMessage ?
+                        <div className="total-count">
+                            共{totalPage}页 {totalCount}条数据
+                        </div>
+                        : ''
+                    }
+                </div>
+                <div style={{clear: 'both'}}></div>
             </div>
         );
     }
