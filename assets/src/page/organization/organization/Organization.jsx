@@ -1,9 +1,9 @@
 import React from 'react';
 import {Button, Form, Input, Tree, Row, Col, Modal, message} from 'antd';
-import BaseComponent from '../../component/BaseComponent';
-import Page from '../../framework/page/Page';
-import {convertToTree} from '../../common/common';
-import FIcon from '../../component/faicon/FAIcon';
+import BaseComponent from '../../../component/BaseComponent';
+import Page from '../../../framework/page/Page';
+import {convertToTree} from '../../../common/common';
+import FIcon from '../../../component/faicon/FAIcon';
 
 const TreeNode = Tree.TreeNode;
 const createForm = Form.create;

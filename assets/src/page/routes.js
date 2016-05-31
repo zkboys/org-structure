@@ -1,4 +1,10 @@
-export default[
+let routes = [].concat(
+    require('./organization/routes.js')
+);
+
+export default routes;
+
+const orhterRoutes = [
     {
         path: '/dev/menus',
         getComponent: (location, cb) => {
@@ -12,22 +18,6 @@ export default[
         getComponent: (location, cb) => {
             require.ensure([], (require) => {
                 cb(null, require('../component/Index.jsx'));
-            });
-        },
-    },
-    {
-        path: '/organization/organizations',
-        getComponent: (location, cb) => {
-            require.ensure([], (require) => {
-                cb(null, require('./organization/Organization.jsx'));
-            });
-        },
-    },
-    {
-        path: '/organization/users',
-        getComponent: (location, cb) => {
-            require.ensure([], (require) => {
-                cb(null, require('./user/UserList.jsx'));
             });
         },
     },
