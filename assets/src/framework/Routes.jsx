@@ -3,7 +3,7 @@ import {Router} from 'react-router';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
 import PubSubMsg from '../common/pubsubmsg';
 import {getCurrentSidebarMenu} from './sidebar/SidebarMenuUtil';
-import pageRouts from '../page/routes';
+import pageRouts from '../page/RoutesCfg';
 
 const browserHistory = createBrowserHistory();
 /*
