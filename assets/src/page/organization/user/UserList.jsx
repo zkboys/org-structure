@@ -1,11 +1,11 @@
 import React from 'react';
 import assign from 'object-assign';
-import QueryTerms from '../../component/query-terms/QueryTerms';
-import PaginationComponent from '../../component/pagination/PaginationComponent';
-import Page from '../../framework/page/Page';
-import BaseComponent from '../../component/BaseComponent';
+import QueryTerms from '../../../component/query-terms/QueryTerms';
+import PaginationComponent from '../../../component/pagination/PaginationComponent';
+import Page from '../../../framework/page/Page';
+import BaseComponent from '../../../component/BaseComponent';
 import {Table, Button, Modal, Form, message, Icon, Popconfirm} from 'antd';
-import SwitchRemote from '../../component/switch-remote/SwitchRemote';
+import SwitchRemote from '../../../component/switch-remote/SwitchRemote';
 import UserEdit from './UserEdit';
 
 const createForm = Form.create;
