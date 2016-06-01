@@ -1,16 +1,38 @@
 import assign from 'object-assign';
 import Storage from './storage';
+import Request from './request';
 
 export function getCsrf() {
     return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 }
 
 /**
- * 获取当前登陆用户数据
+ * 获取当前登陆用户数据，如果获取失败，跳转登录。
  * @returns {object}
  */
 export function getCurrentLoginUser() {
-    return Storage.session.get('currentLoginUser');
+    // 这个session是浏览器tab页关闭就清除
+    // 后台存放用户信息的session是浏览器窗口关闭才失效
+    // 如果关闭tab，前端session清除，后端session未清除，后端允许跳转未登录页面（对于后端来说，是已经登录状态）
+    // 调用如下代码，就会返回null，然后报错。
+    // 调用signout接口，清除后端得session，重新跳转当前页面，就会重新走登录。
+    // 这样关闭tab页，就算用户退出登录。
+    const currentLoginUser = Storage.session.get('currentLoginUser');
+    if (!currentLoginUser) {
+        const pathName = location.pathname;
+        Request
+            .post('/signout')
+            .send({_csrf: getCsrf()})
+            .end((err, res) => {
+                if (err || !res.ok) {
+                    location.href = '/signin';
+                } else {
+                    location.href = pathName;
+                }
+            });
+        return null;
+    }
+    return currentLoginUser;
 }
 
 /**
