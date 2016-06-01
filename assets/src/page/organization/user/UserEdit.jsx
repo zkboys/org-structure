@@ -1,8 +1,8 @@
 import React from 'react';
-import BaseComponent from '../../../component/BaseComponent';
+import BaseComponent from '../../component/BaseComponent';
 import {Form, Input, Radio, Icon, TreeSelect, Row, Col, Modal, message, Switch} from 'antd';
-import ValidationRule from '../../../common/validation-rule';
-import {convertToTree} from '../../../common/common';
+import ValidationRule from '../../common/validation-rule';
+import {convertToTree} from '../../common/common';
 
 const createForm = Form.create;
 const FormItem = Form.Item;
