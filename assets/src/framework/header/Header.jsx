@@ -3,16 +3,14 @@ import {Badge, Menu, Popconfirm, message} from 'antd';
 import {Link} from 'react-router';
 import FAIcon from '../../component/faicon/FAIcon';
 import Request from '../../common/request';
-import {getCurrentLoginUser, getCsrf} from '../../common/common';
+import {getCurrentLoginUser} from '../../common/common';
 import UserAvatar from '../../component/user-avatar/UserAvatar';
 import TipMessage from '../../common/tip-message';
 class Header extends React.Component {
     handleExit = () => {
         Request
             .post('/signout')
-            .send({_csrf: getCsrf()})
             .end((err, res) => {
-                console.log(err, res);
                 if (err || !res.ok) {
                     message.error(TipMessage.logoutError);
                 } else {
@@ -85,7 +83,7 @@ class Header extends React.Component {
                         </Link>
                     </li>
                     <li className="admin-header-menu-item">
-                        <Popconfirm title="您确定要退出系统吗？" onConfirm={this.handleExit}>
+                        <Popconfirm placement="bottomRight" title="您确定要退出系统吗？" onConfirm={this.handleExit}>
                             <a href="#">
                                 <FAIcon type="fa-sign-out"/>
                                 <span>退出系统</span>

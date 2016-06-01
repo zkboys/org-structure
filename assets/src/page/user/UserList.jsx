@@ -4,12 +4,11 @@ import QueryTerms from '../../component/query-terms/QueryTerms';
 import PaginationComponent from '../../component/pagination/PaginationComponent';
 import Page from '../../framework/page/Page';
 import BaseComponent from '../../component/BaseComponent';
-import {Table, Button, Modal, Form, message, Icon, Popconfirm} from 'antd';
+import {Table, Button, Form, message, Icon, Popconfirm} from 'antd';
 import SwitchRemote from '../../component/switch-remote/SwitchRemote';
 import UserEdit from './UserEdit';
 
 const createForm = Form.create;
-const confirm = Modal.confirm;
 
 class UserList extends BaseComponent {
     state = {
@@ -71,7 +70,7 @@ class UserList extends BaseComponent {
             title: '性别',
             dataIndex: 'gender',
             key: 'gender',
-            render(text) {
+            render: (text) => {
                 let gender = '未填写';
                 if (text === 'male') {
                     gender = '男';
@@ -168,18 +167,11 @@ class UserList extends BaseComponent {
     handleSearch = (queryData = this.state.queryData) => {
         queryData.size = queryData.pageSize;
         queryData.offset = (queryData.currentPage - 1) * queryData.pageSize;
-        console.log(queryData);
         this.request()
             .get('/organization/users')
             .params(queryData)
-            .success((data, res) => {
-                console.log(data, res);
-                let tableData = data.results.map((v, i) => {
-                    if (v.key === undefined) {
-                        v.key = i;
-                    }
-                    return v;
-                });
+            .success((data) => {
+                let tableData = data.results;
                 const totalCount = data.totalCount;
                 this.setState({
                     queryData,
@@ -189,6 +181,7 @@ class UserList extends BaseComponent {
             })
             .end();
     };
+
     hideEditModal = () => {
         this.setState({
             showAddModal: false,
@@ -196,18 +189,20 @@ class UserList extends BaseComponent {
         this.setState({
             editingUserId: null,
         });
-    }
+    };
+
     showEditModal = () => {
         this.setState({
             showAddModal: true,
         });
-    }
+    };
+
     handleAdd = () => {
         this.setState({
             editingUser: null,
         });
         this.showEditModal();
-    }
+    };
 
     handleDelete = (id) => {
         if (this.state.deletingId) {
@@ -229,7 +224,7 @@ class UserList extends BaseComponent {
                     deletingId: null,
                 });
             });
-    }
+    };
 
     handleEdit = (id) => {
         this.setState({
@@ -244,14 +239,11 @@ class UserList extends BaseComponent {
                 this.showEditModal();
             })
             .end();
-    }
+    };
 
     render() {
         const data = this.state.tableData;
         const paginationOptions = {
-            showSizeChanger: true,
-            showQuickJumper: true,
-            showMessage: true,
             pageSize: this.state.queryData.pageSize,
             currentPage: this.state.queryData.currentPage,
             totalCount: this.state.totalCount,
@@ -270,6 +262,8 @@ class UserList extends BaseComponent {
                     <Button type="primary" size="large" onClick={this.handleAdd}> 添加</Button>
                 </div>
                 <Table
+                    size="middle"
+                    rowKey={(record) => record._id}
                     columns={this.columns}
                     dataSource={data}
                     pagination={false}

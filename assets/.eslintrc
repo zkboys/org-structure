@@ -36,9 +36,10 @@
         "consistent-return": 0,
         // 和ide的format冲突，这里改一下。
         "indent": [2, 4],
+        "object-curly-spacing": 0, // { 内侧空格 }
+        "no-underscore-dangle": 0, // 下划线命名，数据库返回的 _id 总是报错
         "react/jsx-indent": [2, 4],
         "react/jsx-indent-props": [2, 4],
-        "object-curly-spacing": 0, // { 内侧空格 }
         "react/jsx-space-before-closing": 0 // <FIcon /> 空格
     }
 }
