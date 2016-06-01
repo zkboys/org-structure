@@ -1,10 +1,10 @@
 import React from 'react';
 import {Button, Form, Input, Tree, Row, Col, Modal, message} from 'antd';
-import BaseComponent from '../../component/BaseComponent';
-import Page from '../../framework/page/Page';
-import {convertToTree} from '../../common/common';
-import FIcon from '../../component/faicon/FAIcon';
+import {BaseComponent, FAIcon} from 'component';
+import {Common} from 'common';
+import {Page} from 'framework';
 
+const convertToTree = Common.convertToTree;
 const TreeNode = Tree.TreeNode;
 const createForm = Form.create;
 const FormItem = Form.Item;
@@ -198,7 +198,7 @@ class Organization extends BaseComponent {
         this.showModal();
     };
     handleAddChild = () => {
-        this.props.form.validateFields(['key', 'text'], (errors, values) => {
+        this.props.form.validateFields(['key', 'text'], (errors) => {
             if (!!errors) {
                 message.info('请先选择一个组织');
                 return;
@@ -278,7 +278,7 @@ class Organization extends BaseComponent {
                 return (
                     <TreeNode
                         key={item.key}
-                        title={<span><FIcon type={item.description}/> {item.text}</span>}
+                        title={<span><FAIcon type={item.description}/> {item.text}</span>}
                     >
                         {loop(item.children)}
                     </TreeNode>
@@ -287,7 +287,7 @@ class Organization extends BaseComponent {
             return (
                 <TreeNode
                     key={item.key}
-                    title={<span><FIcon type={item.description}/> {item.text}</span>}
+                    title={<span><FAIcon type={item.description}/> {item.text}</span>}
                 />
             );
         });

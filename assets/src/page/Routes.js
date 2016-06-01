@@ -1,33 +1,12 @@
-export default[
-    {
-        path: '/dev/menus',
-        getComponent: (location, cb) => {
-            require.ensure([], (require) => {
-                cb(null, require('./menu/SystemMenu.jsx'));
-            });
-        },
-    },
+/*
+* 这个文件用来配置，无法在模块中配置的路由
+* */
+export default [
     {
         path: '/dev/components',
         getComponent: (location, cb) => {
             require.ensure([], (require) => {
                 cb(null, require('../component/Index.jsx'));
-            });
-        },
-    },
-    {
-        path: '/organization/organizations',
-        getComponent: (location, cb) => {
-            require.ensure([], (require) => {
-                cb(null, require('./organization/Organization.jsx'));
-            });
-        },
-    },
-    {
-        path: '/organization/users',
-        getComponent: (location, cb) => {
-            require.ensure([], (require) => {
-                cb(null, require('./user/UserList.jsx'));
             });
         },
     },
@@ -153,14 +132,6 @@ export default[
         },
     },
     {
-        path: '/shop/ValidationDemo',
-        getComponent: (location, cb) => {
-            require.ensure([], (require) => {
-                cb(null, require('./validation-demo/ValidationDemo'));
-            });
-        },
-    },
-    {
         path: '/service/MyForm',
         getComponent: (location, cb) => {
             require.ensure([], (require) => {
@@ -225,3 +196,4 @@ export default[
         },
     },
 ];
+

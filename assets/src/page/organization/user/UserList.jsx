@@ -1,11 +1,8 @@
 import React from 'react';
 import assign from 'object-assign';
-import QueryTerms from '../../component/query-terms/QueryTerms';
-import PaginationComponent from '../../component/pagination/PaginationComponent';
-import Page from '../../framework/page/Page';
-import BaseComponent from '../../component/BaseComponent';
+import {Page} from 'framework';
+import {BaseComponent, QueryTerms, PaginationComponent, SwitchRemote, ToolBar} from 'component';
 import {Table, Button, Form, message, Icon, Popconfirm} from 'antd';
-import SwitchRemote from '../../component/switch-remote/SwitchRemote';
 import UserEdit from './UserEdit';
 
 const createForm = Form.create;
@@ -258,9 +255,9 @@ class UserList extends BaseComponent {
         return (
             <Page header={'auto'} loading={this.state.loading}>
                 <QueryTerms options={this.queryOptions}/>
-                <div className="toolbar-top">
-                    <Button type="primary" size="large" onClick={this.handleAdd}> 添加</Button>
-                </div>
+                <ToolBar>
+                    <Button type="primary" onClick={this.handleAdd}> 添加</Button>
+                </ToolBar>
                 <Table
                     size="middle"
                     rowKey={(record) => record._id}

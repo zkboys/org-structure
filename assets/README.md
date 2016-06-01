@@ -1,8 +1,8 @@
 # 前端项目架构
 *基于node.js 和 ant.design*
 如果安装比较卡，可以翻墙，或者使用cnpm
+安装cnpm
 ```
-// 安装cnpm
 npm install -g cnpm --registry=https://registry.npm.taobao.org
 ```
 ## 需要node.js版本
@@ -25,20 +25,20 @@ npm run build-test #构建test（测试）环境前端代码
 npm run build-production #构建production（生产）环境前端代码
 ```
 
-
 ## dev模式
->- 结合webpack-dev-server 可以做到代码改动,浏览器自动刷新.
- - 使用webpack-dev-server 作为静态服务器,以--inline方式启动,js中会添加热刷新相关的代码.前后端各添加一个开发服务器的配置,对项目基本无侵入.
- - 注意前端静态服务器的端口，硬编码方式，多处有对应。
+- 结合webpack-dev-server 可以做到代码改动,浏览器自动刷新.
+- 使用webpack-dev-server 作为静态服务器,以--inline方式启动,js中会添加热刷新相关的代码.前后端各添加一个开发服务器的配置,对项目基本无侵入.
+- 注意前端静态服务器的端口，硬编码方式，多处有对应。
 
 nodejs为例:
 
-> 后台正式服务器添加一个启动模式:
+后台正式服务器添加一个启动模式:
 
 ```
 site_static_host: 'http://localhost:8086/s/' //这个指向webpack-dev-server服务器
 ```
-> 前端webpack.config.js添加一个启动模式:
+
+前端webpack.config.js添加一个启动模式:
 
 ```
 development: {
@@ -48,21 +48,23 @@ development: {
 },
 ```
 
-> webpack-dev-server 启动方式:(以dev方式启动)
+webpack-dev-server 启动方式:(以dev方式启动)
+
 *可以在assets目录中直接执行`npm run dev`*    
 
 ```
 cross-env NODE_ENV=development webpack-dev-server --port 8088 --progress --inline
 ```
 
-> 后端启动方式:(以devserver方式启动)
+后端启动方式:(以devserver方式启动)
+
 *可以在根目录中直接执行`npm run dev`*
 
 ```
 cross-env PORT=3001 cross-env NODE_ENV=development supervisor -w ./api,./common,./controllers,./middlewares,./models,./proxy ./app.js
 ```
 
-> 浏览器输入下面连接访问,就可以达到浏览器自动刷新,尤其适合双屏开发，调整页面细节情况.
+浏览器输入下面连接访问,就可以达到浏览器自动刷新,尤其适合双屏开发，调整页面细节情况.
 
 ```
 http://localhost:3001/    
@@ -79,25 +81,36 @@ http://localhost:3001/
         -framework              框架，头部，左侧导航等通用代码，Redux实现。各位同学不要修改这个文件夹下面的代码，如果有bug，或者需求，向有关同学提出。
         -page                   业务相关,平时开发主要在这个文件夹下进行.
             -所有文件夹          各个页面/模块业务代码,详见下面说明
-            -RoutesCfg.js       前端路由配置
-    -.eslintrc.js               ESLint配置
+            -Routes.js          前端路由配置
+    -.eslintrc                  ESLint配置
     -favicon.png                网站图标
     -LICENSE                    协议
     -package.json               项目资源管理配置文件.
     -READEME.md                 说明文档
     -webpack.config.js          构建工具webpack配置              
 ```
-> 每个页面为一个单独组件，统一放在page目录下,每个页面所用到的资源都放到一个文件夹下面,比如home
+
+每个页面为一个单独组件，统一放在page目录下,每个页面所用到的资源都放到一个文件夹下面,比如home
 
 ```
 home
     -img
         -home.jpg
-    -home.jsx    
+    -Home.jsx    
     -style.less
+    -Routes.js
+organization
+    -organization
+        -Organization.jsx
+    -user
+        -UserEdit.jsx
+        -UserList.jsx
+    Routes.js // 名字一定要是Routes.js，以后可能会做自动提取。    
 ```
+做大型应用时，route比较多，写在一个Routes.js文件中，一是Routes.js会过于庞大，不好维护，二是团队协作时，很容易产生冲突。因此每个模块的路由，写在自己的模块下(以Routes.js命名)，统一在page/Routes.js中定义各个模块无法定义的router。所有的路由最终规整到page-routes.js文件下，甚至可以通过代码，自动提取。
+
 ### URL(路由&菜单path)
-> 需要根据路由同步页面状态（浏览器url同步页面状态，主要是头部导航和左侧菜单的选中状态，以及页面要渲染哪个组件），所以需要有固定格式的url，方便提取信息。
+需要根据路由同步页面状态（浏览器url同步页面状态，主要是头部导航和左侧菜单的选中状态，以及页面要渲染哪个组件），所以需要有固定格式的url，方便提取信息。
 
 ```
 初步定为：http[s]://www.xxxx.com/sys-path/menu-path
@@ -105,22 +118,23 @@ sys-path：对应头部导航，确定是哪个系统，确定左侧显示哪组
 menu-path：左侧菜单对应的path，同时跟路由有对应。menu-path可以多级，比如users/lists/...
 ```
 ### 路由&菜单
-> 后端所有的get请求最终没有被截获的，都打到index.html
+后端所有的get请求最终没有被截获的，都打到index.html
 
 ```
 node后端路由配置（routes.js）：
 router.get('*', function (req, res, next) {
-    // ajax请求 抛出404 
+    // ajax请求 抛出404,其他请求直接render index.html 
     res.render('index.html');
 });
 ```
-> 前端所有没有截获的path，都打到Error404组件。
+
+前端所有没有截获的path，都打到Error404组件。
 
 ```
 详见 framework/Routes.jsx
 ```
 
-> 页面跳转要使用Link，否则会跳出单页面应用。
+页面跳转要使用Link，否则会跳出单页面应用。
 
 ```
 import {Link} from 'react-router'
@@ -172,8 +186,9 @@ http:localhost:8080/store/order/take_out/new_orders/21/edit
 ```
 
 #### 菜单数据来源：
-> 左侧菜单数据由后台提供，会包含path，路由前端单独维护，通过path跟菜单（或者Link）关联。
-> *注:头部和左侧菜单也可以前端硬编码,根据项目具体需求,具体决定.*
+左侧菜单数据由后台提供，会包含path，路由前端单独维护，通过path跟菜单（或者Link）关联。
+
+*注:头部和左侧菜单也可以前端硬编码,根据项目具体需求,具体决定.*
 
 ```
 左侧菜单数据:详见 framework/sidebar/
@@ -181,7 +196,7 @@ http:localhost:8080/store/order/take_out/new_orders/21/edit
 ```
 
 #### 菜单数据结构：
-> 采用扁平化结构，后台存储更具有通用性，前端会有转换函数，转为树状结构。如果后端提供的数据结构字段名无法对应，做一层数据转换，或者修改转换函数。
+采用扁平化结构，后台存储更具有通用性，前端会有转换函数，转为树状结构。如果后端提供的数据结构字段名无法对应，做一层数据转换，或者修改转换函数。
 
 ```javascript
 [
@@ -205,7 +220,7 @@ http:localhost:8080/store/order/take_out/new_orders/21/edit
 ```
 
 #### 地址栏与菜单自动关联
-> 点击菜单时(或其他链接)，不需要绑定事件，直接通过Link走路由跳转，地址栏改变后，会触发监听事件，同步头部导航和左侧菜单状态
+点击菜单时(或其他链接)，不需要绑定事件，直接通过Link走路由跳转，地址栏改变后，会触发监听事件，同步头部导航和左侧菜单状态
 
 ```
 browserHistory.listen(function (data) {
@@ -216,7 +231,7 @@ browserHistory.listen(function (data) {
 ### 各个页面头部的写法：
 #### 目前一共三种写法：
 
-> 第一种，直接写jsx：
+第一种，直接写jsx：
 
 ```
 let pageHeader = <div>
@@ -233,7 +248,7 @@ let pageHeader = <div>
 </Page>
 ```
 
-> 第二种，js对象：
+第二种，js对象：
 
 ```
 let pageHeader = {
@@ -249,7 +264,7 @@ let pageHeader = {
 </Page>
 ```
 
-> 第三种，根据左侧菜单自动获取：
+第三种，根据左侧菜单自动获取：
 
 ```
 <Page header='auto'>
@@ -258,7 +273,7 @@ let pageHeader = {
 ```
 
 ### 页面加载状态切换
-> 传给Page loading（true/false）属性即可
+传给Page loading（true/false）属性即可
 
 ```
 <Page loading={this.state.loading}>
@@ -267,7 +282,7 @@ let pageHeader = {
 ```
 
 ### 进场动画
-> Page组件中有默认进场动画，各个页面可以自定义进场动画
+Page组件中有默认进场动画，各个页面可以自定义进场动画
 
 ```
 let animConfig = [

@@ -1,11 +1,13 @@
-import _RadioItem from './RadioItem';
-import _CheckBoxItem from './CheckBoxItem';
-import _SelectItem from './SelectItem';
-import _ComboboxItem from './ComboboxItem';
-import _DateTimeAreaItem from './DateTimeAreaItem';
+import RadioItem from './RadioItem';
+import CheckBoxItem from './CheckBoxItem';
+import SelectItem from './SelectItem';
+import ComboboxItem from './ComboboxItem';
+import DateTimeAreaItem from './DateTimeAreaItem';
 
-export const RadioItem = _RadioItem;
-export const CheckBoxItem = _CheckBoxItem;
-export const SelectItem = _SelectItem;
-export const ComboboxItem = _ComboboxItem;
-export const DateTimeAreaItem = _DateTimeAreaItem;
+export {
+    RadioItem,
+    CheckBoxItem,
+    SelectItem,
+    ComboboxItem,
+    DateTimeAreaItem,
+};

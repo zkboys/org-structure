@@ -1,4 +1,5 @@
-var join = require('path').join;
+var path = require('path');
+var join = path.join;
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var webpack = require('webpack');
 var child_process = require('child_process');
@@ -72,6 +73,7 @@ module.exports = {
      * import js或者jsx文件时，可以忽略后缀名
      * */
     resolve: {
+        root: [path.resolve('./src')], //
         modulesDirectories: ['node_modules', (0, join)(__dirname, './node_modules')],
         extensions: ['', '.js', '.jsx']
     },
