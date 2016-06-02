@@ -19,7 +19,7 @@ desktop.ini
 
 .idea
 public/upload/*
-
+assets/src/page/AllRoutes.js
 *.sublime-project
 *.sublime-workspace
 *.swp
