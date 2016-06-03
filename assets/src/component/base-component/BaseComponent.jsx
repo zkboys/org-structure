@@ -1,7 +1,7 @@
 import React from 'react';
 import {message} from 'antd';
-import Request from '../common/request';
-import TipMessage from '../common/tip-message';
+import Request from '../../common/request';
+import TipMessage from '../../common/tip-message';
 
 class BaseComponent extends React.Component {
     // 页面上多个请求同时进行，用来记录loading数量
@@ -20,6 +20,7 @@ class BaseComponent extends React.Component {
             });
         }
     };
+    requests = [];
     request = () => {
         let self = this;
         return {
@@ -32,6 +33,7 @@ class BaseComponent extends React.Component {
             startCb: null,
             errorCb: null,
             successCb: null,
+            isEnd: false,
             get(url) {
                 this.url = url;
                 this.type = 'get';
@@ -82,10 +84,18 @@ class BaseComponent extends React.Component {
                 }
                 // ajax结束回调函数
                 let endCb = (err, res) => {
+                    this.isEnd = true;
+                    if (!this.withNoLoading) {
+                        self.endLoading();
+                    }
                     if (err || !res.ok) {
                         if (this.errorCb) {
                             this.errorCb(err, res);
                         } else {
+                            // FIXME 这个判断不靠谱，但是暂时可用
+                            if (String(err).indexOf('the network is offline') > -1) {
+                                return message.error('网络异常，请检查您得网络！', 1);
+                            }
                             message.error(this.errorMsg || res && res.body && res.body.message || '未知系统错误', 1);
                         }
                     } else {
@@ -97,11 +107,6 @@ class BaseComponent extends React.Component {
                             }
                         }
                     }
-
-                    if (!this.withNoLoading) {
-                        self.endLoading();
-                    }
-
                     // 所有处理完成之后的操作
                     if (cb) {
                         cb(err, res);
@@ -116,55 +121,55 @@ class BaseComponent extends React.Component {
                 if (!this.withNoLoading) {
                     self.startLoading();
                 }
+                this.isEnd = false;
+                let request;
+                setTimeout(() => {
+                    if (!this.isEnd && request) {
+                        let errorMassage = '请求超时，请检查您的网络';
+                        let err = new Error('timeout');
+                        let res = {
+                            body: {
+                                message: errorMassage,
+                            },
+                        };
+                        endCb(err, res);
+                        request.abort();
+                    }
+                }, 1000 * 10); // 10ms 超时时间
                 if (this.type === 'get') {
-                    Request
+                    request = Request
                         .get(this.url)
                         .query(this.paramsData)
                         .end(endCb);
                 } else if (this.type === 'put') {
-                    Request
+                    request = Request
                         .put(this.url)
                         .send(this.paramsData)
                         .end(endCb);
                 } else if (this.type === 'delete') {
-                    Request
+                    request = Request
                         .del(this.url)
                         .send(this.paramsData)
                         .end(endCb);
                 } else {
-                    Request
+                    request = Request
                         .post(this.url)
                         .send(this.paramsData)
                         .end(endCb);
                 }
+                self.requests.push(request);
                 return this;
             },
         };
     };
-    exportFile = (url, params) => {
-        let urlParams = [];
-        for (let p of Object.keys(params)) {
-            let key = p;
-            let value = params[p];
-            if (value !== undefined && value !== null && value !== '') {
-                urlParams.push({
-                    key,
-                    value,
-                });
-            }
-        }
-        let exportForm = document.createElement('form');
-        exportForm.method = 'get';
-        exportForm.action = url;
-        urlParams.forEach((v) => {
-            let input = document.createElement('input');
-            input.type = 'text';
-            input.name = v.key;
-            input.value = v.value;
-            exportForm.appendChild(input);
+
+    componentWillUnmount() {
+        // 组件卸载，打断当前组件未完成请求
+        // 子类要是要使用componentWillUnmount，需要显示的调用super().componentWillUnmount();
+        this.requests.forEach((r) => {
+            r.abort();
         });
-        exportForm.submit();
-    };
+    }
 }
 
 export default BaseComponent;

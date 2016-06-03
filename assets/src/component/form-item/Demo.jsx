@@ -3,7 +3,7 @@ import assign from 'object-assign'
 import QueryTerms from '../../component/query-terms/QueryTerms';
 import PaginationComponent from '../../component/pagination/PaginationComponent';
 import Page from '../../framework/page/Page';
-import BaseComponent from '../BaseComponent';
+import BaseComponent from '../base-component/BaseComponent';
 
 import {
     RadioItem,

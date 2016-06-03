@@ -14,7 +14,6 @@ export function setHeaderCurrentMenu() {
     };
 }
 
-
 export function setSidebarMenus() {
     return {
         type: SET_SIDEBAR_MENUS,

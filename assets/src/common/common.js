@@ -2,6 +2,40 @@ import assign from 'object-assign';
 import Storage from './storage';
 import Request from './request';
 
+/**
+ * 导出文件，内部使用form实现
+ * @param url {String} 路径
+ * @param params {Object} 请求参数
+ */
+export function exportFile(url, params) {
+    let urlParams = [];
+    for (let p of Object.keys(params)) {
+        let key = p;
+        let value = params[p];
+        if (value !== undefined && value !== null && value !== '') {
+            urlParams.push({
+                key,
+                value,
+            });
+        }
+    }
+    let exportForm = document.createElement('form');
+    exportForm.method = 'get';
+    exportForm.action = url;
+    urlParams.forEach((v) => {
+        let input = document.createElement('input');
+        input.type = 'text';
+        input.name = v.key;
+        input.value = v.value;
+        exportForm.appendChild(input);
+    });
+    exportForm.submit();
+}
+
+/**
+ * 获取csrf字符串
+ * @returns {string}
+ */
 export function getCsrf() {
     return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 }

@@ -176,8 +176,11 @@
             overflow-x: auto;
             overflow-y: scroll;
             background-color: #fff;
-            & > .ant-spin-nested-loading > .ant-spin {
-                position: fixed;
+            & > .ant-spin-nested-loading {
+                position: static;
+                & >.ant-spin {
+                    position: fixed;
+                }
             }
             .admin-page-content-inner {
                 min-width: 768px;

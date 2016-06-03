@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button, Form, Input, Tree, Row, Col, Alert, Modal, message} from 'antd';
-import BaseComponent from '../../component/BaseComponent';
+import BaseComponent from '../../component/base-component/BaseComponent';
 import Page from '../../framework/page/Page';
 import {convertToTree} from '../../common/common';
 import FIcon from '../../component/faicon/FAIcon';

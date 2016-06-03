@@ -1,6 +1,6 @@
 import QueryTerms from './query-terms/QueryTerms';
 import PaginationComponent from './pagination/PaginationComponent';
-import BaseComponent from './BaseComponent';
+import BaseComponent from './base-component/BaseComponent';
 import SwitchRemote from './switch-remote/SwitchRemote';
 import FAIcon from './faicon/FAIcon';
 import * as FormItem from './form-item';
