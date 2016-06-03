@@ -69,14 +69,14 @@ class Index extends React.Component {
     render() {
         return (
             <div>
-                <div style={{position: 'absolute', left: 10, top: 30, zIndex: 99}}>
+                <div style={{position: 'fixed', right: 60, top: 80, zIndex: 99}}>
                     <h1>目录</h1>
                     <ul>
                         {this.state.toc}
                     </ul>
                 </div>
                 <Page>
-                    <div style={{marginLeft: 170}}>
+                    <div style={{marginRight: 170}}>
                         {this.state.contents}
                     </div>
                 </Page>
