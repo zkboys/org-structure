@@ -94,9 +94,10 @@ class BaseComponent extends React.Component {
                         } else {
                             // FIXME 这个判断不靠谱，但是暂时可用
                             if (String(err).indexOf('the network is offline') > -1) {
-                                return message.error('网络异常，请检查您得网络！', 1);
+                                message.error('网络异常，请检查您得网络！', 1);
+                            } else {
+                                message.error(this.errorMsg || res && res.body && res.body.message || '未知系统错误', 1);
                             }
-                            message.error(this.errorMsg || res && res.body && res.body.message || '未知系统错误', 1);
                         }
                     } else {
                         if (res.type === 'text/html') {
