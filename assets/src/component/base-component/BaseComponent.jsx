@@ -165,7 +165,7 @@ class BaseComponent extends React.Component {
 
     componentWillUnmount() {
         // 组件卸载，打断当前组件未完成请求
-        // 子类要是要使用componentWillUnmount，需要显示的调用super().componentWillUnmount();
+        // 子类要是要使用componentWillUnmount，需要显示的调用super.componentWillUnmount();
         this.requests.forEach((r) => {
             r.abort();
         });
