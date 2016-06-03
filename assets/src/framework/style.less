@@ -19,10 +19,13 @@
 @sideBarMenuActiveFontColor: lighten(@primaryColor, 10%);
 
 @sideBarSubMenuFontColor: #999;
+body {
+    overflow-y: scroll;
+}
 
 .admin-header {
     position: fixed;
-    z-index: 100;
+    z-index: 9999;
     width: 100%;
     height: @headerHeight;
     background-color: @headerBgColor;
@@ -45,6 +48,11 @@
             display: block;
             color: @headerLogoFontColor;
         }
+    }
+    .admin-nav {
+        position: absolute;
+        left: 200px;
+        right: 0;
     }
     /*收起展开菜单按钮*/
     .admin-sidebar-toggle {
@@ -135,56 +143,29 @@
     position: absolute;
     top: @headerHeight;
     right: 0;
-    bottom: 0;
     left: @sideBarWidth;
     padding: 15px;
     overflow: hidden;
     box-sizing: border-box;
     .admin-page {
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
         .admin-page-header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 20px;
-            padding: 10px 5px 0 10px;
-            z-index: 99;
             background-color: #fff;
             .admin-page-header-title {
-                height: 42px;
-                padding: 10px 0 5px 15px;
+                height: 36px;
+                padding: 0 0 5px 15px;
                 border-bottom: 1px solid #eee;
                 font-size: 18px;
             }
             .ant-breadcrumb {
                 float: right;
-                margin-top: -25px;
-                margin-right: 10px;
+                margin-top: -33px;
             }
 
         }
-
-        .admin-page-content {
-            z-index: 88;
-            height: 100%;
-            width: 100%;
-            padding-top: @headerHeight;
-            overflow-x: auto;
-            overflow-y: scroll;
-            background-color: #fff;
-            & > .ant-spin-nested-loading {
-                position: static;
-                & >.ant-spin {
-                    position: fixed;
-                }
-            }
-            .admin-page-content-inner {
-                min-width: 768px;
-                padding: 10px;
+        & > .ant-spin-nested-loading {
+            position: static;
+            & > .ant-spin {
+                position: fixed;
             }
         }
     }

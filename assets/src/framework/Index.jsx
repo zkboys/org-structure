@@ -6,13 +6,13 @@ import Container from './container/Container';
 const store = configureStore();
 
 export default class Index extends Component {
-  state = {};
+    state = {};
 
-  render() {
-    return (
-      <Provider store={store}>
-        <Container>{this.props.children}</Container>
-      </Provider>
-    );
-  }
+    render() {
+        return (
+            <Provider store={store}>
+                <Container>{this.props.children}</Container>
+            </Provider>
+        );
+    }
 }

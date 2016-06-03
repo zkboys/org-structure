@@ -56,23 +56,11 @@ class Page extends React.Component {
                     pageHeaderDate.breadcrumbItems = '';
                 }
             } else {
-                if (this.state.showPageAnimate) {
-                    pageHeaderJsx = (
-                        <div className="admin-page-header">
-                            <QueueAnim animConfig={this.props.animConfig}>
-                                <div key="queue-anim-item1">
-                                    {this.props.header}
-                                </div>
-                            </QueueAnim>
-                        </div>
-                    );
-                } else {
-                    pageHeaderJsx = (
-                        <div className="admin-page-header">
-                            {this.props.header}
-                        </div>
-                    );
-                }
+                pageHeaderJsx = (
+                    <div className="admin-page-header">
+                        {this.props.header}
+                    </div>
+                );
             }
         }
         if (pageHeaderDate) {
@@ -94,25 +82,12 @@ class Page extends React.Component {
                     </Breadcrumb>
                 );
             }
-            if (this.state.showPageAnimate) {
-                pageHeaderJsx = (
-                    <div className="admin-page-header">
-                        <QueueAnim animConfig={this.props.animConfig}>
-                            <div key="queue-anim-item1">
-                                <h1 className="admin-page-header-title">{pageHeaderDate.title}</h1>
-                                {breadcrumb}
-                            </div>
-                        </QueueAnim>
-                    </div>
-                );
-            } else {
-                pageHeaderJsx = (
-                    <div className="admin-page-header">
-                        <h1 className="admin-page-header-title">{pageHeaderDate.title}</h1>
-                        {breadcrumb}
-                    </div>
-                );
-            }
+            pageHeaderJsx = (
+                <div className="admin-page-header">
+                    <h1 className="admin-page-header-title">{pageHeaderDate.title}</h1>
+                    {breadcrumb}
+                </div>
+            );
         }
         this.setState({
             pageHeader: pageHeaderJsx,
@@ -133,7 +108,12 @@ class Page extends React.Component {
     }
 
     render() {
-        let pageChildren = this.props.children;
+        let pageChildren = (
+            <div>
+                {this.state.pageHeader}
+                {this.props.children}
+            </div>
+        );
 
         if (this.state.showPageAnimate) {
             pageChildren = (
@@ -145,18 +125,11 @@ class Page extends React.Component {
             );
         }
         return (
-
             <div className={"admin-page "}>
-                <div className="admin-page-content">
-                    <Spin spinning={this.props.loading}>
-                        <div className="admin-page-content-inner">
-                            {this.state.pageHeader}
-                            {pageChildren}
-                        </div>
-                    </Spin>
-                </div>
+                <Spin spinning={this.props.loading}>
+                    {pageChildren}
+                </Spin>
             </div>
-
         );
     }
 }
