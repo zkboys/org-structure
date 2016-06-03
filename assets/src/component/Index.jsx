@@ -9,6 +9,10 @@ class Index extends React.Component {
     }
     components = [
         {
+            folder: 'base-component',
+            title: '组件基类',
+        },
+        {
             folder: 'switch-remote',
             title: '远程开关组件',
         },
