@@ -55,28 +55,6 @@ class Header extends React.Component {
                     </Menu>
                     <ul className="admin-header-menu">
                         <li className="admin-header-menu-item">
-                            <Link to="/system/mail/unread">
-                                <Badge dot>
-                                    <FAIcon type="fa-envelope-o"/>
-                                </Badge>
-                                <span>我的邮件</span>
-                            </Link>
-                        </li>
-                        <li className="admin-header-menu-item">
-                            <Link to="/system/remind">
-                                <Badge dot>
-                                    <FAIcon type="fa-bell-o"/>
-                                </Badge>
-                                <span>系统提醒</span>
-                            </Link>
-                        </li>
-                        <li className="admin-header-menu-item">
-                            <Link to="/system/settings">
-                                <FAIcon type="fa-cogs"/>
-                                <span>系统设置</span>
-                            </Link>
-                        </li>
-                        <li className="admin-header-menu-item">
                             <Link to="/system/profile/message">
                                 <UserAvatar className="admin-user-avatar" user={currentLoginUser}/>
                                 <span>{currentLoginUser.name || currentLoginUser.loginname}</span>

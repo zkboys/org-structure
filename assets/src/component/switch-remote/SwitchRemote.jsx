@@ -19,6 +19,7 @@ class SwitchRemote extends React.Component {
         url: React.PropTypes.string.isRequired,
         params: React.PropTypes.object,
         checked: React.PropTypes.bool.isRequired,
+        checkedKey: React.PropTypes.string.isRequired,
     };
 
     componentWillReceiveProps(nextProps) {
@@ -39,6 +40,7 @@ class SwitchRemote extends React.Component {
             checkedChildren: loading,
             unCheckedChildren: loading,
         });
+        params[this.props.checkedKey] = this.state.checked;
         Request
             .put(url)
             .send(params)

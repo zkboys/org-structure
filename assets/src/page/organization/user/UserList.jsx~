@@ -6,7 +6,6 @@ import {Table, Button, Form, message, Icon, Popconfirm} from 'antd';
 import UserEdit from './UserEdit';
 
 const createForm = Form.create;
-
 class UserList extends BaseComponent {
     state = {
         queryData: {
@@ -114,13 +113,13 @@ class UserList extends BaseComponent {
             key: 'is_locked',
             render: (text, record) => {
                 const id = record._id;
+                const isLocked = record.is_locked;
                 return (
                     <SwitchRemote
                         key={id} // 一定要加这个key，否则各分页之间有干扰
-                        checked={record.is_locked}
-                        checkedKey="isLocked"
+                        checked={isLocked}
                         url="/organization/users/toggle_lock"
-                        params={{id}}
+                        params={{id, isLocked}}
                         onChange={(checked) => record.is_locked = checked} // 同步record，否则下次页面重新渲染，选中状态会错乱。
                     />
                 );

@@ -1,8 +1,9 @@
 import './style.less';
 import React from 'react';
-import Request from '../../common/request';
+import {Request, Storage} from 'common';
 import {Button, Form, Input, message} from 'antd';
-import Storage from '../../common/storage';
+import Bg from './bg.jpg';
+import decorateImage from './bg3.png';
 const createForm = Form.create;
 const FormItem = Form.Item;
 function noop() {
@@ -12,6 +13,7 @@ function noop() {
 class SignIn extends React.Component {
     state = {
         loading: false,
+        loaded: false,
     };
 
     handleSubmit = (e) => {
@@ -48,6 +50,14 @@ class SignIn extends React.Component {
         });
     };
 
+    componentDidMount() {
+        setTimeout(() => {
+            this.setState({
+                loaded: true,
+            });
+        }, 500);
+    }
+
     render() {
         const {getFieldProps} = this.props.form;
         const nameProps = getFieldProps('name', {
@@ -63,18 +73,27 @@ class SignIn extends React.Component {
             ],
         });
         const formItemLayout = {
-            labelCol: {span: 7},
-            wrapperCol: {span: 17},
+            labelCol: {span: 5},
+            wrapperCol: {span: 16},
         };
         return (
-            <div>
+            <div className="login-wrap" style={{backgroundImage: `url(${Bg})`}}>
+                <div className={`img-box ${this.state.loaded ? 'loaded' : ''}`}>
+                    <img src={decorateImage} alt="img"/>
+                    <lable className="circle-label small yellow position1">监控</lable>
+                    <lable className="circle-label large blue position2">智能</lable>
+                    <lable className="circle-label large red position3">巡检</lable>
+                    <lable className="circle-label large purple position4">安全</lable>
+                    <div className={`massage position4 ${this.state.loaded ? 'loaded' : ''}`}>安全可靠的技术支持</div>
+                    <div className={`massage position3 ${this.state.loaded ? 'loaded' : ''}`}>安全可靠的技术支持</div>
+                    <div className={`massage position2 ${this.state.loaded ? 'loaded' : ''}`}>安全可靠的技术支持</div>
+                </div>
                 <div className="login-box">
-                    <h1 className="login-title">用户登陆</h1>
+                    <h1 className="login-title">用户登录</h1>
                     <Form horizontal form={this.props.form}>
                         <FormItem
                             {...formItemLayout}
                             label="用户名："
-                            hasFeedback
                         >
                             <Input {...nameProps} placeholder="请输入用户名"/>
                         </FormItem>
@@ -82,7 +101,7 @@ class SignIn extends React.Component {
                         <FormItem
                             {...formItemLayout}
                             label="密码："
-                            hasFeedback>
+                        >
                             <Input
                                 {...passwdProps}
                                 type="password"
@@ -93,7 +112,7 @@ class SignIn extends React.Component {
                                 onCut={noop}
                             />
                         </FormItem>
-                        <FormItem wrapperCol={{ span: 17, offset: 7 }}>
+                        <FormItem wrapperCol={{ span: 16, offset: 5 }}>
                             <Button
                                 style={{width: '100%'}}
                                 type="primary"
