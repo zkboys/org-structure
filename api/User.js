@@ -4,7 +4,7 @@ var eventProxy = require('eventproxy');
 var tools = require('../common/tools');
 var User = require('../proxy/User');
 
-exports.getUserById = function (req, res, next) {
+exports.getById = function (req, res, next) {
     var id = req.params.id;
     User.getUserById(id, function (err, doc) {
         if (err) {
@@ -14,7 +14,7 @@ exports.getUserById = function (req, res, next) {
     })
 }
 
-exports.getAllUsersByPage = function (req, res, next) {
+exports.getByPage = function (req, res, next) {
     var currentPage = parseInt(req.query.currentPage, 10) || 1;
     var pageSize = Number(req.query.pageSize);
     var options = {skip: (currentPage - 1) * pageSize, limit: pageSize, sort: '-create_at'};
@@ -40,7 +40,7 @@ exports.getAllUsersByPage = function (req, res, next) {
     User.getUsersCountByQuery(query, ep.done('count'));
 };
 
-exports.getUserByLoginNameFromAllUsers = function (req, res, next) {
+exports.getByLoginNameFromAll = function (req, res, next) {
     var loginName = req.params.loginname;
     User.getUserByLoginNameFromAllUsers(loginName, function (err, docs) {
         if (err) {

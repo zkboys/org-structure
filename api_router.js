@@ -4,6 +4,7 @@ var router = express.Router();
 var menu = require('./api/Menu');
 var organization = require('./api/Organization');
 var user = require('./api/User');
+var role = require('./api/User');
 var sign = require('./api/Sign');
 
 // 登录 登出
@@ -16,21 +17,28 @@ router.get('/system/menus', menu.getAllMenus);
 router.post('/system/menus', menu.updateAllMenus);
 
 // 组织架构
-router.get('/organization/organizations', organization.getAllOrganizations);
-router.post('/organization/organizations', organization.updateAllOrganizations);
+router.get('/organization/organizations', organization.getAll);
+router.post('/organization/organizations', organization.updateAll);
 
 // 用户
 router.put('/system/pass', /*needCurrentUser*/ user.updatePass);
 router.put('/system/message', /*needCurrentUser*/ user.update); // 跟组织同样是update方法，但是权限不一样
 
 // 组织架构
-router.get('/organization/users', user.getAllUsersByPage);
-router.get('/organization/users/:id', user.getUserById);
-router.get('/organization/users/loginname/:loginname', user.getUserByLoginNameFromAllUsers);
+// 用户
+router.get('/organization/users', user.getByPage);
+router.get('/organization/users/:id', user.getById);
+router.get('/organization/users/loginname/:loginname', user.getByLoginNameFromAll);
 router.post('/organization/users', user.addAndSave);
 router.put('/organization/users', user.update);
 router.delete('/organization/users', user.delete);
 router.put('/organization/users/toggle_lock', user.toggleLock);
 
+// 角色
+router.get('/organization/roles', role.getByPage);
+router.get('/organization/roles/:id', role.getById);
+router.post('/organization/roles', role.addAndSave);
+router.put('/organization/roles', role.update);
+router.delete('/organization/roles', role.delete);
 
 module.exports = router;

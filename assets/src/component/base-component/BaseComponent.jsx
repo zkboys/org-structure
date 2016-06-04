@@ -21,6 +21,7 @@ class BaseComponent extends React.Component {
         }
     };
     requests = [];
+    requestTimeouts = [];
     request = () => {
         let self = this;
         return {
@@ -124,7 +125,7 @@ class BaseComponent extends React.Component {
                 }
                 this.isEnd = false;
                 let request;
-                setTimeout(() => {
+                const st = setTimeout(() => {
                     if (!this.isEnd && request) {
                         let errorMassage = '请求超时，请检查您的网络';
                         let err = new Error('timeout');
@@ -137,6 +138,7 @@ class BaseComponent extends React.Component {
                         request.abort();
                     }
                 }, 1000 * 10); // 10ms 超时时间
+                self.requestTimeouts.push(st);
                 if (this.type === 'get') {
                     request = Request
                         .get(this.url)
@@ -169,6 +171,11 @@ class BaseComponent extends React.Component {
         // 子类要是要使用componentWillUnmount，需要显示的调用super.componentWillUnmount();
         this.requests.forEach((r) => {
             r.abort();
+        });
+        this.requestTimeouts.forEach(t => {
+            if (t) {
+                clearTimeout(t);
+            }
         });
     }
 }
