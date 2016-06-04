@@ -78,10 +78,6 @@ class ProfileMessage extends BaseComponent {
             initialValue: user.gender,
             rules: [],
         });
-        const positionProps = getFieldProps('position', {
-            initialValue: user.position,
-            rules: [],
-        });
         const formItemLayout = {
             labelCol: {span: 7},
             wrapperCol: {span: 12},
@@ -138,14 +134,6 @@ class ProfileMessage extends BaseComponent {
                             <Radio value="female">女</Radio>
                         </RadioGroup>
                         <span><Icon type="info-circle-o"/> 暂不支持其它性别</span>
-                    </FormItem>
-                    <FormItem
-                        {...formItemLayout}
-                        label="职位：">
-                        <Input
-                            {...positionProps}
-                            placeholder="请输入职位"
-                        />
                     </FormItem>
                     <FormItem wrapperCol={{ span: 12, offset: 7 }}>
                         <Button type="primary" loading={this.state.loading} onClick={this.handleSubmit}>确定</Button>
