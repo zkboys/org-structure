@@ -62,9 +62,7 @@ exports.addAndSave = function (req, res, next) {
     function error(msg) {
         res.sendError('', msg);
     }
-
     var data = req.body;
-    // FIXME 验证信息的正确性
     if (data.name === '') {
         return error('名称不能为空！');
     }

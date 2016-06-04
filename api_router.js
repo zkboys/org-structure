@@ -4,7 +4,7 @@ var router = express.Router();
 var menu = require('./api/Menu');
 var organization = require('./api/Organization');
 var user = require('./api/User');
-var role = require('./api/User');
+var role = require('./api/Role');
 var sign = require('./api/Sign');
 
 // 登录 登出

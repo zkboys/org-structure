@@ -43,6 +43,34 @@ export default {
             },
         };
     },
+    /**
+     * 判断角色名是否重复
+     * @param ignoreValues {Array} 这些名字不进行检测，用于修改的情况。
+     * @returns {*}
+     */
+    checkRoleNameExist(ignoreValues = []) {
+        if (typeof ignoreValues === 'string') {
+            ignoreValues = [ignoreValues];
+        }
+        return {
+            validator(rule, value, callback) {
+                if (!value || ignoreValues.includes(value)) {
+                    return callback();
+                }
+                Request
+                    .get(`/api/organization/users/loginname/${value}`)
+                    .end((err, res) => {
+                        if (err || !res.ok) {
+                            return callback([new Error(res && res.body && res.body.message || '未知系统错误')]);
+                        }
+                        if (res.body && value === res.body.loginname) {
+                            return callback([new Error('抱歉，该登录名已被占用！')]);
+                        }
+                        callback();
+                    });
+            },
+        };
+    },
     mobile(message) {
         return {
             validator(rule, value, callback) {

@@ -15,5 +15,13 @@ export default [
             });
         },
     },
+    {
+        path: '/organization/roles',
+        getComponent: (location, cb) => {
+            require.ensure([], (require) => {
+                cb(null, require('./role/RoleList.jsx'));
+            });
+        },
+    },
 ];
 
