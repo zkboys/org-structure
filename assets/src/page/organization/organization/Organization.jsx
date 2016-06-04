@@ -255,23 +255,6 @@ class Organization extends BaseComponent {
         this.setState({showModal: false});
     };
 
-    nodeExists = (rule, value, callback) => {
-        if (!value) {
-            callback();
-        } else {
-            const data = [...this.state.gData];
-            let isFind = false;
-            this.findNodeByKey(data, value, () => {
-                isFind = true;
-            });
-            if (isFind) {
-                callback([new Error('抱歉，该key已被占用。')]);
-            } else {
-                callback();
-            }
-        }
-    };
-
     render() {
         const loop = data => data.map((item) => {
             if (item.children && item.children.length) {

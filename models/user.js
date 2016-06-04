@@ -11,7 +11,7 @@ var UserSchema = new Schema({
     gender: {type: String},
     avatar: {type: String},
     position: {type: String},
-    org_id: {type: String},
+    org_key: {type: String}, // 这里不要使用org_id ，org_id总是变化，key是不变的。
     is_locked: {type: Boolean, default: false},
 });
 

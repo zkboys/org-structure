@@ -90,12 +90,12 @@ class UserList extends BaseComponent {
         },
         {
             title: '所属部门',
-            dataIndex: 'org_id',
-            key: 'org_id',
+            dataIndex: 'org_key',
+            key: 'org_key',
             render: (text) => {
                 let orgName = '未指定';
                 for (let org of this.state.organizations) {
-                    if (org._id === text) {
+                    if (org.key === text) {
                         orgName = org.name;
                         break;
                     }

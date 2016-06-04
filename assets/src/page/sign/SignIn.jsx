@@ -3,7 +3,7 @@ import React from 'react';
 import {Request, Storage} from 'common';
 import {Button, Form, Input, message} from 'antd';
 import Bg from './bg.jpg';
-import decorateImage from './bg3.png';
+import decorateImage from './bg4.png';
 const createForm = Form.create;
 const FormItem = Form.Item;
 function noop() {
@@ -84,9 +84,9 @@ class SignIn extends React.Component {
                     <lable className="circle-label large blue position2">智能</lable>
                     <lable className="circle-label large red position3">巡检</lable>
                     <lable className="circle-label large purple position4">安全</lable>
-                    <div className={`massage position4 ${this.state.loaded ? 'loaded' : ''}`}>安全可靠的技术支持</div>
-                    <div className={`massage position3 ${this.state.loaded ? 'loaded' : ''}`}>安全可靠的技术支持</div>
-                    <div className={`massage position2 ${this.state.loaded ? 'loaded' : ''}`}>安全可靠的技术支持</div>
+                    <div className="massage position2">智能方便<div className="line"></div></div>
+                    <div className="massage position3">快速巡检<div className="line"></div></div>
+                    <div className="massage position4">安全可靠的技术支持<div className="line"></div></div>
                 </div>
                 <div className="login-box">
                     <h1 className="login-title">用户登录</h1>

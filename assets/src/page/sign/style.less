@@ -12,7 +12,7 @@
     transform: translate(0%, -50%);
     opacity: 0;
     transition: 1000ms;
-    &.loaded{
+    &.loaded {
         opacity: 1;
     }
     .circle-label {
@@ -99,48 +99,37 @@
         padding: 5px 0;
         border-bottom: 1px solid #fff;
         z-index: 99;
-
+        word-break: keep-all;
+        white-space: nowrap;
         &.position2 {
-            right: 228px;
+            left: 270px;
             top: 33px;
             opacity: 0;
             transition: 800ms;
-            &.loaded{
-                right: 270px;
-                top: 9px;
-                opacity: 0.7;
-            }
-            &:after {
-                content: "";
+            .line {
                 position: absolute;
-                right: -42px;
-                top: 50px;
+                left: -43px;
+                top: 49px;
                 display: block;
                 width: 50px;
                 border-bottom: 1px solid #fff;
-                transform: rotate(228deg);
+                transform: rotate(-45deg);
             }
         }
 
         &.position3 {
-            right: 8px;
+            left: 427px;
             top: 280px;
             opacity: 0;
             transition: 800ms;
-            &.loaded{
-                right: -70px;
-                top: 304px;
-                opacity: 0.7;
-            }
-            &:after {
-                content: "";
+            .line {
                 position: absolute;
-                left: -42px;
-                top: 12px;
+                left: -43px;
+                top: 13px;
                 display: block;
                 width: 50px;
                 border-bottom: 1px solid #fff;
-                transform: rotate(228deg);
+                transform: rotate(45deg);
             }
         }
         &.position4 {
@@ -148,22 +137,34 @@
             top: 280px;
             opacity: 0;
             transition: 800ms;
-            &.loaded{
-                left: -48px;
-                top: 304px;
-                opacity: 0.7;
-            }
-            &:after {
-                content: "";
+            .line {
                 position: absolute;
-                left: 115px;
-                top: 12px;
+                right: -43px;
+                top: 13px;
                 display: block;
                 width: 50px;
                 border-bottom: 1px solid #fff;
-                transform: rotate(128deg);
+                transform: rotate(-45deg);
             }
         }
+    }
+    &.loaded .massage {
+        &.position2 {
+            left: 300px;
+            top: 9px;
+            opacity: 0.7;
+        }
+        &.position3 {
+            left: 457px;
+            top: 304px;
+            opacity: 0.7;
+        }
+        &.position4 {
+            left: -48px;
+            top: 304px;
+            opacity: 0.7;
+        }
+
     }
     @keyframes round {
         0% {
