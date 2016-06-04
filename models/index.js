@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var config = require('../config');
 var logger = require('../common/logger');
-var BaseModel = require("./base_model");
+var BaseModel = require("./BaseModel");
 
 mongoose.connect(config.db, {
     server: {poolSize: 20}
@@ -15,9 +15,10 @@ mongoose.plugin(BaseModel);
 
 
 // models
-require('./organization');
-require('./user');
-require('./menu');
+require('./Organization');
+require('./User');
+require('./Role');
+require('./Menu');
 require('./topic');
 require('./reply');
 require('./topic_collect');
@@ -26,6 +27,7 @@ require('./message');
 exports.Organization = mongoose.model('Organization');
 exports.Menu = mongoose.model('Menu');
 exports.User = mongoose.model('User');
+exports.Role = mongoose.model('Role');
 exports.Topic = mongoose.model('Topic');
 exports.Reply = mongoose.model('Reply');
 exports.TopicCollect = mongoose.model('TopicCollect');

@@ -1,10 +1,10 @@
 var express = require('express');
 var config = require('./config');
 var router = express.Router();
-var menu = require('./api/menu');
-var organization = require('./api/organization');
-var user = require('./api/user');
-var sign = require('./api/sign');
+var menu = require('./api/Menu');
+var organization = require('./api/Organization');
+var user = require('./api/User');
+var sign = require('./api/Sign');
 
 // 登录 登出
 router.post('/signout', sign.signout);

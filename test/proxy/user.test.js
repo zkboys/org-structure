@@ -1,4 +1,4 @@
-var User = require('../../proxy/user');
+var User = require('../../proxy/User');
 var should = require('should');
 var support = require('../support/support');
 

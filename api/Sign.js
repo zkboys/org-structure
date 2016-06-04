@@ -3,8 +3,8 @@ var eventProxy = require('eventproxy');
 var authMiddleWare = require('../middlewares/auth');
 var config = require('../config');
 var tools = require('../common/tools');
-var User = require('../proxy/user');
-var Menu = require('../proxy/menu');
+var User = require('../proxy/User');
+var Menu = require('../proxy/Menu');
 
 
 /**

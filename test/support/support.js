@@ -1,4 +1,4 @@
-var User = require('../../proxy/user');
+var User = require('../../proxy/User');
 var Topic = require('../../proxy/topic');
 var Reply = require('../../proxy/reply');
 var ready = require('ready');

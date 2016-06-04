@@ -15,7 +15,7 @@ var mm = require('mm');
 var support = require('../support/support');
 var _ = require('lodash');
 var pedding = require('pedding');
-var UserProxy = require('../../proxy/user');
+var UserProxy = require('../../proxy/User');
 var ReplyModel = require('../../models').Reply;
 
 describe('test/controllers/user.test.js', function () {

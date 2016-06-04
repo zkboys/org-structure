@@ -3,7 +3,7 @@ var _ = require('lodash');
 
 var Message = require('../models').Message;
 
-var User = require('./user');
+var User = require('./User');
 var Topic = require('./topic');
 var Reply = require('./reply');
 

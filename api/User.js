@@ -2,7 +2,7 @@ var validator = require('validator');
 var uuid = require('node-uuid');
 var eventProxy = require('eventproxy');
 var tools = require('../common/tools');
-var User = require('../proxy/user');
+var User = require('../proxy/User');
 
 exports.getUserById = function (req, res, next) {
     var id = req.params.id;

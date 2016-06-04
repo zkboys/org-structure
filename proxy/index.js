@@ -1,6 +1,6 @@
-exports.Organization = require('./organization');
-exports.Menu = require('./menu');
-exports.User = require('./user');
+exports.Organization = require('./Organization');
+exports.Menu = require('./Menu');
+exports.User = require('./User');
 exports.Message = require('./message');
 exports.Topic = require('./topic');
 exports.Reply = require('./reply');

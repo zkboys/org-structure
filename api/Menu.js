@@ -1,4 +1,4 @@
-var Menu = require('../proxy/menu');
+var Menu = require('../proxy/Menu');
 exports.getAllMenus = function (req, res, next) {
     Menu.getAllMenus(function (err, menus) {
         if (err) {

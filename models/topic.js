@@ -1,5 +1,5 @@
 var mongoose  = require('mongoose');
-var BaseModel = require("./base_model");
+var BaseModel = require("./BaseModel");
 var Schema    = mongoose.Schema;
 var ObjectId  = Schema.ObjectId;
 var config    = require('../config');

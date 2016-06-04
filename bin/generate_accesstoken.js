@@ -5,7 +5,7 @@ var uuid = require('node-uuid');
 var mongoose = require('mongoose');
 var config = require('../config');
 var async = require('async');
-require('../models/user');
+require('../models/User');
 
 mongoose.connect(config.db, function (err) {
   if (err) {
