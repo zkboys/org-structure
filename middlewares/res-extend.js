@@ -22,5 +22,8 @@ exports.resExtend = function (req, res, next) {
         }
         return res.status(statusCode).send({error: err, message: errorMessage});
     }
+    res.sendSuccess = function () {
+        return res.send({success: true});
+    }
     next();
 };

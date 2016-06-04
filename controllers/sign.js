@@ -83,6 +83,18 @@ exports.signup = function (req, res, next) {
 exports.showLogin = function (req, res) {
     res.render('sign/signin');
 };
+/**
+ * 首次登录，修改密码页面
+ * @param req
+ * @param res
+ */
+exports.showFirstLogin = function (req, res) {
+    if (!req.session.user || !req.session.user.is_first_login) {
+        res.redirect('/signin');
+    }else{
+        res.render('sign/first-login');
+    }
+};
 
 /**
  * define some page when login just jump to the home page
@@ -189,36 +201,4 @@ exports.resetPass = function (req, res, next) {
         }
         return res.render('sign/reset', {name: name, key: key});
     });
-};
-
-exports.updatePass = function (req, res, next) {
-    var psw = validator.trim(req.body.psw) || '';
-    var repsw = validator.trim(req.body.repsw) || '';
-    var key = validator.trim(req.body.key) || '';
-    var name = validator.trim(req.body.name) || '';
-
-    var ep = new eventproxy();
-    ep.fail(next);
-
-    if (psw !== repsw) {
-        return res.render('sign/reset', {name: name, key: key, error: '两次密码输入不一致。'});
-    }
-    User.getUserByNameAndKey(name, key, ep.done(function (user) {
-        if (!user) {
-            return res.render('notify/notify', {error: '错误的激活链接'});
-        }
-        tools.bhash(psw, ep.done(function (passhash) {
-            user.pass = passhash;
-            user.retrieve_key = null;
-            user.retrieve_time = null;
-            user.active = true; // 用户激活
-
-            user.save(function (err) {
-                if (err) {
-                    return next(err);
-                }
-                return res.render('notify/notify', {success: '你的密码已重置。'});
-            });
-        }));
-    }));
 };

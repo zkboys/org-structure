@@ -42,9 +42,13 @@ class SignIn extends React.Component {
                         let refer = res.body.refer || '/';
                         let menus = res.body.menus || [];
                         let currentLoginUser = res.body.user;
-                        Storage.session.set('currentLoginUser', currentLoginUser);
-                        Storage.session.set('menus', menus);
-                        location.href = refer;
+                        if (currentLoginUser.is_first_login) {
+                            location.href = '/first_login';
+                        } else {
+                            Storage.session.set('currentLoginUser', currentLoginUser);
+                            Storage.session.set('menus', menus);
+                            location.href = refer;
+                        }
                     }
                 });
         });
@@ -61,13 +65,13 @@ class SignIn extends React.Component {
     render() {
         const {getFieldProps} = this.props.form;
         const nameProps = getFieldProps('name', {
-            initialValue: 'test',
+            initialValue: 'admin',
             rules: [
                 {required: true, message: '请填写用户名'},
             ],
         });
         const passwdProps = getFieldProps('pass', {
-            initialValue: 't123456',
+            initialValue: '111111',
             rules: [
                 {required: true, whitespace: true, message: '请填写密码'},
             ],
@@ -84,9 +88,15 @@ class SignIn extends React.Component {
                     <lable className="circle-label large blue position2">智能</lable>
                     <lable className="circle-label large red position3">巡检</lable>
                     <lable className="circle-label large purple position4">安全</lable>
-                    <div className="massage position2">智能方便<div className="line"></div></div>
-                    <div className="massage position3">快速巡检<div className="line"></div></div>
-                    <div className="massage position4">安全可靠的技术支持<div className="line"></div></div>
+                    <div className="massage position2">智能方便
+                        <div className="line"></div>
+                    </div>
+                    <div className="massage position3">快速巡检
+                        <div className="line"></div>
+                    </div>
+                    <div className="massage position4">安全可靠的技术支持
+                        <div className="line"></div>
+                    </div>
                 </div>
                 <div className="login-box">
                     <h1 className="login-title">用户登录</h1>

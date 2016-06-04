@@ -1,19 +1,14 @@
 import React from 'react';
 import {Button, Form, Input, message} from 'antd';
-import {Request} from 'common';
-import {Page} from 'framework';
+import {Request, Storage} from 'common';
 const createForm = Form.create;
 const FormItem = Form.Item;
 function noop() {
     return false;
 }
-class ProfilePassWord extends React.Component {
+class FirstLogin extends React.Component {
     state = {
         loading: false,
-    }
-    handleReset = (e) => {
-        e.preventDefault();
-        this.props.form.resetFields();
     }
     handleSubmit = (e) => {
         if (this.state.loading) {
@@ -29,7 +24,7 @@ class ProfilePassWord extends React.Component {
                 loading: true,
             });
             Request
-                .put('/system/pass')
+                .put('/first_login')
                 .send(values)
                 .end((err, res) => {
                     this.setState({
@@ -38,7 +33,12 @@ class ProfilePassWord extends React.Component {
                     if (err || !res.ok) {
                         message.error(res.body.message);
                     } else {
-                        message.success('修改成功！');
+                        let refer = res.body.refer || '/';
+                        let menus = res.body.menus || [];
+                        let currentLoginUser = res.body.user;
+                        Storage.session.set('currentLoginUser', currentLoginUser);
+                        Storage.session.set('menus', menus);
+                        location.href = refer;
                     }
                 });
         });
@@ -63,11 +63,6 @@ class ProfilePassWord extends React.Component {
 
     render() {
         const {getFieldProps} = this.props.form;
-        const OrPasswdProps = getFieldProps('orPass', {
-            rules: [
-                {required: true, whitespace: true, message: '请填写原密码'},
-            ],
-        });
         const passwdProps = getFieldProps('pass', {
             rules: [
                 {required: true, whitespace: true, message: '请填写密码'},
@@ -87,29 +82,16 @@ class ProfilePassWord extends React.Component {
             ],
         });
         const formItemLayout = {
-            labelCol: {span: 7},
-            wrapperCol: {span: 12},
+            labelCol: {span: 5},
+            wrapperCol: {span: 16},
         };
         return (
-            <Page header="auto">
+            <div>
+                <h1>首次登录，请修改您的密码</h1>
                 <Form horizontal form={this.props.form}>
                     <FormItem
                         {...formItemLayout}
-                        label="原密码："
-                    >
-                        <Input
-                            {...OrPasswdProps}
-                            type="password"
-                            autoComplete="off"
-                            onContextMenu={noop}
-                            onPaste={noop}
-                            onCopy={noop}
-                            onCut={noop}
-                        />
-                    </FormItem>
-                    <FormItem
-                        {...formItemLayout}
-                        label="新密码："
+                        label="密码："
                     >
                         <Input
                             {...passwdProps}
@@ -135,14 +117,17 @@ class ProfilePassWord extends React.Component {
                             onCut={noop}
                         />
                     </FormItem>
-                    <FormItem wrapperCol={{ span: 12, offset: 7 }}>
-                        <Button type="primary" loading={this.state.loading} onClick={this.handleSubmit} >确定</Button>
-                        &nbsp;&nbsp;&nbsp;
-                        <Button type="ghost" onClick={this.handleReset}>重置</Button>
+                    <FormItem wrapperCol={{ span: 16, offset: 5 }}>
+                        <Button
+                            style={{width: '100%'}}
+                            type="primary"
+                            loading={this.state.loading}
+                            onClick={this.handleSubmit}
+                        >确认</Button>
                     </FormItem>
                 </Form>
-            </Page>
+            </div>
         );
     }
 }
-export default createForm()(ProfilePassWord);
+export default createForm()(FirstLogin);

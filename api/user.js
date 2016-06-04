@@ -138,3 +138,40 @@ exports.addAndSave = function (req, res, next) {
         });
     });
 };
+
+exports.updatePass = function (req, res, next) {
+    var pass = validator.trim(req.body.pass) || '';
+    var rePass = validator.trim(req.body.rePass) || '';
+    var orPass = validator.trim(req.body.orPass) || '';
+    var currrentLoginUser = req.session.user;
+
+
+    var ep = new eventProxy();
+    ep.fail(function (err) {
+        res.sendError(err, '修改密码失败！', 422);
+    });
+
+    if (pass !== rePass) {
+        return res.sendError(err, '新密码与确认密码不一直！', 422);
+    }
+    User.getUserById(currrentLoginUser._id, ep.done(function (user) {
+        if (!user) {
+            return res.sendError(null, '修改密码失败！', 422);
+        }
+        tools.bcompare(orPass + user.salt, user.pass, ep.done(function (bool) {
+            if (!bool) {
+                return res.sendError(null, '原密码错误！', 422);
+            }
+            tools.bhash(pass + user.salt, ep.done(function (passhash) {
+                user.pass = passhash;
+                user.save(function (err) {
+                    if (err) {
+                        return res.sendError(null, '修改密码失败！', 422);
+                    }
+                    return res.sendSuccess();
+                });
+            }));
+
+        }));
+    }));
+};

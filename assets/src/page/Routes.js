@@ -93,21 +93,6 @@ export default [
         },
     },
     {
-        path: '/system/profile/message',
-        getComponent: (location, cb) => {
-            require.ensure([], (require) => {
-                cb(null, require('./profile/ProfileMessage'));
-            });
-        },
-    },
-    {
-        path: '/system/profile/password',
-        getComponent: (location, cb) => {
-            require.ensure([], (require) => {
-                cb(null, require('./profile/ProfilePassWord'));
-            });
-        },
-    }, {
         path: '/shop/MyForm',
         getComponent: (location, cb) => {
             require.ensure([], (require) => {

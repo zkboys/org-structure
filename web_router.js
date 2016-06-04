@@ -3,6 +3,7 @@ var sign = require('./controllers/sign');
 var router = express.Router();
 
 router.get('/signin', sign.showLogin);  // 进入登录页面
+router.get('/first_login', sign.showFirstLogin);  // 进入登录页面
 
 // 所有未截获get请求都跳转到首页
 router.get('*', function (req, res, next) {
