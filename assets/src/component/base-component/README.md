@@ -1,6 +1,14 @@
 # 组件基类
 所有的业务要继承BaseComponent，BaseComponent封装了一些公共处理
 ## 功能
+### 获取当前登录用户
+```
+this.currentUser;
+```
+### 当前用户权限检测
+```
+this.currentUser.hasPermission('user-update');
+```
 ### 全屏loading
 ```
 this.startLoading();

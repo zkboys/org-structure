@@ -4,6 +4,7 @@ var Message = require('../proxy').Message;
 var config = require('../config');
 var eventproxy = require('eventproxy');
 var UserProxy = require('../proxy').User;
+var RoleProxy = require('../proxy/Role');
 
 /**
  * 需要管理员权限
@@ -60,7 +61,7 @@ exports.blockUser = function () {
             return next();
         }
         if (req.session && req.session.user && req.session.user.is_locked) {
-            return res.sendError('','您已被管理员屏蔽了。有疑问请联系 管理员。', 403);
+            return res.sendError('', '您已被管理员屏蔽了。有疑问请联系 管理员。', 403);
         }
         next();
     };
@@ -101,9 +102,19 @@ exports.authUser = function (req, res, next) {
         if (!user) {
             return next();
         }
-        user = res.locals.current_user = req.session.user = new UserModel(user);
-        req.session.lastVisitAt = new Date().getTime();
-        next();
+        user = new UserModel(user);
+        RoleProxy.getRoleById(user.role_id, function (err, role) {
+            if (err) {
+                next();
+            } else {
+                if (role) {
+                    user.permissions = role.permissions;
+                }
+                res.locals.current_user = req.session.user = user;
+                req.session.lastVisitAt = new Date().getTime();
+                next();
+            }
+        });
     });
 
     if (req.session.user) {

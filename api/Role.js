@@ -14,7 +14,10 @@ exports.getById = function (req, res, next) {
 exports.getByPage = function (req, res, next) {
     var currentPage = parseInt(req.query.currentPage, 10) || 1;
     var pageSize = Number(req.query.pageSize);
-    var options = {skip: (currentPage - 1) * pageSize, limit: pageSize, sort: '-create_at'};
+    var options = {};
+    if (pageSize) {
+        options = {skip: (currentPage - 1) * pageSize, limit: pageSize, sort: '-create_at'};
+    }
     var query = {};
     // 如下字段进行模糊查询。
     ['name'].forEach(function (v) {
@@ -62,6 +65,7 @@ exports.addAndSave = function (req, res, next) {
     function error(msg) {
         res.sendError('', msg);
     }
+
     var data = req.body;
     if (data.name === '') {
         return error('名称不能为空！');

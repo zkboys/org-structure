@@ -5,6 +5,7 @@ var config = require('../config');
 var tools = require('../common/tools');
 var User = require('../proxy/User');
 var Menu = require('../proxy/Menu');
+var Role = require('../proxy/Role');
 
 
 /**
@@ -70,18 +71,29 @@ exports.login = function (req, res, next) {
             req.session.destroy();
             // store session cookie
             authMiddleWare.gen_session(user, res);
-            var safeUSer = {
-                _id: user._id,
-                name: user.name,
-                loginname: user.loginname,
-                email: user.email,
-                avatar: user.avatar,
-                is_first_login: user.is_first_login,
-            };
-            Menu.getMenusByUser(user, function (err, menus) {
-                if (err) return res.sendError(err, '登录失败！', 422);
-                res.send({refer: refer, user: safeUSer, menus: menus});
-            })
+
+            Role.getRoleById(user.role_id, function (err, role) {
+                if (err) {
+                    return res.sendError(err, '登录失败！', 422);
+                } else {
+                    if (role) {
+                        user.permissions = role.permissions;
+                    }
+                    var safeUSer = {
+                        _id: user._id,
+                        permissions: user.permissions || [],
+                        name: user.name,
+                        loginname: user.loginname,
+                        email: user.email,
+                        avatar: user.avatar,
+                        is_first_login: user.is_first_login,
+                    };
+                    Menu.getMenusByUser(user, function (err, menus) {
+                        if (err) return res.sendError(err, '登录失败！', 422);
+                        res.send({refer: refer, user: safeUSer, menus: menus});
+                    })
+                }
+            });
         }));
     });
 };
@@ -119,18 +131,29 @@ exports.firstLogin = function (req, res, next) {
             req.session.destroy();
             // store session cookie
             authMiddleWare.gen_session(user, res);
-            var safeUSer = {
-                _id: user._id,
-                name: user.name,
-                loginname: user.loginname,
-                email: user.email,
-                avatar: user.avatar,
-                is_first_login: user.is_first_login,
-            };
-            Menu.getMenusByUser(user, function (err, menus) {
-                if (err) return res.sendError(err, '保存密码失败！', 422);
-                res.send({refer: '/', user: safeUSer, menus: menus});
-            })
+
+            Role.getRoleById(user.role_id, function (err, role) {
+                if (err) {
+                    return res.sendError(err, '登录失败！', 422);
+                } else {
+                    if (role) {
+                        user.permissions = role.permissions;
+                    }
+                    var safeUSer = {
+                        _id: user._id,
+                        permissions: user.permissions || [],
+                        name: user.name,
+                        loginname: user.loginname,
+                        email: user.email,
+                        avatar: user.avatar,
+                        is_first_login: user.is_first_login,
+                    };
+                    Menu.getMenusByUser(user, function (err, menus) {
+                        if (err) return res.sendError(err, '登录失败！', 422);
+                        res.send({refer: '/', user: safeUSer, menus: menus});
+                    })
+                }
+            });
         });
     });
 };

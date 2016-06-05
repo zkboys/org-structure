@@ -40,6 +40,7 @@ POST /api/system/menus
 - 单数（一个对象，一个数值等）:`res.send(obj)`
 - 负数（一个数组）:`res.send([obj1, obj2,obj3])`
 - 混合数据，直接返回一个对象: `res.send({xxx:12, result: obj, results: [obj1, obj2, obj3]})`, 约定关键字：单条使用result，条使用results
+- 不发送数据: `res.sendSuccess();`
 
 ### 失败
 任何失败要使用`res.sendError(err, message, status)`处理，默认status为400
@@ -64,5 +65,13 @@ getUsersByPage // 获取多条数据
 成功返回 res.send({count:1000, currentPage: 1, results: users})
 失败返回 res.sendError(err,'获取用户失败', 422);
 ```
- 
+## 权限管理
+`api_router.js` 中使用`permission` 中间件进行权限检测
+```
+router.get('/organization/users', permission('user-search'), user.getByPage);
+```
+其中 `user-search` 为配置的权限key，配置时，注意语义化。
+
+前端`BaseComponent.jsx`组件中，提供了`this.currentUser.permissions;`可以获取当前用户的所有权限。`this.currentUser.hasPermission('user-update');`判断当前用户是否有某个权限。
+  
 

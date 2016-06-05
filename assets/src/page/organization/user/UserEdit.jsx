@@ -1,8 +1,9 @@
 import React from 'react';
 import {BaseComponent} from 'component';
-import {Form, Input, Radio, Icon, TreeSelect, Row, Col, Modal, message, Switch} from 'antd';
+import {Form, Input, Radio, Icon, TreeSelect, Row, Col, Modal, message, Switch, Select} from 'antd';
 import {ValidationRule, Common} from 'common';
 
+const Option = Select.Option;
 const convertToTree = Common.convertToTree;
 const createForm = Form.create;
 const FormItem = Form.Item;
@@ -12,6 +13,7 @@ class UserEdit extends BaseComponent {
     state = {
         isSaving: false,
         orgData: [],
+        roles: [],
     };
 
     componentWillMount() {
@@ -28,6 +30,17 @@ class UserEdit extends BaseComponent {
                     this.setState({
                         organizations,
                         orgData: convertToTree(organizations),
+                    });
+                }
+            })
+            .end();
+        this.request()
+            .get('/organization/roles')
+            .success((result) => {
+                const roles = result.results;
+                if (roles && roles.length) {
+                    this.setState({
+                        roles,
                     });
                 }
             })
@@ -55,6 +68,7 @@ class UserEdit extends BaseComponent {
             'gender',
             'position',
             'org_key',
+            'role_id',
             'is_locked',
         ];
         this.props.form.validateFieldsAndScroll(fields, (errors, values) => {
@@ -130,6 +144,12 @@ class UserEdit extends BaseComponent {
         const positionProps = getFieldProps('position', {
             initialValue: user.position,
             rules: [],
+        });
+        const roleProps = getFieldProps('role_id', {
+            initialValue: user.role_id,
+            rules: [
+                ValidationRule.required('角色'),
+            ],
         });
         const orgProps = getFieldProps('org_key', {
             initialValue: user.org_key,
@@ -238,6 +258,23 @@ class UserEdit extends BaseComponent {
                             {...positionProps}
                             placeholder="请输入职位"
                         />
+                    </FormItem>
+                    <FormItem
+                        {...formItemLayout}
+                        label="角色：">
+                        <Select
+                            showSearch
+                            {...roleProps}
+                            placeholder="请选择角色"
+                            optionFilterProp="children"
+                            notFoundContent="无法找到"
+                        >
+                            {this.state.roles.map(r => {
+                                return (
+                                    <Option key={r._id} value={r._id}>{r.name}</Option>
+                                );
+                            })}
+                        </Select>
                     </FormItem>
                     <FormItem
                         {...formItemLayout}

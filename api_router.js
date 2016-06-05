@@ -6,6 +6,7 @@ var organization = require('./api/Organization');
 var user = require('./api/User');
 var role = require('./api/Role');
 var sign = require('./api/Sign');
+var permission = require('./middlewares/permission').permission;
 
 // 登录 登出
 router.post('/signout', sign.signout);
@@ -26,13 +27,13 @@ router.put('/system/message', /*needCurrentUser*/ user.update); // 跟组织同�
 
 // 组织架构
 // 用户
-router.get('/organization/users', user.getByPage);
+router.get('/organization/users', permission('user-search'), user.getByPage);
 router.get('/organization/users/:id', user.getById);
 router.get('/organization/users/loginname/:loginname', user.getByLoginNameFromAll);
-router.post('/organization/users', user.addAndSave);
-router.put('/organization/users', user.update);
-router.delete('/organization/users', user.delete);
-router.put('/organization/users/toggle_lock', user.toggleLock);
+router.post('/organization/users', permission('user-add'), user.addAndSave);
+router.put('/organization/users', permission('user-update'), user.update);
+router.delete('/organization/users', permission('user-delete'), user.delete);
+router.put('/organization/users/toggle_lock', permission('user-toggleLock'), user.toggleLock);
 
 // 角色
 router.get('/organization/roles', role.getByPage);

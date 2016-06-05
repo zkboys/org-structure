@@ -21,6 +21,7 @@ class UserList extends BaseComponent {
         deletingId: null,
         editingUserId: null,
         editingUser: null,
+        roles: [],
     };
     queryOptions = {
         showSearchBtn: true,
@@ -109,6 +110,20 @@ class UserList extends BaseComponent {
             key: 'position',
         },
         {
+            title: '角色',
+            dataIndex: 'role_id',
+            key: 'role',
+            render: (text) => {
+                const role = this.state.roles.find((r) => {
+                    return r._id === text;
+                });
+                if (role) {
+                    return role.name;
+                }
+                return '未指定';
+            },
+        },
+        {
             title: '是否锁定',
             dataIndex: 'is_locked',
             key: 'is_locked',
@@ -148,6 +163,7 @@ class UserList extends BaseComponent {
     ];
 
     componentWillMount() {
+        // console.log(this.currentUser.hasPermission('user-update'));
         this.handleSearch(this.state.queryData);
         this.request()
             .get('/organization/organizations')
@@ -155,6 +171,17 @@ class UserList extends BaseComponent {
                 if (data && data.length) {
                     this.setState({
                         organizations: data,
+                    });
+                }
+            })
+            .end();
+        this.request()
+            .get('/organization/roles')
+            .success((result) => {
+                const roles = result.results;
+                if (roles && roles.length) {
+                    this.setState({
+                        roles,
                     });
                 }
             })

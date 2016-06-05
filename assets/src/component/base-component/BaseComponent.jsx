@@ -2,8 +2,18 @@ import React from 'react';
 import {message} from 'antd';
 import Request from '../../common/request';
 import TipMessage from '../../common/tip-message';
+import {Storage} from 'common';
 
 class BaseComponent extends React.Component {
+    constructor() {
+        super();
+        this.currentUser = Storage.session.get('currentLoginUser');
+        this.currentUser.hasPermission = (permission) => {
+            const currentUserPermissions = this.currentUser.permissions;
+            return currentUserPermissions && currentUserPermissions.indexOf(permission) > -1;
+        };
+    }
+
     // 页面上多个请求同时进行，用来记录loading数量
     loadings = 0;
     startLoading = () => {

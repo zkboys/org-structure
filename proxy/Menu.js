@@ -29,6 +29,5 @@ exports.updateAllMenus = function (newMenu, callback) {
  * - docs，返回的数据
  * */
 exports.getMenusByUser = function (user, callback) {
-    // TODO 添加权限判断
-    Menu.find(callback);
+    Menu.find({'key': {'$in': user.permissions}}, callback);;
 };

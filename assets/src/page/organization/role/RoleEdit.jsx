@@ -1,17 +1,18 @@
 import React from 'react';
 import {BaseComponent, FAIcon} from 'component';
-import {Form, Input, Tree, Modal, message} from 'antd';
+import {Form, Input, Tree, Modal, message, Row, Col} from 'antd';
 import {ValidationRule, Common} from 'common';
 
 const convertToTree = Common.convertToTree;
 const TreeNode = Tree.TreeNode;
 const createForm = Form.create;
 const FormItem = Form.Item;
-
+const systemMenuKey = 'system'; // 这里硬编码，系统级菜单，每个人都有权限，默认选中，并不可操作。
 class RoleEdit extends BaseComponent {
     state = {
         isSaving: false,
         gData: [],
+        defaultCheckedKeys: [],
     };
 
     componentWillMount() {
@@ -30,10 +31,36 @@ class RoleEdit extends BaseComponent {
                 if (data && data.length) {
                     menus = data;
                 }
-                // menus = require('../../framework/menus.back.js');
+                let gData = convertToTree(menus);
+                gData = gData.filter(g => {
+                    return g.key !== 'dev';
+                });
+
+                let defaultCheckedKeys = [];
+                const loop = d => d.forEach((item) => {
+                    let disable = {};
+                    if (item.key === systemMenuKey || item.parentKeys && item.parentKeys.indexOf(systemMenuKey) > -1) {
+                        disable.disableCheckbox = true;
+                        defaultCheckedKeys.push(item.key);
+                    }
+                    if (item.children && item.children.length) {
+                        loop(item.children);
+                    }
+                    if (item.functions && item.functions.length) {
+                        item.functions.forEach(v => {
+                            v.parentKeys = [...item.parentKeys];
+                            v.parentKeys.push(item.key);
+                            if (v.parentKeys.indexOf(systemMenuKey) > -1) {
+                                defaultCheckedKeys.push(item.key);
+                            }
+                        });
+                    }
+                });
+                loop(gData);
                 this.setState({
                     menus,
-                    gData: convertToTree(menus),
+                    gData,
+                    defaultCheckedKeys,
                 });
             })
             .end();
@@ -89,24 +116,23 @@ class RoleEdit extends BaseComponent {
                 });
         });
     };
-    findNodeByKey = (data, key) => {
-        for (let item of data) {
+    findNodeByKey = (data, key, callback) => {
+        data.forEach((item) => {
             if (item.key === key) {
-                item.isMenu = true;
-                return item;
+                return callback(item);
             }
             if (item.functions) {
                 for (let f of item.functions) {
                     if (f.key === key) {
                         f.isfunction = true;
-                        return f;
+                        return callback(f);
                     }
                 }
             }
             if (item.children) {
-                return this.findNodeByKey(item.children, key);
+                return this.findNodeByKey(item.children, key, callback);
             }
-        }
+        });
     };
     onCheck = (info, e) => {
         const checkedNodes = e.checkedNodes;
@@ -114,8 +140,7 @@ class RoleEdit extends BaseComponent {
         if (checkedNodes && checkedNodes.length) {
             checkedNodes.forEach(checkNode => {
                 const key = checkNode.key;
-                const node = this.findNodeByKey(this.state.gData, key);
-                if (node) {
+                this.findNodeByKey(this.state.gData, key, (node) => {
                     const keys = [...node.parentKeys];
                     keys.push(key);
                     keys.forEach(k => {
@@ -123,7 +148,7 @@ class RoleEdit extends BaseComponent {
                             permissions.add(k);
                         }
                     });
-                }
+                });
             });
         }
         this.props.form.setFieldsValue({
@@ -133,9 +158,14 @@ class RoleEdit extends BaseComponent {
 
     render() {
         const loop = data => data.map((item) => {
+            let disable = {};
+            if (item.key === systemMenuKey || item.parentKeys && item.parentKeys.indexOf(systemMenuKey) > -1) {
+                disable.disableCheckbox = true;
+            }
             if (item.children && item.children.length) {
                 return (
                     <TreeNode
+                        {...disable}
                         key={item.key}
                         title={<span><FAIcon type={item.icon}/> {item.text}</span>}
                     >
@@ -146,6 +176,7 @@ class RoleEdit extends BaseComponent {
             if (item.functions && item.functions.length) {
                 return (
                     <TreeNode
+                        {...disable}
                         key={item.key}
                         title={<span><FAIcon type={item.icon}/> {item.text}</span>}
                     >
@@ -164,6 +195,7 @@ class RoleEdit extends BaseComponent {
             }
             return (
                 <TreeNode
+                    {...disable}
                     key={item.key}
                     title={<span><FAIcon type={item.icon}/> {item.text}</span>}
                 />
@@ -192,8 +224,9 @@ class RoleEdit extends BaseComponent {
             initialValue: role.description,
             rules: [],
         });
+
         getFieldProps('permissions', {
-            initialValue: role.permissions,
+            initialValue: this.state.defaultCheckedKeys.concat(role.permissions),
             rules: [],
         });
         const formItemLayout = {
@@ -202,9 +235,13 @@ class RoleEdit extends BaseComponent {
         };
         let keys = role.permissions || [];
         keys = keys.filter(v => {
-            let node = this.findNodeByKey(this.state.gData, v);
+            let node = null;
+            this.findNodeByKey(this.state.gData, v, (n) => {
+                node = n;
+            });
             return node && !(node.children && node.children.length || node.functions && node.functions.length);
         });
+        keys = keys.concat(this.state.defaultCheckedKeys);
         return (
             <Modal
                 width="60%"
@@ -236,17 +273,21 @@ class RoleEdit extends BaseComponent {
                         />
                     </FormItem>
                 </Form>
-                <div>
-                    选择权限
-                    <Tree
-                        checkable
-                        defaultExpandedKeys={keys}
-                        defaultCheckedKeys={keys}
-                        onCheck={this.onCheck}
-                    >
-                        {loop(this.state.gData)}
-                    </Tree>
-                </div>
+                <Row>
+                    <Col span={4} style={{textAlign: 'right'}}>
+                        选择权限：
+                    </Col>
+                    <Col span={18} style={{marginTop: '-12px'}}>
+                        <Tree
+                            checkable
+                            defaultExpandedKeys={keys}
+                            defaultCheckedKeys={keys}
+                            onCheck={this.onCheck}
+                        >
+                            {loop(this.state.gData)}
+                        </Tree>
+                    </Col>
+                </Row>
             </Modal>
         );
     }
