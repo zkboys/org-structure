@@ -175,3 +175,27 @@ exports.updatePass = function (req, res, next) {
         }));
     }));
 };
+
+exports.resetPass = function (req, res, next) {
+    var userId = req.body.id;
+    var ep = new eventProxy();
+    ep.fail(function (err) {
+        res.sendError(err, '重置密码失败！', 422);
+    });
+    User.getUserById(userId, ep.done(function (user) {
+        if (!user) {
+            return res.sendError(null, '重置密码失败！', 422);
+        }
+        var pass = user.loginname[0] + '123456';
+        tools.bhash(pass + user.salt, ep.done(function (passhash) {
+            user.pass = passhash;
+            user.is_first_login = true;
+            user.save(function (err) {
+                if (err) {
+                    return res.sendError(err, '重置密码失败！', 422);
+                }
+                return res.sendSuccess();
+            });
+        }));
+    }));
+};

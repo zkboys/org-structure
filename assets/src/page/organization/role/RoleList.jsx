@@ -63,7 +63,7 @@ class RoleList extends BaseComponent {
                     <div>
                         <a href="#" onClick={() => this.handleEdit(id)}>{editText}</a>
                         <span className="ant-divider"/>
-                        <Popconfirm title={`您确定要删除“${record.name}”？`} onConfirm={() => this.handleDelete(id)}>
+                        <Popconfirm placement="topRight" title={`您确定要删除“${record.name}”？`} onConfirm={() => this.handleDelete(id)}>
                             <a href="#">{deleteText}</a>
                         </Popconfirm>
                     </div>

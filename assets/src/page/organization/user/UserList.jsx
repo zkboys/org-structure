@@ -19,6 +19,7 @@ class UserList extends BaseComponent {
         showAddModal: false,
         toggleLockingId: null,
         deletingId: null,
+        resetPassId: null,
         editingUserId: null,
         editingUser: null,
         roles: [],
@@ -149,12 +150,17 @@ class UserList extends BaseComponent {
                 const dealing = <span style={{padding: '0px 6px'}}><Icon type="loading"/></span>;
                 let deleteText = this.state.deletingId === id ? dealing : '删除';
                 let editText = this.state.editingUserId === id ? dealing : '编辑';
+                let resetPassText = this.state.resetPassId === id ? dealing : '重置密码';
                 return (
                     <div>
                         <a href="#" onClick={() => this.handleEdit(id)}>{editText}</a>
                         <span className="ant-divider"/>
-                        <Popconfirm title={`您确定要删除“${record.name}”？`} onConfirm={() => this.handleDelete(id)}>
+                        <Popconfirm placement="topRight" title={`您确定要删除“${record.name}”？`} onConfirm={() => this.handleDelete(id)}>
                             <a href="#">{deleteText}</a>
+                        </Popconfirm>
+                        <span className="ant-divider"/>
+                        <Popconfirm placement="topRight" title={`您确定要重置“${record.name}”的密码吗？`} onConfirm={() => this.handleResetPass(id)}>
+                            <a href="#">{resetPassText}</a>
                         </Popconfirm>
                     </div>
                 );
@@ -246,6 +252,27 @@ class UserList extends BaseComponent {
             .end(() => {
                 this.setState({
                     deletingId: null,
+                });
+            });
+    };
+    handleResetPass = (id) => {
+        if (this.state.resetPassId) {
+            return;
+        }
+
+        this.setState({
+            resetPassId: id,
+        });
+        this.request()
+            .put('/organization/users/reset_pass')
+            .params({id})
+            .success(() => {
+                message.success('重置成功！');
+                this.handleSearch();
+            })
+            .end(() => {
+                this.setState({
+                    resetPassId: null,
                 });
             });
     };
