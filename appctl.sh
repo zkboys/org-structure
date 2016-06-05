@@ -18,8 +18,8 @@ start(){
     if [ ! -z $pids ]; then
         echo 'server is already running'
     else
-        PORT=3000 NODE_ENV=production nohup node $DIR/app.js  > output 2>&1 &
-        echo 'server is running at port:3000 runmod:production'
+        PORT=5000 NODE_ENV=production nohup node $DIR/app.js  > output 2>&1 &
+        echo 'server is running at port:5000 runmod:production'
     fi
 }
 # stop app
