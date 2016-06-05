@@ -1,3 +1,4 @@
+import './first-login-style.less';
 import React from 'react';
 import {Button, Form, Input, message} from 'antd';
 import {Request, Storage} from 'common';
@@ -86,8 +87,8 @@ class FirstLogin extends React.Component {
             wrapperCol: {span: 16},
         };
         return (
-            <div>
-                <h1>首次登录，请修改您的密码</h1>
+            <div className="first-login-box">
+                <h1 className="title">首次登录，请修改您的密码</h1>
                 <Form horizontal form={this.props.form}>
                     <FormItem
                         {...formItemLayout}

@@ -16,6 +16,14 @@ class SignIn extends React.Component {
         loaded: false,
     };
 
+    componentDidMount() {
+        setTimeout(() => {
+            this.setState({
+                loaded: true,
+            });
+        }, 500);
+    }
+
     handleSubmit = (e) => {
         if (this.state.loading) {
             return;
@@ -54,13 +62,11 @@ class SignIn extends React.Component {
         });
     };
 
-    componentDidMount() {
-        setTimeout(() => {
-            this.setState({
-                loaded: true,
-            });
-        }, 500);
-    }
+    handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            this.handleSubmit(e);
+        }
+    };
 
     render() {
         const {getFieldProps} = this.props.form;
@@ -105,7 +111,11 @@ class SignIn extends React.Component {
                             {...formItemLayout}
                             label="用户名："
                         >
-                            <Input {...nameProps} placeholder="请输入用户名"/>
+                            <Input
+                                {...nameProps}
+                                onKeyDown={this.handleKeyDown}
+                                placeholder="请输入用户名"
+                            />
                         </FormItem>
 
                         <FormItem
@@ -120,6 +130,7 @@ class SignIn extends React.Component {
                                 onPaste={noop}
                                 onCopy={noop}
                                 onCut={noop}
+                                onKeyDown={this.handleKeyDown}
                             />
                         </FormItem>
                         <FormItem wrapperCol={{ span: 16, offset: 5 }}>
