@@ -165,7 +165,7 @@ if (config.debug) {
 if (config.debug) {
     app.use(LoaderConnect.less(__dirname)); // 测试环境用，编译 .less on the fly
 }
-// 静态文件以及跨域请求代理
+// 静态文件以及跨域请求代理,这里的/public，并不是指public目录，只是一个自定义的虚拟目录
 app.use('/public', express.static(staticDir));
 app.use('/agent', proxyMiddleware.proxy);
 

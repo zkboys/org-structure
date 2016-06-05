@@ -22,11 +22,11 @@ var configs = {
     },
     test: {
         path: '../public',
-        publicPath: '/s/'
+        publicPath: '/public/'
     },
     production: {
         path: '../public',
-        publicPath: '/s/',
+        publicPath: '/public/',
         library: [
             {from: './favicon.png'},
             {from: 'node_modules/antd/dist/antd.min.css'},

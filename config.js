@@ -33,7 +33,31 @@ var nodeENVConfig = {
     test: {
         db: 'mongodb://127.0.0.1/org_test',
     },
-    production: {},
+    production: {
+        debug: false,
+        site_static_host: '/public/', // 静态文件存储域名
+        // mongodb 配置
+        db: 'mongodb://139.129.38.172/org_dev',
+
+        // redis 配置，默认是本地
+        redis_host: '127.0.0.1',
+        redis_port: 6379,
+        redis_db: 0,
+
+        session_secret: 'OrganizationalStructure', // 务必修改
+        auth_cookie_name: 'OrganizationalStructure',
+        // 程序运行的端口
+        port: process.env.PORT || 3000,
+        // 邮箱配置
+        mail_opts: {
+            host: 'smtp.126.com',
+            port: 25,
+            auth: {
+                user: 'club@126.com',
+                pass: 'club'
+            }
+        },
+    },
 };
 var config = {
     // debug 为 true 时，用于本地调试

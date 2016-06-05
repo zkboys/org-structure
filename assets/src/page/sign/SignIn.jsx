@@ -71,13 +71,13 @@ class SignIn extends React.Component {
     render() {
         const {getFieldProps} = this.props.form;
         const nameProps = getFieldProps('name', {
-            initialValue: 'admin',
+            initialValue: '',
             rules: [
                 {required: true, message: '请填写用户名'},
             ],
         });
         const passwdProps = getFieldProps('pass', {
-            initialValue: '111111',
+            initialValue: '',
             rules: [
                 {required: true, whitespace: true, message: '请填写密码'},
             ],
@@ -114,7 +114,7 @@ class SignIn extends React.Component {
                             <Input
                                 {...nameProps}
                                 onKeyDown={this.handleKeyDown}
-                                placeholder="请输入用户名"
+                                placeholder="请输入登录名"
                             />
                         </FormItem>
 
@@ -124,6 +124,7 @@ class SignIn extends React.Component {
                         >
                             <Input
                                 {...passwdProps}
+                                placeholder="请输入密码"
                                 type="password"
                                 autoComplete="off"
                                 onContextMenu={noop}
