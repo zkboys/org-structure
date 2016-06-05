@@ -45,6 +45,7 @@ class BaseComponent extends React.Component {
             errorCb: null,
             successCb: null,
             isEnd: false,
+            outTime: 1000 * 10,
             get(url) {
                 this.url = url;
                 this.type = 'get';
@@ -68,6 +69,9 @@ class BaseComponent extends React.Component {
             params(params) {
                 this.paramsData = params;
                 return this;
+            },
+            timeout(timeout) {
+                this.outTime = timeout;
             },
             noLoading() {
                 this.withNoLoading = true;
@@ -147,7 +151,7 @@ class BaseComponent extends React.Component {
                         endCb(err, res);
                         request.abort();
                     }
-                }, 1000 * 10); // 10ms 超时时间
+                }, this.outTime); // 10ms 超时时间
                 self.requestTimeouts.push(st);
                 if (this.type === 'get') {
                     request = Request
