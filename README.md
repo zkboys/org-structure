@@ -1,5 +1,14 @@
 # org-structure （人员管理系统）
 
+## 安装&开发
+1. 安装 `Node.js/io.js[必须]` `MongoDB[必须]` `Redis[必须]`
+2. 启动 MongoDB 和 Redis
+3. npm install 
+4. cd assets && npm install 
+5. cd assets && npm run dev
+6. npm run dev 
+7. http://localhost:3001
+
 ## 路由约定
 ### 跳转页面的路由
 所有跳转页面的路由，写在web_router.js中；
