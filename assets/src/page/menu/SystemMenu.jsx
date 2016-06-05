@@ -1,10 +1,10 @@
 import React from 'react';
 import {Button, Form, Input, Tree, Row, Col, Alert, Modal, message, Table, Popconfirm} from 'antd';
-import BaseComponent from '../../component/base-component/BaseComponent';
-import Page from '../../framework/page/Page';
-import {convertToTree} from '../../common/common';
-import FIcon from '../../component/faicon/FAIcon';
+import {BaseComponent, FAIcon} from 'component';
+import {Page} from 'framework';
+import {Common} from 'common';
 
+const convertToTree = Common.convertToTree;
 const TreeNode = Tree.TreeNode;
 const createForm = Form.create;
 const FormItem = Form.Item;
@@ -21,7 +21,7 @@ class SystemMenu extends BaseComponent {
         functions: [],
     };
 
-    componentDidMount() {
+    componentWillMount() {
         this.request()
             .get('/system/menus')
             .success((data) => {
@@ -364,10 +364,13 @@ class SystemMenu extends BaseComponent {
         } else {
             const data = [...this.state.gData];
             let isFind = false;
+            this.findNodeByKey(data, value, () => {
+                isFind = true;
+            });
             let loop = (d) => {
                 d.forEach((v) => {
                     if (v.functions && v.functions.length) {
-                        v.functions.forEach((f, index, array) => {
+                        v.functions.forEach((f) => {
                             if (f.key === value) {
                                 isFind = true;
                             }
@@ -394,7 +397,7 @@ class SystemMenu extends BaseComponent {
                 return (
                     <TreeNode
                         key={item.key}
-                        title={<span><FIcon type={item.icon}/> {item.text}</span>}
+                        title={<span><FAIcon type={item.icon}/> {item.text}</span>}
                     >
                         {loop(item.children)}
                     </TreeNode>
@@ -403,7 +406,7 @@ class SystemMenu extends BaseComponent {
             return (
                 <TreeNode
                     key={item.key}
-                    title={<span><FIcon type={item.icon}/> {item.text}</span>}
+                    title={<span><FAIcon type={item.icon}/> {item.text}</span>}
                 />
             );
         });
@@ -484,6 +487,7 @@ class SystemMenu extends BaseComponent {
                                 <Button type="ghost" size="large" onClick={this.handleReset}>重置</Button>
                             </div>
                             <Tree
+                                defaultExpandAll
                                 defaultExpandedKeys={this.state.expandedKeys}
                                 openAnimation={{}}
                                 draggable

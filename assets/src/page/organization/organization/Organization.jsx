@@ -331,6 +331,7 @@ class Organization extends BaseComponent {
                                 <Button type="ghost" size="large" onClick={this.handleReset}>重置</Button>
                             </div>
                             <Tree
+                                defaultExpandAll
                                 defaultExpandedKeys={this.state.expandedKeys}
                                 openAnimation={{}}
                                 draggable
