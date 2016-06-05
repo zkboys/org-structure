@@ -24,7 +24,7 @@ this.endLoading();
 ```
 this.request()
 .get(url)
-.timeout(1000*10*) // 设置超时时间，默认是10秒
+.timeout(1000*10) // 设置超时时间，默认是10秒
 .params({}) // 内部会区分，get请求使用query，post，put，del请求使用send
 .noLoading() // 不会调用全屏loading，如果需要自己处理loading，会用到此函数
 .setErrorMsg(errorMsg) // 自定义错误提示信息，否则内部会自动尝试给出错误提示
