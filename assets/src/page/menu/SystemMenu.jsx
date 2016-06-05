@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Form, Input, Tree, Row, Col, Alert, Modal, message} from 'antd';
+import {Button, Form, Input, Tree, Row, Col, Alert, Modal, message, Table, Popconfirm} from 'antd';
 import BaseComponent from '../../component/base-component/BaseComponent';
 import Page from '../../framework/page/Page';
 import {convertToTree} from '../../common/common';
@@ -18,6 +18,7 @@ class SystemMenu extends BaseComponent {
         disableEditKey: true,
         expandedKeys: [],
         isAddTopMenu: false,
+        functions: [],
     };
 
     componentDidMount() {
@@ -104,7 +105,9 @@ class SystemMenu extends BaseComponent {
         const {setFieldsValue} = this.props.form;
         this.setState({
             disableEditPath: selectNodeData.children && selectNodeData.children.length && selectNodeData.parentKey,
-        });
+            functions: selectNodeData.functions,
+        })
+        ;
         setFieldsValue({
             key: selectNodeData.key,
             text: selectNodeData.text,
@@ -151,6 +154,7 @@ class SystemMenu extends BaseComponent {
                 icon: item.icon,
                 path: item.path,
                 order: item.order,
+                functions: item.functions,
             });
             if (item.children && item.children.length) {
                 loop(item.children);
@@ -192,6 +196,32 @@ class SystemMenu extends BaseComponent {
             this.props.form.resetFields();
         });
     };
+    handleFunctionDelete = (functionKey) => {
+        this.props.form.validateFields(['key'], (errors) => {
+            if (!!errors) {
+                return;
+            }
+            let data = [...this.state.gData];
+            let loop = (d) => {
+                d.forEach((v) => {
+                    if (v.functions && v.functions.length) {
+                        v.functions.forEach((f, index, array) => {
+                            if (f.key === functionKey) {
+                                array.splice(index, 1);
+                            }
+                        });
+                    }
+                    if (v.children && v.children.length) {
+                        loop(v.children);
+                    }
+                });
+            };
+            loop(data);
+            this.setState({
+                gData: data,
+            });
+        });
+    };
     handleAddChild = () => {
         this.props.form.validateFields(['key'], (errors, values) => {
             if (!!errors) {
@@ -206,7 +236,7 @@ class SystemMenu extends BaseComponent {
             });
             this.setState({
                 isAddTopMenu: false,
-            })
+            });
             this.showModal();
         });
     };
@@ -222,6 +252,20 @@ class SystemMenu extends BaseComponent {
             isAddTopMenu: true,
         });
         this.showModal();
+    };
+    handleAddFunction = () => {
+        this.props.form.validateFields(['key'], (errors) => {
+            if (!!errors) {
+                return;
+            }
+            const {setFieldsValue} = this.props.form;
+            setFieldsValue({
+                functionKey: '',
+                functionName: '',
+                functionDescription: '',
+            });
+            this.showFunctionModal();
+        });
     }
     handleAddSubmit = () => {
         this.props.form.validateFields(['newKey', 'newText', 'newIcon', 'newPath'], (errors, values) => {
@@ -236,7 +280,7 @@ class SystemMenu extends BaseComponent {
                 text: values.newText,
                 icon: values.newIcon,
                 path: values.newPath,
-            }
+            };
             if (this.state.isAddTopMenu) {
                 newNode.parentKey = undefined;
                 data.push(newNode);
@@ -255,6 +299,32 @@ class SystemMenu extends BaseComponent {
             this.hideModal();
         });
     };
+    handleAddFunctionSubmit = () => {
+        this.props.form.validateFields(['functionKey', 'functionName', 'functionDescription'], (errors, values) => {
+            if (!!errors) {
+                return;
+            }
+            let data = [...this.state.gData];
+            let parentKey = this.props.form.getFieldValue('key');
+            let newFunction = {
+                key: values.functionKey,
+                name: values.functionName,
+                description: values.functionDescription,
+            };
+
+            this.findNodeByKey(data, parentKey, (item) => {
+                if (!item.functions) {
+                    item.functions = [];
+                }
+                item.functions.push(newFunction);
+            });
+
+            this.setState({
+                gData: data,
+            });
+            this.hideFunctionModal();
+        });
+    };
 
     showModal = () => {
         this.setState({showModal: true});
@@ -262,6 +332,14 @@ class SystemMenu extends BaseComponent {
 
     hideModal = () => {
         this.setState({showModal: false});
+    };
+
+    showFunctionModal = () => {
+        this.setState({showFunctionModal: true});
+    };
+
+    hideFunctionModal = () => {
+        this.setState({showFunctionModal: false});
     };
 
     nodeExists = (rule, value, callback) => {
@@ -273,6 +351,35 @@ class SystemMenu extends BaseComponent {
             this.findNodeByKey(data, value, () => {
                 isFind = true;
             });
+            if (isFind) {
+                callback([new Error('抱歉，该key已被占用。')]);
+            } else {
+                callback();
+            }
+        }
+    };
+    functionExists = (rule, value, callback) => {
+        if (!value) {
+            callback();
+        } else {
+            const data = [...this.state.gData];
+            let isFind = false;
+            let loop = (d) => {
+                d.forEach((v) => {
+                    if (v.functions && v.functions.length) {
+                        v.functions.forEach((f, index, array) => {
+                            if (f.key === value) {
+                                isFind = true;
+                            }
+                        });
+                    }
+                    if (v.children && v.children.length) {
+                        loop(v.children);
+                    }
+                });
+            };
+            loop(data);
+
             if (isFind) {
                 callback([new Error('抱歉，该key已被占用。')]);
             } else {
@@ -341,6 +448,18 @@ class SystemMenu extends BaseComponent {
         const pathProps = getFieldProps('path', pathFieldProps);
         const newPathProps = getFieldProps('newPath', pathFieldProps);
 
+        const functionKeyProps = getFieldProps('functionKey', {
+            rules: [
+                {required: true, message: 'key 不能为空！'},
+                {validator: this.functionExists},
+            ],
+        });
+        const functionNameProps = getFieldProps('functionName', {
+            rules: [
+                {required: true, message: '名称 不能为空！'},
+            ],
+        });
+        const functionDescriptionProps = getFieldProps('functionDescription', {});
         if (this.state.disableEditPath) {
             pathProps.disabled = true;
         }
@@ -355,8 +474,7 @@ class SystemMenu extends BaseComponent {
             <Page header={'auto'} loading={this.state.loading}>
                 <Alert message="菜单存在Storage.session中，修改该保存之后，重新登陆会获取最新菜单。 菜单数据的key，唯一不可重复，有可能和权限关联，添加后不可修改。" type="warning" showIcon/>
                 <Row>
-
-                    <Col span={12} style={{textAlign: 'right'}}>
+                    <Col span={8} style={{textAlign: 'right'}}>
                         <div style={{textAlign: 'left', display: 'inline-block'}}>
                             <div style={{marginBottom: '10px'}}>
                                 <Button type="primary" size="large" onClick={this.handleAddTopMenu}>添加顶级菜单</Button>
@@ -378,7 +496,7 @@ class SystemMenu extends BaseComponent {
                             </Tree>
                         </div>
                     </Col>
-                    <Col span={12}>
+                    <Col span={8}>
                         <Form horizontal form={this.props.form}>
                             <FormItem wrapperCol={{ span: 20, offset: 4 }}>
                                 <Button type="primary" onClick={this.handleDelete}>删除</Button>
@@ -443,6 +561,52 @@ class SystemMenu extends BaseComponent {
                             </FormItem>
                         </Form>
                     </Col>
+                    <Col span={8}>
+                        <div style={{marginBottom: '25px'}}>
+                            <Button
+                                type="primary"
+                                size="large"
+                                onClick={this.handleAddFunction}
+                            >
+                                添加内部功能
+                            </Button>
+                        </div>
+                        <Table
+                            pagination={false}
+                            columns={
+                                [
+                                    {
+                                        title: 'key',
+                                        dataIndex: 'key',
+                                        key: 'key',
+                                    },
+                                    {
+                                        title: '名称',
+                                        dataIndex: 'name',
+                                        key: 'name',
+                                    },
+                                    {
+                                        title: '描述',
+                                        dataIndex: 'description',
+                                        key: 'description',
+                                    },
+                                    {
+                                        title: '操作',
+                                        key: 'operator',
+                                        render: (text, record) => {
+                                            const key = record.key;
+                                            return (
+                                                <Popconfirm title={`您确定要删除“${record.name}”？`} onConfirm={() => this.handleFunctionDelete(key)}>
+                                                    <a href="#">删除</a>
+                                                </Popconfirm>
+                                            );
+                                        },
+                                    },
+                                ]
+                            }
+                            dataSource={this.state.functions}
+                        />
+                    </Col>
                 </Row>
                 <Modal title="添加子节点" visible={this.state.showModal} onOk={this.handleAddSubmit} onCancel={this.hideModal}>
                     <Form horizontal form={this.props.form}>
@@ -484,6 +648,45 @@ class SystemMenu extends BaseComponent {
                             <Input
                                 {...newPathProps}
                                 placeholder="菜单跳转路径"
+                            />
+                        </FormItem>
+                    </Form>
+                </Modal>
+                <Modal
+                    title="添加功能"
+                    visible={this.state.showFunctionModal}
+                    onOk={this.handleAddFunctionSubmit}
+                    onCancel={this.hideFunctionModal}
+                >
+                    <Form horizontal form={this.props.form}>
+                        <FormItem
+                            {...formItemLayout}
+                            label="key："
+                            hasFeedback
+                        >
+                            <Input
+                                {...functionKeyProps}
+                                placeholder="唯一不可重复！"
+                            />
+                        </FormItem>
+                        <FormItem
+                            {...formItemLayout}
+                            label="名称："
+                            hasFeedback
+                        >
+                            <Input
+                                {...functionNameProps}
+                                placeholder="功能名称"
+                            />
+                        </FormItem>
+
+                        <FormItem
+                            {...formItemLayout}
+                            label="描述："
+                            hasFeedback>
+                            <Input
+                                {...functionDescriptionProps}
+                                placeholder="功能描述"
                             />
                         </FormItem>
                     </Form>
