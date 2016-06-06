@@ -180,7 +180,14 @@ module.exports = {
         new webpack.ProvidePlugin({
             'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
         }),
-
+        /*
+         * 定义变量，各个js文件内部可以直接使用
+         * */
+        new webpack.DefinePlugin({
+            'process.env': {
+                'NODE_ENV': JSON.stringify(rummod)
+            }
+        }),
         /*
          * 拷贝externals文件到指定静态目录，webpack-dev-server也可以获取到这些文件。
          * */
