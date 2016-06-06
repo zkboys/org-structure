@@ -1,7 +1,8 @@
 import React from 'react';
 import {Button, Form, Input, Tree, Row, Col, Alert, Modal, message, Table, Popconfirm} from 'antd';
-import {BaseComponent, FAIcon} from 'component';
-import {Page} from 'framework';
+import BaseComponent from 'component/base-component/BaseComponent';
+import FAIcon from 'component/faicon/FAIcon';
+import Page from 'framework/page/Page';
 import {Common} from 'common';
 
 const convertToTree = Common.convertToTree;

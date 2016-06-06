@@ -74,7 +74,7 @@
     "dev": "npm run route && cross-env NODE_ENV=development webpack-dev-server --port 8088 --progress --inline",
     "build-development": "npm run clean && npm run route && cross-env NODE_ENV=development webpack -d -p --profile --progress --colors --display-modules",
     "build-test": "npm run clean && npm run route && cross-env NODE_ENV=test webpack -d -p --profile --progress --colors --display-modules",
-    "build-production": "npm run clean && npm run route && cross-env NODE_ENV=production webpack --progress"
+    "build-production": "npm run clean && npm run route && cross-env NODE_ENV=production webpack -p --profile --progress --colors --display-modules"
   },
   "repository": {
     "type": "git",

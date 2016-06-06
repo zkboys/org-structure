@@ -26,14 +26,7 @@ class SettingsPage extends React.Component {
         };
         return (
             <Page header={pageHeader}>
-                <Form horizontal>
-                    <FormItem wrapperCol={{span: 6, offset: 1}}>
-                        <label className="ant-checkbox-vertical" style={{cursor: 'pointer'}}>
-                            <Checkbox checked={this.state.showPageAnimate} onChange={this.handleShowPageAnimate}/>
-                            &nbsp;&nbsp;启用页面切换动画
-                        </label>
-                    </FormItem>
-                </Form>
+                系统的相关设置
             </Page>
         );
     }

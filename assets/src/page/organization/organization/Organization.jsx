@@ -1,6 +1,7 @@
 import React from 'react';
 import {Button, Form, Input, Tree, Row, Col, Modal, message} from 'antd';
-import {BaseComponent, FAIcon} from 'component';
+import BaseComponent from 'component/base-component/BaseComponent';
+import FAIcon from 'component/faicon/FAIcon';
 import {Common} from 'common';
 import {Page} from 'framework';
 

@@ -1,12 +1,14 @@
 import React from 'react';
 import assign from 'object-assign';
 import {Page} from 'framework';
-import {BaseComponent, QueryTerms, PaginationComponent, SwitchRemote, ToolBar} from 'component';
+import BaseComponent from 'component/base-component/BaseComponent';
+import QueryTerms from 'component/query-terms/QueryTerms';
+import PaginationComponent from 'component/pagination/PaginationComponent';
+import ToolBar from 'component/tool-bar/ToolBar';
 import {Table, Button, Form, message, Icon, Popconfirm} from 'antd';
 import RoleEdit from './RoleEdit';
 
 const createForm = Form.create;
-
 class RoleList extends BaseComponent {
     state = {
         queryData: {

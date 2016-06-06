@@ -1,8 +1,8 @@
 import React from 'react';
-import BaseComponent from 'component/base-component/BaseComponent';
-import FAIcon from 'component/faicon/FAIcon';
+import {BaseComponent, FAIcon} from 'component';
 import {Form, Input, Tree, Modal, message, Row, Col} from 'antd';
 import {ValidationRule, Common} from 'common';
+
 
 const convertToTree = Common.convertToTree;
 const TreeNode = Tree.TreeNode;
