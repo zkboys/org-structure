@@ -17,7 +17,8 @@ var configs = {
             {from: 'node_modules/antd/dist/antd.css', to: 'antd.min.css'},
             {from: 'node_modules/antd/dist/antd.js', to: 'antd.min.js'},
             {from: 'node_modules/react/dist/react.js', to: 'react.min.js'},
-            {from: 'node_modules/react-dom/dist/react-dom.js', to: 'react-dom.min.js'}
+            {from: 'node_modules/react-dom/dist/react-dom.js', to: 'react-dom.min.js'},
+            {from: 'node_modules/moment/min/moment-with-locales.min.js', to: 'moment.min.js'},
         ]
     },
     test: {
@@ -32,7 +33,8 @@ var configs = {
             {from: 'node_modules/antd/dist/antd.min.css'},
             {from: 'node_modules/antd/dist/antd.min.js'},
             {from: 'node_modules/react/dist/react.min.js'},
-            {from: 'node_modules/react-dom/dist/react-dom.min.js'}
+            {from: 'node_modules/react-dom/dist/react-dom.min.js'},
+            {from: 'node_modules/moment/min/moment-with-locales.min.js', to: 'moment.min.js'},
         ]
     }
 };
@@ -104,7 +106,9 @@ module.exports = {
     externals: {// 这些在页面上通过script标签引入，不参与webpack的构建，提高构建速度。
         'react': 'React',
         'react-dom': 'ReactDOM',
-        'antd': 'antd'
+        'antd': 'antd',
+        'moment': 'moment',
+        'request': 'request',
     },
     module: {
         loaders: [

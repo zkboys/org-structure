@@ -1,6 +1,5 @@
 import React from 'react';
 import {Breadcrumb, Spin} from 'antd';
-import QueueAnim from 'rc-queue-anim';
 import {Link} from 'react-router';
 import {getCurrentSidebarMenu} from '../sidebar/SidebarMenuUtil';
 import Settings from '../settings/Settings';
@@ -114,16 +113,6 @@ class Page extends React.Component {
                 {this.props.children}
             </div>
         );
-
-        if (this.state.showPageAnimate) {
-            pageChildren = (
-                <QueueAnim animConfig={this.props.animConfig} delay={100}>
-                    <div key="queue-anim-item1">
-                        {pageChildren}
-                    </div>
-                </QueueAnim>
-            );
-        }
         return (
             <div className={"admin-page "}>
                 <Spin spinning={this.props.loading}>

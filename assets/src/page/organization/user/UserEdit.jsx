@@ -1,10 +1,10 @@
 import React from 'react';
-import {BaseComponent} from 'component';
+import BaseComponent from 'component/base-component/BaseComponent';
 import {Form, Input, Radio, Icon, TreeSelect, Row, Col, Modal, message, Switch, Select} from 'antd';
-import {ValidationRule, Common} from 'common';
+import {convertToTree} from 'common/common';
+import ValidationRule from 'common/validation-rule';
 
 const Option = Select.Option;
-const convertToTree = Common.convertToTree;
 const createForm = Form.create;
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;

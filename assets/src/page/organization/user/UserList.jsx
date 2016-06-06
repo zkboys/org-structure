@@ -1,7 +1,11 @@
 import React from 'react';
 import assign from 'object-assign';
-import {Page} from 'framework';
-import {BaseComponent, QueryTerms, PaginationComponent, SwitchRemote, ToolBar} from 'component';
+import Page from 'framework/page/Page';
+import BaseComponent from 'component/base-component/BaseComponent';
+import QueryTerms from 'component/query-terms/QueryTerms';
+import PaginationComponent from 'component/pagination/PaginationComponent';
+import SwitchRemote from 'component/switch-remote/SwitchRemote';
+import ToolBar from 'component/tool-bar/ToolBar';
 import {Table, Button, Form, message, Icon, Popconfirm} from 'antd';
 import UserEdit from './UserEdit';
 

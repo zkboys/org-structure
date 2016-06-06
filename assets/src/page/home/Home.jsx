@@ -1,8 +1,8 @@
 import './style.css';
 import React from 'react';
 import { Breadcrumb } from 'antd';
-import {BaseComponent} from 'component';
-import {Page} from 'framework';
+import BaseComponent from 'component/base-component/BaseComponent';
+import Page from 'framework/page/Page';
 
 class Home extends BaseComponent {
     state = {
