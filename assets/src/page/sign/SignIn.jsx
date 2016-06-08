@@ -130,7 +130,14 @@ class SignIn extends React.Component {
                     <h1 className="login-title">用户登录</h1>
                     <div className="form-item">
                         <label htmlFor="name">用户名：</label>
-                        <input id="name" type="text" value={this.state.name} onChange={this.handleNameChange} placeholder="请输入登录名"/>
+                        <input
+                            id="name"
+                            type="text"
+                            value={this.state.name}
+                            onChange={this.handleNameChange}
+                            onKeyDown={this.handleKeyDown}
+                            placeholder="请输入登录名"
+                        />
                     </div>
                     <div className="form-item">
                         <label htmlFor="name">密码：</label>
@@ -139,6 +146,7 @@ class SignIn extends React.Component {
                             type="password"
                             value={this.state.pass}
                             onChange={this.handlePassChange}
+                            onKeyDown={this.handleKeyDown}
                             placeholder="请输入密码"
                             onContextMenu={noop}
                             onPaste={noop}
@@ -147,7 +155,12 @@ class SignIn extends React.Component {
                         />
                     </div>
                     <div className="error">{this.state.error}</div>
-                    <div className={`button ${this.state.loading ? 'loading' : ''}`} onClick={this.handleSubmit}>登录</div>
+                    <div
+                        className={`button ${this.state.loading ? 'loading' : ''}`}
+                        onClick={this.handleSubmit}
+                    >
+                        {this.state.loading ? '登录中。。。' : '登录'}
+                    </div>
                 </div>
             </div>
         );
