@@ -77,6 +77,9 @@ class SignIn extends React.Component {
             name,
             pass,
         };
+        this.setState({
+            loading: true,
+        });
         Request
             .post('/signin')
             .send(params)
