@@ -1,11 +1,8 @@
 import './style.less';
 import React from 'react';
 import {Request, Storage} from 'common';
-import {Button, Form, Input, message} from 'antd';
 import Bg from './bg.jpg';
 import decorateImage from './bg4.png';
-const createForm = Form.create;
-const FormItem = Form.Item;
 function noop() {
     return false;
 }
@@ -14,6 +11,9 @@ class SignIn extends React.Component {
     state = {
         loading: false,
         loaded: false,
+        name: '',
+        pass: '',
+        error: '',
     };
 
     componentDidMount() {
@@ -22,6 +22,41 @@ class SignIn extends React.Component {
                 loaded: true,
             });
         }, 500);
+        const script = window.document.createElement('script');
+        script.src = '/public/antd.min.js';
+        const link = window.document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = '/public/antd.min.css';
+        window.document.head.appendChild(script);
+        window.document.head.appendChild(link);
+    }
+
+    handleNameChange = (e) => {
+        const value = e.target.value;
+        if (!value) {
+            this.showError('请输入登录名');
+        } else {
+            this.showError('');
+        }
+        this.setState({
+            name: value,
+        });
+    };
+    handlePassChange = (e) => {
+        const value = e.target.value;
+        if (!value) {
+            this.showError('请输入密码');
+        } else {
+            this.showError('');
+        }
+        this.setState({
+            pass: value,
+        });
+    };
+    showError = (errorMessage) => {
+        this.setState({
+            error: errorMessage,
+        });
     }
 
     handleSubmit = (e) => {
@@ -30,36 +65,40 @@ class SignIn extends React.Component {
         }
 
         e.preventDefault();
-        this.props.form.validateFields((errors, values) => {
-            if (!!errors) {
-                return message.error('用户名或密码错误');
-            }
-            this.setState({
-                loading: true,
-            });
-            Request
-                .post('/signin')
-                .send(values)
-                .end((err, res) => {
-                    this.setState({
-                        loading: false,
-                    });
-                    if (err || !res.ok) {
-                        message.error(res.body.message);
-                    } else {
-                        let refer = res.body.refer || '/';
-                        let menus = res.body.menus || [];
-                        let currentLoginUser = res.body.user;
-                        if (currentLoginUser.is_first_login) {
-                            location.href = '/first_login';
-                        } else {
-                            Storage.session.set('currentLoginUser', currentLoginUser);
-                            Storage.session.set('menus', menus);
-                            location.href = refer;
-                        }
-                    }
+        const name = this.state.name;
+        const pass = this.state.pass;
+        if (!name) {
+            return this.showError('请输入登录名');
+        }
+        if (!pass) {
+            return this.showError('请输入密码');
+        }
+        const params = {
+            name,
+            pass,
+        };
+        Request
+            .post('/signin')
+            .send(params)
+            .end((err, res) => {
+                this.setState({
+                    loading: false,
                 });
-        });
+                if (err || !res.ok) {
+                    this.showError(res.body.message);
+                } else {
+                    let refer = res.body.refer || '/';
+                    let menus = res.body.menus || [];
+                    let currentLoginUser = res.body.user;
+                    if (currentLoginUser.is_first_login) {
+                        location.href = '/first_login';
+                    } else {
+                        Storage.session.set('currentLoginUser', currentLoginUser);
+                        Storage.session.set('menus', menus);
+                        location.href = refer;
+                    }
+                }
+            });
     };
 
     handleKeyDown = (e) => {
@@ -69,23 +108,6 @@ class SignIn extends React.Component {
     };
 
     render() {
-        const {getFieldProps} = this.props.form;
-        const nameProps = getFieldProps('name', {
-            initialValue: '',
-            rules: [
-                {required: true, message: '请填写用户名'},
-            ],
-        });
-        const passwdProps = getFieldProps('pass', {
-            initialValue: '',
-            rules: [
-                {required: true, whitespace: true, message: '请填写密码'},
-            ],
-        });
-        const formItemLayout = {
-            labelCol: {span: 5},
-            wrapperCol: {span: 16},
-        };
         return (
             <div className="login-wrap" style={{backgroundImage: `url(${Bg})`}}>
                 <div className={`img-box ${this.state.loaded ? 'loaded' : ''}`}>
@@ -106,47 +128,30 @@ class SignIn extends React.Component {
                 </div>
                 <div className="login-box">
                     <h1 className="login-title">用户登录</h1>
-                    <Form horizontal form={this.props.form}>
-                        <FormItem
-                            {...formItemLayout}
-                            label="用户名："
-                        >
-                            <Input
-                                {...nameProps}
-                                onKeyDown={this.handleKeyDown}
-                                placeholder="请输入登录名"
-                            />
-                        </FormItem>
-
-                        <FormItem
-                            {...formItemLayout}
-                            label="密码："
-                        >
-                            <Input
-                                {...passwdProps}
-                                placeholder="请输入密码"
-                                type="password"
-                                autoComplete="off"
-                                onContextMenu={noop}
-                                onPaste={noop}
-                                onCopy={noop}
-                                onCut={noop}
-                                onKeyDown={this.handleKeyDown}
-                            />
-                        </FormItem>
-                        <FormItem wrapperCol={{ span: 16, offset: 5 }}>
-                            <Button
-                                style={{width: '100%'}}
-                                type="primary"
-                                loading={this.state.loading}
-                                onClick={this.handleSubmit}
-                            >登录</Button>
-                        </FormItem>
-                    </Form>
+                    <div className="form-item">
+                        <label htmlFor="name">用户名：</label>
+                        <input id="name" type="text" value={this.state.name} onChange={this.handleNameChange} placeholder="请输入登录名"/>
+                    </div>
+                    <div className="form-item">
+                        <label htmlFor="name">密码：</label>
+                        <input
+                            id="name"
+                            type="password"
+                            value={this.state.pass}
+                            onChange={this.handlePassChange}
+                            placeholder="请输入密码"
+                            onContextMenu={noop}
+                            onPaste={noop}
+                            onCopy={noop}
+                            onCut={noop}
+                        />
+                    </div>
+                    <div className="error">{this.state.error}</div>
+                    <div className={`button ${this.state.loading ? 'loading' : ''}`} onClick={this.handleSubmit}>登录</div>
                 </div>
             </div>
         );
     }
 }
 
-export default createForm()(SignIn);
+export default SignIn;

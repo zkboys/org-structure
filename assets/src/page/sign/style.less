@@ -1,3 +1,17 @@
+*, :after, :before {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, \\5FAE\8F6F\96C5\9ED1, Arial, sans-serif';
+    font-size: 12px;
+    line-height: 1.5;
+    color: #666;
+    background-color: #fff;
+}
+
 .login-wrap {
     position: absolute;
     width: 100%;
@@ -189,22 +203,74 @@
     padding: 20px;
     background: #fff;
     border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #666;
+    font-size: 14px;
     h1 {
+        font-size: 2em;
+        margin: .67em 0;
         font-weight: normal;
     }
-    .ant-form-item-required:before {
-        display: none;
+    .form-item {
+        margin-bottom: 20px;
     }
-    .ant-form-item > label {
-        padding-top: 12px;
+    label {
+        display: inline-block;
+        width: 70px;
+        text-align: right;
         font-size: 14px;
     }
-    .ant-input-lg,
-    .ant-btn-lg {
-        font-size: 14px;
+    input {
         height: 45px;
-    }
+        border: 1px solid #d9d9d9;
+        transition: 300ms;
+        box-sizing: border-box;
+        border-radius: 6px;
+        width: 240px;
+        padding: 6px;
+        font: inherit;
+        &:hover,
+        &:active,
+        &:focus {
+            outline: 0;
+            border: 1px solid #2db7f5;
+        }
 
+        &::-moz-placeholder {
+            color: #ccc;
+            opacity: 1;
+        }
+        &:-ms-input-placeholder {
+            color: #ccc;
+        }
+        &::-webkit-input-placeholder {
+            color: #ccc;
+        }
+    }
+    .error {
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, -80%);
+        text-align: center;
+        color: #f50;
+        font-size: 14px;
+    }
+    .button {
+        width: 100%;
+        height: 45px;
+        line-height: 45px;
+        margin-top: 30px;
+        font-size: 14px;
+        color: #fff;
+        background: #2db7f5;
+        border-radius: 6px;
+        text-align: center;
+        cursor: pointer;
+        transition: 300ms;
+        user-select: none;
+        &:hover {
+            background: #57c5f7;
+        }
+    }
 }
 
 .login-title {
