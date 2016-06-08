@@ -4,7 +4,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var webpack = require('webpack');
 var child_process = require('child_process');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
-var rummod = process.env.NODE_ENV || 'development';
+var nodeENV = process.env.NODE_ENV || 'development';
 /*
  * 基于不同模式，区分配置
  * */
@@ -43,7 +43,7 @@ var configs = {
 /*
  * 获取不同的环境配置
  * */
-var cfg = configs[rummod] || configs.development;
+var cfg = configs[nodeENV] || configs.development;
 /*
  * 第三方js库，分离出来能提高打包速度
  * */
@@ -184,9 +184,11 @@ module.exports = {
          * 定义变量，各个js文件内部可以直接使用
          * */
         new webpack.DefinePlugin({
+            'PUBLICPATH': JSON.stringify(cfg.publicPath),
             'process.env': {
-                'NODE_ENV': JSON.stringify(rummod)
-            }
+                'NODE_ENV': JSON.stringify(nodeENV)
+            },
+
         }),
         /*
          * 拷贝externals文件到指定静态目录，webpack-dev-server也可以获取到这些文件。

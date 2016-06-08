@@ -23,10 +23,10 @@ class SignIn extends React.Component {
             });
         }, 500);
         const script = window.document.createElement('script');
-        script.src = '/public/antd.min.js';
+        script.src = `${PUBLICPATH}antd.min.js`; // FIXME 注意这个路径PUBLICPATH，webpack配置传递过来的。
         const link = window.document.createElement('link');
         link.rel = 'stylesheet';
-        link.href = '/public/antd.min.css';
+        link.href = `${PUBLICPATH}antd.min.css`;
         window.document.head.appendChild(script);
         window.document.head.appendChild(link);
     }
