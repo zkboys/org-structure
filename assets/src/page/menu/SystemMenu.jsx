@@ -601,7 +601,7 @@ class SystemMenu extends BaseComponent {
                                         render: (text, record) => {
                                             const key = record.key;
                                             return (
-                                                <Popconfirm title={`您确定要删除“${record.name}”？`} onConfirm={() => this.handleFunctionDelete(key)}>
+                                                <Popconfirm placement="topRight" title={`您确定要删除“${record.name}”？`} onConfirm={() => this.handleFunctionDelete(key)}>
                                                     <a href="#">删除</a>
                                                 </Popconfirm>
                                             );

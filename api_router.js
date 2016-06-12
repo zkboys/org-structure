@@ -34,7 +34,7 @@ router.post('/organization/users', permission('user-add'), user.addAndSave);
 router.put('/organization/users', permission('user-update'), user.update);
 router.put('/organization/users/reset_pass', permission('user-reset-pass'), user.resetPass);
 router.delete('/organization/users', permission('user-delete'), user.delete);
-router.put('/organization/users/toggle_lock', permission('user-toggleLock'), user.toggleLock);
+router.put('/organization/users/toggle_lock', permission('user-toggle-lock'), user.toggleLock);
 
 // 角色
 router.get('/organization/roles', role.getByPage);
