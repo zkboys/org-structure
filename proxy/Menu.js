@@ -29,5 +29,10 @@ exports.updateAllMenus = function (newMenu, callback) {
  * - docs，返回的数据
  * */
 exports.getMenusByUser = function (user, callback) {
-    Menu.find({'key': {'$in': user.permissions}}, callback);;
+    if (user.loginname === 'admin') {
+        Menu.find({}, callback);
+    } else {
+        Menu.find({'key': {'$in': user.permissions}}, callback);
+    }
+
 };
