@@ -84,11 +84,12 @@ class SignIn extends React.Component {
             .post('/signin')
             .send(params)
             .end((err, res) => {
-                this.setState({
-                    loading: false,
-                });
                 if (err || !res.ok) {
                     this.showError(res.body.message);
+                    // 出错清除loading状态，成功之后不清除状态，等待跳转。
+                    this.setState({
+                        loading: false,
+                    });
                 } else {
                     let refer = res.body.refer || '/';
                     let menus = res.body.menus || [];
