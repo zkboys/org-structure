@@ -5,6 +5,7 @@ import Request from '../../common/request';
 class SwitchRemote extends React.Component {
     state = {
         isLoading: false,
+        disabled: this.props.disabled,
         checked: this.props.checked,
         checkedChildren: this.props.checkedChildren,
         unCheckedChildren: this.props.unCheckedChildren,
@@ -29,7 +30,7 @@ class SwitchRemote extends React.Component {
     }
 
     handleClick = () => {
-        if (this.state.isLoading) {
+        if (this.state.isLoading || this.state.disabled) {
             return false;
         }
         const url = this.props.url;
@@ -46,7 +47,8 @@ class SwitchRemote extends React.Component {
             .send(params)
             .end((err, res) => {
                 if (err || !res.ok) {
-                    message.error('操作失败！');
+                    const errorMessage = res.body && res.body.message || '操作失败！';
+                    message.error(errorMessage);
                 } else {
                     const checked = !this.state.checked;
                     this.setState({
@@ -74,6 +76,7 @@ class SwitchRemote extends React.Component {
         return (
             <span onClick={this.handleClick}>
                 <Switch
+                    disabled={this.state.disabled}
                     checked={this.state.checked}
                     checkedChildren={this.state.checkedChildren}
                     unCheckedChildren={this.state.unCheckedChildren}

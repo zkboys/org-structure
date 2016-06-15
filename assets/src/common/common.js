@@ -70,6 +70,20 @@ export function getCurrentLoginUser() {
 }
 
 /**
+ * 当前登录用户是否有某个权限
+ * @param permission
+ */
+export function hasPermission(permission) {
+    const currentLoginUser = getCurrentLoginUser();
+    const permissions = currentLoginUser.permissions;
+    let has = false;
+    if (permissions) {
+        has = permissions.indexOf(permission) > -1;
+    }
+    return has;
+}
+
+/**
  * 获取浏览器滚动条宽度
  * @returns {number}
  */

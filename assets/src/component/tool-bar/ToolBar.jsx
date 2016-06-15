@@ -5,7 +5,7 @@ class ToolBar extends React.Component {
 
     render() {
         return (
-            <div className="default-tool-bar">
+            <div className="default-tool-bar" {...this.props}>
                 {this.props.children}
             </div>
         );

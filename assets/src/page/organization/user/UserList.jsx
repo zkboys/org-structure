@@ -8,6 +8,7 @@ import SwitchRemote from 'component/switch-remote/SwitchRemote';
 import ToolBar from 'component/tool-bar/ToolBar';
 import {Table, Button, Form, message, Icon, Popconfirm} from 'antd';
 import UserEdit from './UserEdit';
+import {hasPermission} from 'common/common';
 
 const createForm = Form.create;
 
@@ -27,6 +28,11 @@ class UserList extends BaseComponent {
         editingUserId: null,
         editingUser: null,
         roles: [],
+        showAddBtn: hasPermission('user-add'),
+        showEditBtn: hasPermission('user-update'),
+        showDeleteBtn: hasPermission('user-delete'),
+        showResetBtn: hasPermission('user-reset'),
+        showToggleLock: hasPermission('user-toggle-lock'),
     };
     queryOptions = {
         showSearchBtn: true,
@@ -138,6 +144,7 @@ class UserList extends BaseComponent {
                     <SwitchRemote
                         key={id} // 一定要加这个key，否则各分页之间有干扰
                         checked={record.is_locked}
+                        disabled={!this.state.showToggleLock}
                         checkedKey="isLocked"
                         url="/organization/users/toggle_lock"
                         params={{id}}
@@ -152,22 +159,39 @@ class UserList extends BaseComponent {
             render: (text, record) => {
                 const id = record._id;
                 const dealing = <span style={{padding: '0px 6px'}}><Icon type="loading"/></span>;
-                let deleteText = this.state.deletingId === id ? dealing : '删除';
-                let editText = this.state.editingUserId === id ? dealing : '编辑';
-                let resetPassText = this.state.resetPassId === id ? dealing : '重置密码';
-                return (
-                    <div>
-                        <a href="#" onClick={() => this.handleEdit(id)}>{editText}</a>
-                        <span className="ant-divider"/>
-                        <Popconfirm placement="topRight" title={`您确定要删除“${record.name}”？`} onConfirm={() => this.handleDelete(id)}>
+                let operators = [];
+                if (this.state.showEditBtn) {
+                    let editText = this.state.editingUserId === id ? dealing : '编辑';
+                    operators.push(<a key="edit" href="#" onClick={() => this.handleEdit(id)}>{editText}</a>);
+                }
+                if (this.state.showDeleteBtn) {
+                    let deleteText = this.state.deletingId === id ? dealing : '删除';
+                    operators.push(
+                        <Popconfirm key="delete" placement="topRight" title={`您确定要删除“${record.name}”？`} onConfirm={() => this.handleDelete(id)}>
                             <a href="#">{deleteText}</a>
                         </Popconfirm>
-                        <span className="ant-divider"/>
-                        <Popconfirm placement="topRight" title={`您确定要重置“${record.name}”的密码吗？`} onConfirm={() => this.handleResetPass(id)}>
+                    );
+                }
+                if (this.state.showResetBtn) {
+                    let resetPassText = this.state.resetPassId === id ? dealing : '重置密码';
+                    operators.push(
+                        <Popconfirm key="reset" placement="topRight" title={`您确定要重置“${record.name}”的密码吗？`} onConfirm={() => this.handleResetPass(id)}>
                             <a href="#">{resetPassText}</a>
                         </Popconfirm>
-                    </div>
-                );
+                    );
+                }
+                const operatorsLength = operators.length;
+                if (!operatorsLength) {
+                    return <span>您无任何操作权限</span>;
+                }
+                return operators.map((v, i) => {
+                    return (
+                        <span>
+                            {v}
+                            {operatorsLength === i + 1 ? '' : <span className="ant-divider"/>}
+                        </span>
+                    );
+                });
             },
         },
     ];
@@ -313,7 +337,7 @@ class UserList extends BaseComponent {
         return (
             <Page header={'auto'} loading={this.state.loading}>
                 <QueryTerms options={this.queryOptions}/>
-                <ToolBar>
+                <ToolBar style={{display: this.state.showAddBtn ? 'block' : 'none'}}>
                     <Button type="primary" onClick={this.handleAdd}> 添加</Button>
                 </ToolBar>
                 <Table
