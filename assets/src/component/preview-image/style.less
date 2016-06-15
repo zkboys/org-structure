@@ -1,0 +1,89 @@
+.preview-image {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    .thumbnail-wrap {
+        img {
+            cursor: pointer;
+        }
+    }
+    .preview-wrap {
+        position: fixed;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        z-index: 999;
+        .preview-mask {
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, .5);
+        }
+        .preview-content {
+            position: absolute;
+            transition: transform .3s ease;
+            .preview-overlay {
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                cursor: move;
+            }
+        }
+        .preview-operation-bar {
+            position: absolute;
+            transition: all .3s ease;
+            .fa {
+                font-size: 30px;
+                color: #ccc;
+                padding: 5px;
+                line-height: 1;
+                cursor: pointer;
+            }
+            .fa:hover {
+                color: #d24445;
+            }
+        }
+        .preview-rotation-0 {
+            .preview-operation-bar {
+                top: -40px;
+                right: -5px;
+            }
+        }
+        .preview-rotation-1 {
+            .preview-operation-bar {
+                top: 105px;/*需要计算*/
+                left: -40px;
+                transform-origin: top left;
+                transform: rotate(-90deg);
+            }
+        }
+        .preview-rotation-2 {
+            .preview-operation-bar {
+                bottom: -35px;
+                left: -5px;
+                transform-origin: center;
+                transform: rotate(-180deg);
+            }
+        }
+        .preview-rotation-3 {
+            .preview-operation-bar {
+                bottom: 0;
+                right: 0;
+                transform-origin: bottom right;
+                transform: rotate(-270deg);
+            }
+
+        }
+        .preview-image {
+            width: 500px;
+        }
+    }
+}

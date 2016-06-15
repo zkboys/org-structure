@@ -1,50 +1,156 @@
-/**
- * Created by peach on 16-5-25.
- */
+import './style.less';
 import React from 'react';
-import {Form, Input, Button, message} from 'antd';
+import FAIcon from '../faicon/FAIcon.jsx';
 
-/*
-* url min-width height string [] */
-
-//定义类 并继承baseComponent
 class PreviewImage extends React.Component {
-    // 构造函数
-    constructor(props) {
-        super(props);
-    }
-
-    // 初始化state,替代原getInitialState, 注意前面没有static
     state = {
-        showMenu: false
+        isMousePressed: false,
+        showPreviewImage: false,
+        previewWidth: 500,
+        top: 300,
+        left: 0,
+        mouseX: 0,
+        mouseY: 0,
+        rotationDeg: 0,
+        iconStyleIndex: 0,
     };
-    // 替代原propTypes，指定props参数规范， 属性,注意前面有static,属于静态方法.
-    static propTypes = {
-        autoPlay: React.PropTypes.bool.isRequired
-    }
-    // 默认defaultProps,替代原getDefaultProps方法, 注意前面有static,属于静态方法.
+
     static defaultProps = {
-        loading: false
+        imgSize: '@50h_70w_1e_1c',
+        src: 'http://www.gbtags.com/gb/laitu/400x200&text=默认图片/dd4814/ffffff',
     };
 
-    componentDidMount() {
-        // do something yourself...
-    }
+    static propTypes = {
+        noImgSize: React.PropTypes.bool,
+        src: React.PropTypes.string.isRequired,
+    };
 
-    // 事件的写法,这里要使用箭头函数,箭头函数不会改变this的指向,否则函数内,this指的就不是当前对象了
-    // React.CreatClass方式React会自动绑定this,ES6写法不会.
-    handleClick = (e)=> {
-        this.setState();//这里的this指的还是App
+    handlePreviewMouseDown = (e) => {
+        let clientX = e.clientX;
+        let clientY = e.clientY;
+        this.setState({
+            isMousePressed: true,
+            mouseX: clientX,
+            mouseY: clientY,
+        });
+    };
+
+    handlePreviewMouseMove = (e) => {
+        const isMousePressed = this.state.isMousePressed;
+        if (!isMousePressed) {
+            return false;
+        }
+        const event = this.getEvent(e);
+        const oldMouseX = this.state.mouseX;
+        const oldMouseY = this.state.mouseY;
+        const newMouseX = event.clientX;
+        const newMouseY = event.clientY;
+        const moveX = newMouseX - oldMouseX;
+        const moveY = newMouseY - oldMouseY;
+        const oldTop = this.state.top;
+        const oldLeft = this.state.left;
+        const newLeft = oldLeft + moveX;
+        const newTop = oldTop + moveY;
+        this.setState({
+            top: newTop,
+            left: newLeft,
+            mouseX: newMouseX,
+            mouseY: newMouseY,
+        });
+    };
+
+    handlePreviewMouseUp = () => {
+        this.setState({
+            isMousePressed: false,
+        });
+    };
+
+    getEvent = (e) => {
+        return e || window.event;
+    };
+
+    handleShowPreview = () => {
+        let clientWidth = document.documentElement.clientWidth;
+        let preImgWidth = this.state.previewWidth;
+        this.setState({
+            showPreviewImage: true,
+            left: (clientWidth - preImgWidth) / 2,
+        });
+    };
+
+    handleClosePreview = () => {
+        this.setState({
+            showPreviewImage: false,
+        });
+    };
+
+    handleRotateLeftPreview = () => {
+        let iconStyleIndex = this.state.iconStyleIndex;
+        let newIndex = iconStyleIndex - 1;
+        if (newIndex < 0) {
+            newIndex = 3;
+        }
+        console.log(newIndex);
+        this.setState({
+            rotationDeg: this.state.rotationDeg - 90,
+            iconStyleIndex: newIndex,
+        });
+    };
+
+    handleRotateRightPreview = () => {
+        let iconStyleIndex = this.state.iconStyleIndex;
+        let newIndex = iconStyleIndex + 1;
+        if (newIndex > 3) {
+            newIndex = 0;
+        }
+        this.setState({
+            rotationDeg: this.state.rotationDeg + 90,
+            iconStyleIndex: newIndex,
+        });
     };
 
     render() {
-        const formData = this.state.formData;
-
+        let {src, imgSize, noImgSize} = this.props;
+        if (noImgSize) {
+            imgSize = '';
+        }
+        let previewImgSrc = src;
+        let img = (
+            <img
+                {...this.props}
+                src={src + imgSize}
+                alt=""
+                onClick={this.handleShowPreview}
+            />
+        );
+        let previewContentStyle = {
+            top: this.state.top,
+            left: this.state.left,
+            transform: `rotate(${this.state.rotationDeg}deg)`,
+        };
         return (
-            <div>
-
+            <div className="preview-image">
+                <div className="thumbnail-wrap">{img}</div>
+                <div className="preview-wrap" style={{display: this.state.showPreviewImage ? 'block' : 'none'}}>
+                    <div className="preview-mask" onClick={this.handleClosePreview}></div>
+                    <div
+                        className={`preview-content preview-rotation-${this.state.iconStyleIndex}`}
+                        style={previewContentStyle}
+                        onMouseMove={this.handlePreviewMouseMove}
+                        onMouseUp={this.handlePreviewMouseUp}
+                        onMouseDown={this.handlePreviewMouseDown}
+                    >
+                        <img className="preview-image" src={previewImgSrc} alt="" />
+                        <div className="preview-overlay"></div>
+                        <div className="preview-operation-bar">
+                            <FAIcon type="fa fa-rotate-left" onClick={this.handleRotateLeftPreview} />
+                            <FAIcon type="fa fa-rotate-right" onClick={this.handleRotateRightPreview} />
+                            <FAIcon type="fa fa-times fa-times-circle" onClick={this.handleClosePreview} />
+                        </div>
+                    </div>
+                </div>
             </div>
-        )
+        );
     }
 }
 export default PreviewImage;

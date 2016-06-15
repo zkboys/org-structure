@@ -13,12 +13,24 @@ class Index extends React.Component {
             title: '组件基类',
         },
         {
+            folder: 'form-item',
+            title: '表单组件',
+        },
+        {
+            folder: 'query-terms',
+            title: '查询条件组件',
+        },
+        {
             folder: 'switch-remote',
             title: '远程开关组件',
         },
         {
             folder: 'panel',
             title: '面板组件',
+        },
+        {
+            folder: 'preview-image',
+            title: '图片预览',
         },
     ];
 
@@ -73,14 +85,14 @@ class Index extends React.Component {
     render() {
         return (
             <div>
-                <div style={{position: 'fixed', right: 60, top: 80, zIndex: 99}}>
-                    <h1>目录</h1>
-                    <ul>
-                        {this.state.toc}
-                    </ul>
-                </div>
                 <Page>
-                    <div style={{marginRight: 170}}>
+                    <div style={{position: 'fixed', right: 100, top: 100, zIndex: 99}}>
+                        <h1>目录</h1>
+                        <ul>
+                            {this.state.toc}
+                        </ul>
+                    </div>
+                    <div>
                         {this.state.contents}
                     </div>
                 </Page>
