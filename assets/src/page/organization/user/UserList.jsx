@@ -158,24 +158,25 @@ class UserList extends BaseComponent {
             key: 'operator',
             render: (text, record) => {
                 const id = record._id;
-                const dealing = <span style={{padding: '0px 6px'}}><Icon type="loading"/></span>;
+                const loading = <span style={{padding: '0px 6px'}}><Icon type="loading"/></span>;
                 let operators = [];
+                let keyIndex = 0;
                 if (this.state.showEditBtn) {
-                    let editText = this.state.editingUserId === id ? dealing : '编辑';
-                    operators.push(<a key="edit" href="#" onClick={() => this.handleEdit(id)}>{editText}</a>);
+                    let editText = this.state.editingUserId === id ? loading : '编辑';
+                    operators.push(<a href="#" onClick={() => this.handleEdit(id)}>{editText}</a>);
                 }
                 if (this.state.showDeleteBtn) {
-                    let deleteText = this.state.deletingId === id ? dealing : '删除';
+                    let deleteText = this.state.deletingId === id ? loading : '删除';
                     operators.push(
-                        <Popconfirm key="delete" placement="topRight" title={`您确定要删除“${record.name}”？`} onConfirm={() => this.handleDelete(id)}>
+                        <Popconfirm placement="topRight" title={`您确定要删除“${record.name}”？`} onConfirm={() => this.handleDelete(id)}>
                             <a href="#">{deleteText}</a>
                         </Popconfirm>
                     );
                 }
                 if (this.state.showResetBtn) {
-                    let resetPassText = this.state.resetPassId === id ? dealing : '重置密码';
+                    let resetPassText = this.state.resetPassId === id ? loading : '重置密码';
                     operators.push(
-                        <Popconfirm key="reset" placement="topRight" title={`您确定要重置“${record.name}”的密码吗？`} onConfirm={() => this.handleResetPass(id)}>
+                        <Popconfirm placement="topRight" title={`您确定要重置“${record.name}”的密码吗？`} onConfirm={() => this.handleResetPass(id)}>
                             <a href="#">{resetPassText}</a>
                         </Popconfirm>
                     );
@@ -186,7 +187,7 @@ class UserList extends BaseComponent {
                 }
                 return operators.map((v, i) => {
                     return (
-                        <span>
+                        <span key={`operator-${i}`}>
                             {v}
                             {operatorsLength === i + 1 ? '' : <span className="ant-divider"/>}
                         </span>
