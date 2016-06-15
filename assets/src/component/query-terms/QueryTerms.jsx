@@ -59,7 +59,7 @@ class QueryTerms extends React.Component {
         itemOptions.format = itemOptions.format || format[type];
 
         // 日期相关的默认值，如果时string，转为date，方便处理
-        if (['date', 'time', 'dateTime', 'month'].includes(type)) {
+        if (['date', 'time', 'dateTime', 'month'].indexOf(type) > -1) {
             if (typeof defaultValue === 'string') {
                 defaultValue = this.stringToDate(defaultValue, format[type]);
             }
@@ -176,7 +176,7 @@ class QueryTerms extends React.Component {
         }
         let placeholder = itemOptions.placeholder;
         if (placeholder === undefined) {
-            if (['input', 'inputNumber', 'combobox'].includes(itemType)) {
+            if (['input', 'inputNumber', 'combobox'].indexOf(itemType)> -1) {
                 placeholder = `请输入${label}`;
             } else {
                 placeholder = `请选择${label}`;
@@ -229,7 +229,7 @@ class QueryTerms extends React.Component {
             setFieldsValue({
                 [name]: value,
             });
-            if (['input', 'inputNumber', 'combobox'].includes(itemType)) {
+            if (['input', 'inputNumber', 'combobox'].indexOf(itemType) > -1) {
                 clearTimeout(this.searchTimeout);
                 this.searchTimeout = setTimeout(() => {
                     if (searchOnChange) {
@@ -368,7 +368,7 @@ class QueryTerms extends React.Component {
             case 'checkbox':
             {
                 itemProps.style.marginBottom = '0px';
-                const type = ['radioButton', 'checkboxButton'].includes(itemType) ? 'button' : 'radio';
+                const type = ['radioButton', 'checkboxButton'].indexOf(itemType) > -1 ? 'button' : 'radio';
                 const size = itemOptions.size;
                 const opts = itemOptions.options;
                 const optionsFilter = itemOptions.optionsFilter;
@@ -376,7 +376,7 @@ class QueryTerms extends React.Component {
                 const url = itemOptions.url;
                 const expandable = itemOptions.expandable;
                 const defaultValue = itemOptions.defaultValue;
-                const Element = ['checkbox', 'checkboxButton'].includes(itemType) ? CheckBoxItem : RadioItem;
+                const Element = ['checkbox', 'checkboxButton'].indexOf(itemType) > -1 ? CheckBoxItem : RadioItem;
                 if (type === 'button') {
                     eleProps.button = true;
                 }

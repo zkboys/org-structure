@@ -26,7 +26,7 @@ export default {
         }
         return {
             validator(rule, value, callback) {
-                if (!value || ignoreValues.includes(value)) {
+                if (!value || ignoreValues.indexOf(value) > -1) {
                     return callback();
                 }
                 Request
@@ -54,7 +54,7 @@ export default {
         }
         return {
             validator(rule, value, callback) {
-                if (!value || ignoreValues.includes(value)) {
+                if (!value || ignoreValues.indexOf(value) > -1) {
                     return callback();
                 }
                 Request

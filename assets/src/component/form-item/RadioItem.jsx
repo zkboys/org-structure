@@ -62,7 +62,7 @@ class RadioItem extends React.Component {
     handleExpandBtnClick = (e)=> {
         let button = e.currentTarget;
         let btnClassNames = button.className.split(' ');
-        if (btnClassNames.includes('expanded')) {
+        if (btnClassNames.indexOf('expanded') > -1) {
             btnClassNames.splice(btnClassNames.indexOf('expanded'), 1);
             button.title = "显示更多";
             this.setState({

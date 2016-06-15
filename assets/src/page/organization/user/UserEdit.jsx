@@ -264,10 +264,10 @@ class UserEdit extends BaseComponent {
                         label="角色：">
                         <Select
                             showSearch
-                            {...roleProps}
-                            placeholder="请选择角色"
                             optionFilterProp="children"
                             notFoundContent="无法找到"
+                            {...roleProps}
+                            placeholder="请选择角色"
                         >
                             {this.state.roles.map(r => {
                                 return (

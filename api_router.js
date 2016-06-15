@@ -18,7 +18,7 @@ router.get('/system/menus', menu.getAllMenus);
 router.post('/system/menus', menu.updateAllMenus);
 
 // 组织架构
-router.get('/organization/organizations', permission('organization-search'), organization.getAll);
+router.get('/organization/organizations', /*permission('organization-search'),*/ organization.getAll);// 这里不要添加权限限制，也不会产生安全性问题，而且用户相关会用到这个接口。
 router.post('/organization/organizations', permission('organization-update'), organization.updateAll);
 
 // 用户
@@ -37,7 +37,7 @@ router.delete('/organization/users', permission('user-delete'), user.delete);
 router.put('/organization/users/toggle_lock', permission('user-toggle-lock'), user.toggleLock);
 
 // 角色
-router.get('/organization/roles', permission('role-search'), role.getByPage);
+router.get('/organization/roles',/* permission('role-search'), */role.getByPage); // 这里不要添加权限限制，也不会产生安全性问题，而且用户相关会用到这个接口。
 router.get('/organization/roles/:id', role.getById);
 router.post('/organization/roles', permission('role-add'), role.addAndSave);
 router.put('/organization/roles', permission('role-update'), role.update);

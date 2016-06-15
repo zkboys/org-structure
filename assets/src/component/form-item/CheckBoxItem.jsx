@@ -128,7 +128,7 @@ class RadioItem extends React.Component {
                     }
                     return (
                         <label key={key} className="check-box-group">
-                            <Checkbox checked={value.includes(v.value)}
+                            <Checkbox checked={value.indexOf(v.value) > -1}
                                       onClick={()=>{this.handleChange(v.value)}}/>{v.label}
                         </label>
                     );

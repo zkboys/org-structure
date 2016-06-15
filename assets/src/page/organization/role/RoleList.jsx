@@ -5,8 +5,9 @@ import BaseComponent from 'component/base-component/BaseComponent';
 import QueryTerms from 'component/query-terms/QueryTerms';
 import PaginationComponent from 'component/pagination/PaginationComponent';
 import ToolBar from 'component/tool-bar/ToolBar';
-import {Table, Button, Form, message, Icon, Popconfirm} from 'antd';
+import {Table, Button, Form, message} from 'antd';
 import RoleEdit from './RoleEdit';
+import Operator from 'component/operator/Operator';
 
 const createForm = Form.create;
 class RoleList extends BaseComponent {
@@ -58,18 +59,28 @@ class RoleList extends BaseComponent {
             key: 'operator',
             render: (text, record) => {
                 const id = record._id;
-                const dealing = <span style={{padding: '0px 6px'}}><Icon type="loading"/></span>;
-                let deleteText = this.state.deletingId === id ? dealing : '删除';
-                let editText = this.state.editingRoleId === id ? dealing : '编辑';
-                return (
-                    <div>
-                        <a href="#" onClick={() => this.handleEdit(id)}>{editText}</a>
-                        <span className="ant-divider"/>
-                        <Popconfirm placement="topRight" title={`您确定要删除“${record.name}”？`} onConfirm={() => this.handleDelete(id)}>
-                            <a href="#">{deleteText}</a>
-                        </Popconfirm>
-                    </div>
-                );
+                const options = [
+                    {
+                        loading: this.state.editingId === id,
+                        label: '编辑',
+                        permission: 'role-update',
+                        onClick: () => {
+                            this.handleEdit(id);
+                        },
+                    },
+                    {
+                        loading: this.state.deletingId === id,
+                        label: '删除',
+                        permission: 'role-delete',
+                        confirm: {
+                            title: `您确定要删除“${record.name}”？`,
+                        },
+                        onClick: () => {
+                            this.handleDelete(id);
+                        },
+                    },
+                ];
+                return (<Operator options={options}/>);
             },
         },
     ];
@@ -101,7 +112,7 @@ class RoleList extends BaseComponent {
             showAddModal: false,
         });
         this.setState({
-            editingRoleId: null,
+            editingId: null,
         });
     };
 
@@ -142,7 +153,7 @@ class RoleList extends BaseComponent {
 
     handleEdit = (id) => {
         this.setState({
-            editingRoleId: id,
+            editingId: id,
         });
         this.request()
             .get(`/organization/roles/${id}`)

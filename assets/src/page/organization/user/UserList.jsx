@@ -6,9 +6,10 @@ import QueryTerms from 'component/query-terms/QueryTerms';
 import PaginationComponent from 'component/pagination/PaginationComponent';
 import SwitchRemote from 'component/switch-remote/SwitchRemote';
 import ToolBar from 'component/tool-bar/ToolBar';
-import {Table, Button, Form, message, Icon, Popconfirm} from 'antd';
+import {Table, Button, Form, message} from 'antd';
 import UserEdit from './UserEdit';
 import {hasPermission} from 'common/common';
+import Operator from 'component/operator/Operator';
 
 const createForm = Form.create;
 
@@ -24,14 +25,11 @@ class UserList extends BaseComponent {
         showAddModal: false,
         toggleLockingId: null,
         deletingId: null,
-        resetPassId: null,
-        editingUserId: null,
+        resetingId: null,
+        editingId: null,
         editingUser: null,
         roles: [],
         showAddBtn: hasPermission('user-add'),
-        showEditBtn: hasPermission('user-update'),
-        showDeleteBtn: hasPermission('user-delete'),
-        showResetBtn: hasPermission('user-reset'),
         showToggleLock: hasPermission('user-toggle-lock'),
     };
     queryOptions = {
@@ -158,41 +156,39 @@ class UserList extends BaseComponent {
             key: 'operator',
             render: (text, record) => {
                 const id = record._id;
-                const loading = <span style={{padding: '0px 6px'}}><Icon type="loading"/></span>;
-                let operators = [];
-                let keyIndex = 0;
-                if (this.state.showEditBtn) {
-                    let editText = this.state.editingUserId === id ? loading : '编辑';
-                    operators.push(<a href="#" onClick={() => this.handleEdit(id)}>{editText}</a>);
-                }
-                if (this.state.showDeleteBtn) {
-                    let deleteText = this.state.deletingId === id ? loading : '删除';
-                    operators.push(
-                        <Popconfirm placement="topRight" title={`您确定要删除“${record.name}”？`} onConfirm={() => this.handleDelete(id)}>
-                            <a href="#">{deleteText}</a>
-                        </Popconfirm>
-                    );
-                }
-                if (this.state.showResetBtn) {
-                    let resetPassText = this.state.resetPassId === id ? loading : '重置密码';
-                    operators.push(
-                        <Popconfirm placement="topRight" title={`您确定要重置“${record.name}”的密码吗？`} onConfirm={() => this.handleResetPass(id)}>
-                            <a href="#">{resetPassText}</a>
-                        </Popconfirm>
-                    );
-                }
-                const operatorsLength = operators.length;
-                if (!operatorsLength) {
-                    return <span>您无任何操作权限</span>;
-                }
-                return operators.map((v, i) => {
-                    return (
-                        <span key={`operator-${i}`}>
-                            {v}
-                            {operatorsLength === i + 1 ? '' : <span className="ant-divider"/>}
-                        </span>
-                    );
-                });
+                const options = [
+                    {
+                        loading: this.state.editingId === id,
+                        label: '编辑',
+                        permission: 'user-update',
+                        onClick: () => {
+                            this.handleEdit(id);
+                        },
+                    },
+                    {
+                        loading: this.state.deletingId === id,
+                        label: '删除',
+                        permission: 'user-delete',
+                        confirm: {
+                            title: `您确定要删除“${record.name}”？`,
+                        },
+                        onClick: () => {
+                            this.handleDelete(id);
+                        },
+                    },
+                    {
+                        loading: this.state.resetingId === id,
+                        label: '重置密码',
+                        permission: 'user-reset-pass',
+                        confirm: {
+                            title: `您确定要重置“${record.name}”的密码吗？`,
+                        },
+                        onClick: () => {
+                            this.handleResetPass(id);
+                        },
+                    },
+                ];
+                return (<Operator options={options}/>);
             },
         },
     ];
@@ -246,7 +242,7 @@ class UserList extends BaseComponent {
             showAddModal: false,
         });
         this.setState({
-            editingUserId: null,
+            editingId: null,
         });
     };
 
@@ -285,12 +281,12 @@ class UserList extends BaseComponent {
             });
     };
     handleResetPass = (id) => {
-        if (this.state.resetPassId) {
+        if (this.state.resetingId) {
             return;
         }
 
         this.setState({
-            resetPassId: id,
+            resetingId: id,
         });
         this.request()
             .put('/organization/users/reset_pass')
@@ -301,14 +297,14 @@ class UserList extends BaseComponent {
             })
             .end(() => {
                 this.setState({
-                    resetPassId: null,
+                    resetingId: null,
                 });
             });
     };
 
     handleEdit = (id) => {
         this.setState({
-            editingUserId: id,
+            editingId: id,
         });
         this.request()
             .get(`/organization/users/${id}`)

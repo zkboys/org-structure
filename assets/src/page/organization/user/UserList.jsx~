@@ -1,11 +1,17 @@
 import React from 'react';
 import assign from 'object-assign';
-import {Page} from 'framework';
-import {BaseComponent, QueryTerms, PaginationComponent, SwitchRemote, ToolBar} from 'component';
+import Page from 'framework/page/Page';
+import BaseComponent from 'component/base-component/BaseComponent';
+import QueryTerms from 'component/query-terms/QueryTerms';
+import PaginationComponent from 'component/pagination/PaginationComponent';
+import SwitchRemote from 'component/switch-remote/SwitchRemote';
+import ToolBar from 'component/tool-bar/ToolBar';
 import {Table, Button, Form, message, Icon, Popconfirm} from 'antd';
 import UserEdit from './UserEdit';
+import {hasPermission} from 'common/common';
 
 const createForm = Form.create;
+11
 class UserList extends BaseComponent {
     state = {
         queryData: {
@@ -18,8 +24,15 @@ class UserList extends BaseComponent {
         showAddModal: false,
         toggleLockingId: null,
         deletingId: null,
+        resetPassId: null,
         editingUserId: null,
         editingUser: null,
+        roles: [],
+        showAddBtn: hasPermission('user-add'),
+        showEditBtn: hasPermission('user-update'),
+        showDeleteBtn: hasPermission('user-delete'),
+        showResetBtn: hasPermission('user-reset'),
+        showToggleLock: hasPermission('user-toggle-lock'),
     };
     queryOptions = {
         showSearchBtn: true,
@@ -89,12 +102,12 @@ class UserList extends BaseComponent {
         },
         {
             title: '所属部门',
-            dataIndex: 'org_id',
-            key: 'org_id',
+            dataIndex: 'org_key',
+            key: 'org_key',
             render: (text) => {
                 let orgName = '未指定';
                 for (let org of this.state.organizations) {
-                    if (org._id === text) {
+                    if (org.key === text) {
                         orgName = org.name;
                         break;
                     }
@@ -108,18 +121,33 @@ class UserList extends BaseComponent {
             key: 'position',
         },
         {
+            title: '角色',
+            dataIndex: 'role_id',
+            key: 'role',
+            render: (text) => {
+                const role = this.state.roles.find((r) => {
+                    return r._id === text;
+                });
+                if (role) {
+                    return role.name;
+                }
+                return '未指定';
+            },
+        },
+        {
             title: '是否锁定',
             dataIndex: 'is_locked',
             key: 'is_locked',
             render: (text, record) => {
                 const id = record._id;
-                const isLocked = record.is_locked;
                 return (
                     <SwitchRemote
                         key={id} // 一定要加这个key，否则各分页之间有干扰
-                        checked={isLocked}
+                        checked={record.is_locked}
+                        disabled={!this.state.showToggleLock}
+                        checkedKey="isLocked"
                         url="/organization/users/toggle_lock"
-                        params={{id, isLocked}}
+                        params={{id}}
                         onChange={(checked) => record.is_locked = checked} // 同步record，否则下次页面重新渲染，选中状态会错乱。
                     />
                 );
@@ -130,23 +158,46 @@ class UserList extends BaseComponent {
             key: 'operator',
             render: (text, record) => {
                 const id = record._id;
-                const dealing = <span style={{padding: '0px 6px'}}><Icon type="loading"/></span>;
-                let deleteText = this.state.deletingId === id ? dealing : '删除';
-                let editText = this.state.editingUserId === id ? dealing : '编辑';
-                return (
-                    <div>
-                        <a href="#" onClick={() => this.handleEdit(id)}>{editText}</a>
-                        <span className="ant-divider"/>
-                        <Popconfirm title={`您确定要删除“${record.name}”？`} onConfirm={() => this.handleDelete(id)}>
+                const loading = <span style={{padding: '0px 6px'}}><Icon type="loading"/></span>;
+                let operators = [];
+                if (this.state.showEditBtn) {
+                    let editText = this.state.editingUserId === id ? loading : '编辑';
+                    operators.push(<a href="#" onClick={() => this.handleEdit(id)}>{editText}</a>);
+                }
+                if (this.state.showDeleteBtn) {
+                    let deleteText = this.state.deletingId === id ? loading : '删除';
+                    operators.push(
+                        <Popconfirm placement="topRight" title={`您确定要删除“${record.name}”？`} onConfirm={() => this.handleDelete(id)}>
                             <a href="#">{deleteText}</a>
                         </Popconfirm>
-                    </div>
-                );
+                    );
+                }
+                if (this.state.showResetBtn) {
+                    let resetPassText = this.state.resetPassId === id ? loading : '重置密码';
+                    operators.push(
+                        <Popconfirm placement="topRight" title={`您确定要重置“${record.name}”的密码吗？`} onConfirm={() => this.handleResetPass(id)}>
+                            <a href="#">{resetPassText}</a>
+                        </Popconfirm>
+                    );
+                }
+                const operatorsLength = operators.length;
+                if (!operatorsLength) {
+                    return <span>您无任何操作权限</span>;
+                }
+                return operators.map((v, i) => {
+                    return (
+                        <span key={`operator-${i}`}>
+                            {v}
+                            {operatorsLength === i + 1 ? '' : <span className="ant-divider"/>}
+                        </span>
+                    );
+                });
             },
         },
     ];
 
     componentWillMount() {
+        // console.log(this.currentUser.hasPermission('user-update'));
         this.handleSearch(this.state.queryData);
         this.request()
             .get('/organization/organizations')
@@ -154,6 +205,17 @@ class UserList extends BaseComponent {
                 if (data && data.length) {
                     this.setState({
                         organizations: data,
+                    });
+                }
+            })
+            .end();
+        this.request()
+            .get('/organization/roles')
+            .success((result) => {
+                const roles = result.results;
+                if (roles && roles.length) {
+                    this.setState({
+                        roles,
                     });
                 }
             })
@@ -221,6 +283,27 @@ class UserList extends BaseComponent {
                 });
             });
     };
+    handleResetPass = (id) => {
+        if (this.state.resetPassId) {
+            return;
+        }
+
+        this.setState({
+            resetPassId: id,
+        });
+        this.request()
+            .put('/organization/users/reset_pass')
+            .params({id})
+            .success(() => {
+                message.success('重置成功！');
+                this.handleSearch();
+            })
+            .end(() => {
+                this.setState({
+                    resetPassId: null,
+                });
+            });
+    };
 
     handleEdit = (id) => {
         this.setState({
@@ -254,7 +337,7 @@ class UserList extends BaseComponent {
         return (
             <Page header={'auto'} loading={this.state.loading}>
                 <QueryTerms options={this.queryOptions}/>
-                <ToolBar>
+                <ToolBar style={{display: this.state.showAddBtn ? 'block' : 'none'}}>
                     <Button type="primary" onClick={this.handleAdd}> 添加</Button>
                 </ToolBar>
                 <Table
