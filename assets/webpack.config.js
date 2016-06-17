@@ -4,10 +4,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var webpack = require('webpack');
 var child_process = require('child_process');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
 var nodeENV = process.env.NODE_ENV || 'development';
-var generateLibrary = require('./generate-library.js');
-
 /*
  * 基于不同模式，区分配置
  * */
@@ -16,12 +13,12 @@ var configs = {
         path: '../public',
         publicPath: 'http://localhost:8088/s/',
         library: [
-            {from: (0, join)(__dirname, './favicon.png')},
-            {from: (0, join)(__dirname, './node_modules/antd/dist/antd.css')},
-            {from: (0, join)(__dirname, './node_modules/react/dist/react.js')},
-            {from: (0, join)(__dirname, './node_modules/react-dom/dist/react-dom.js')},
-            {from: (0, join)(__dirname, './node_modules/antd/dist/antd.js')},
-            {from: (0, join)(__dirname, './node_modules/moment/min/moment-with-locales.min.js')},
+            {from: './favicon.png'},
+            {from: 'node_modules/antd/dist/antd.css', to: 'antd.min.css'},
+            {from: 'node_modules/antd/dist/antd.js', to: 'antd.min.js'},
+            {from: 'node_modules/react/dist/react.js', to: 'react.min.js'},
+            {from: 'node_modules/react-dom/dist/react-dom.js', to: 'react-dom.min.js'},
+            {from: 'node_modules/moment/min/moment-with-locales.min.js', to: 'moment.min.js'},
         ]
     },
     test: {
@@ -32,12 +29,12 @@ var configs = {
         path: '../public',
         publicPath: '/public/',
         library: [
-            {from: (0, join)(__dirname, './favicon.png')},
-            {from: (0, join)(__dirname, './node_modules/antd/dist/antd.min.css')},
-            {from: (0, join)(__dirname, './node_modules/react/dist/react.min.js')},
-            {from: (0, join)(__dirname, './node_modules/react-dom/dist/react-dom.min.js')},
-            {from: (0, join)(__dirname, './node_modules/antd/dist/antd.min.js')},
-            {from: (0, join)(__dirname, './node_modules/moment/min/moment-with-locales.min.js')},
+            {from: './favicon.png'},
+            {from: 'node_modules/antd/dist/antd.min.css'},
+            {from: 'node_modules/antd/dist/antd.min.js'},
+            {from: 'node_modules/react/dist/react.min.js'},
+            {from: 'node_modules/react-dom/dist/react-dom.min.js'},
+            {from: 'node_modules/moment/min/moment-with-locales.min.js', to: 'moment.min.js'},
         ]
     }
 };
@@ -50,9 +47,7 @@ var cfg = configs[nodeENV] || configs.development;
 /*
  * 第三方js库，分离出来能提高打包速度
  * */
-var generatedLibrary = generateLibrary.getAllLibrary(cfg.library);
-var library = generatedLibrary.library;
-
+var library = cfg.library;
 /*
  * 定义entry
  * 如果项目结构命名有良好的约定，是否考虑使用代码自动生成entry？
@@ -102,8 +97,8 @@ module.exports = {
         pathinfo: false,//去掉生成文件的相关注释
         path: join(__dirname, cfg.path),
         publicPath: cfg.publicPath,
-        filename: "[name].[chunkhash].min.js",// entry　配置的文件
-        chunkFilename: "[name].[chunkhash].min.js",//非entry，但是需要单独打包出来的文件名配置，添加[chunkhash:8]　防止浏览器缓存不更新．
+        filename: "[name].min.js",// entry　配置的文件
+        chunkFilename: "[name].[chunkhash:8].min.js",//非entry，但是需要单独打包出来的文件名配置，添加[chunkhash:8]　防止浏览器缓存不更新．
         //libraryTarget: 'umd',
         'libraryTarget': 'var'
         //umdNamedDefine: true
@@ -162,50 +157,6 @@ module.exports = {
         ]
     },
     plugins: [
-        new HtmlWebpackPlugin({
-            publicPath: cfg.publicPath,
-            extraFiles: {
-                css: generatedLibrary.cssFiles,
-                js: generatedLibrary.jsFiles,
-                favicon: generatedLibrary.favicon,
-            },
-            title: '管理系统',
-            filename: 'index.html',
-            template: './src/html-template/index.html',
-            excludeChunks: ['signin', 'first-login'],
-            inject: true,
-            minify: {
-                removeComments: true,
-                collapseWhitespace: true,
-                removeAttributeQuotes: true
-                // more options:
-                // https://github.com/kangax/html-minifier#options-quick-reference
-            },
-            // necessary to consistently work with multiple chunks via CommonsChunkPlugin
-            chunksSortMode: 'dependency'
-        }),
-        new HtmlWebpackPlugin({
-            publicPath: cfg.publicPath,
-            extraFiles: {
-                css: generatedLibrary.cssFiles,
-                js: generatedLibrary.jsFiles,
-                favicon: generatedLibrary.favicon,
-            },
-            title: '管理系统',
-            filename: 'signin.html',
-            template: './src/html-template/index.html',
-            excludeChunks: ['index', 'first-login'],
-            inject: true,
-            minify: {
-                removeComments: true,
-                collapseWhitespace: true,
-                removeAttributeQuotes: true
-                // more options:
-                // https://github.com/kangax/html-minifier#options-quick-reference
-            },
-            // necessary to consistently work with multiple chunks via CommonsChunkPlugin
-            chunksSortMode: 'dependency'
-        }),
         /*
          * 公共文件配置
          * */
@@ -218,7 +169,7 @@ module.exports = {
          * css单独打包成一个css文件
          * 比如entry.js引入了多个less，最终会都打到一个xxx.css中。
          * */
-        new ExtractTextPlugin("[name].[chunkhash].min.css", {
+        new ExtractTextPlugin("[name].min.css", {
             disable: false,
             allChunks: true
         }),
