@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= htmlWebpackPlugin.options.title || 'Webpack App'%></title>
+
+    <% if (htmlWebpackPlugin.options.mobile) { %>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <% } %>
+    <% if (htmlWebpackPlugin.options.extraFiles) {%>
+    <% for (var index in htmlWebpackPlugin.options.extraFiles.css) { %>
+    <link href="<%= htmlWebpackPlugin.options.publicPath + htmlWebpackPlugin.options.extraFiles.css[index] %>" rel="stylesheet">
+    <% } %>
+    <% } %>
+</head>
+<body>
+<div id="framework" class="admin-framework"></div>
+<% if (htmlWebpackPlugin.options.extraFiles) {%>
+<% for (var index in htmlWebpackPlugin.options.extraFiles.js) { %>
+<script type="text/javascript" src="<%= htmlWebpackPlugin.options.publicPath + htmlWebpackPlugin.options.extraFiles.js[index] %>"></script>
+<% } %>
+<% } %>
+</body>
+</html>
