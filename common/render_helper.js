@@ -69,6 +69,7 @@ exports.staticFile = function (filePath) {
   if (filePath.indexOf('http') === 0 || filePath.indexOf('//') === 0) {
     return filePath;
   }
+    // TODO 添加md5， 防止缓存脏数据
   return config.site_static_host + filePath;
 };
 
