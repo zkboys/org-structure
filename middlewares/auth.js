@@ -21,18 +21,22 @@ exports.adminRequired = function (req, res, next) {
     next();
 };
 
+function unneedLogin(req) {
+    return req.path === '/signout'
+        || req.path === '/signin'
+        || req.path === '/signup'
+        || req.path === '/api/signout'
+        || req.path === '/api/signin'
+        || req.path === '/api/first_login'
+        || req.path === '/api/signup'
+        || req.path === '/favicon.ico';
+}
 /**
  * 需要登录
  */
 exports.userRequired = function (req, res, next) {
-    if (!req.session || !req.session.user || !req.session.user._id) {
-        if (req.path === '/signout'
-            || req.path === '/signin'
-            || req.path === '/signup'
-            || req.path === '/api/signout'
-            || req.path === '/api/signin'
-            || req.path === '/api/signup'
-            || req.path === '/favicon.ico') {
+    if (!req.session || !req.session.user || !req.session.user._id || req.session.user.is_first_login) {
+        if (unneedLogin(req)) {
             return next();
         }
         //TODO 区分ajax请求还是http请求
@@ -51,13 +55,7 @@ exports.userRequired = function (req, res, next) {
 
 exports.blockUser = function () {
     return function (req, res, next) {
-        if (req.path === '/signout'
-            || req.path === '/signin'
-            || req.path === '/signup'
-            || req.path === '/api/signout'
-            || req.path === '/api/signin'
-            || req.path === '/api/signup'
-            || req.path === '/favicon.ico') {
+        if (unneedLogin(req)) {
             return next();
         }
         if (req.session && req.session.user && req.session.user.is_locked) {

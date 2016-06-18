@@ -3,6 +3,7 @@ import React from 'react';
 import {Request, Storage} from 'common';
 import Bg from './bg.jpg';
 import decorateImage from './bg4.png';
+import TipMessage from '../../common/tip-message';
 function noop() {
     return false;
 }
@@ -14,6 +15,10 @@ class SignIn extends React.Component {
         name: '',
         pass: '',
         error: '',
+        showFirstLogin: false,
+        newPass: '',
+        reNewPass: '',
+        newPassError: '',
     };
 
     componentDidMount() {
@@ -34,7 +39,7 @@ class SignIn extends React.Component {
     handleNameChange = (e) => {
         const value = e.target.value;
         if (!value) {
-            this.showError('请输入登录名');
+            this.showError(TipMessage.loginNameIsRequired);
         } else {
             this.showError('');
         }
@@ -45,7 +50,7 @@ class SignIn extends React.Component {
     handlePassChange = (e) => {
         const value = e.target.value;
         if (!value) {
-            this.showError('请输入密码');
+            this.showError(TipMessage.passIsRequired);
         } else {
             this.showError('');
         }
@@ -58,7 +63,91 @@ class SignIn extends React.Component {
             error: errorMessage,
         });
     }
-
+    handleNewPassChange = (e) => {
+        const value = e.target.value;
+        if (!value) {
+            this.showNewPassError(TipMessage.newPassIsRequired);
+        } else if (value.length < 6) {
+            this.showNewPassError(TipMessage.passFormatError);
+        } else {
+            this.showNewPassError('');
+        }
+        this.setState({
+            newPass: value,
+        });
+    };
+    handleReNewPassChange = (e) => {
+        const value = e.target.value;
+        if (!value) {
+            this.showNewPassError(TipMessage.reNewPassIsRequired);
+        } else if (value !== this.state.newPass) {
+            this.showNewPassError(TipMessage.towPassIsDifferent);
+        } else if (value.length < 6) {
+            this.showNewPassError(TipMessage.passFormatError);
+        } else {
+            this.showNewPassError('');
+        }
+        this.setState({
+            reNewPass: value,
+        });
+    };
+    showNewPassError = (errorMessage) => {
+        this.setState({
+            newPassError: errorMessage,
+        });
+    }
+    handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            this.handleSubmit(e);
+        }
+    };
+    handleNewPassKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            this.handleNewPassSubmit(e);
+        }
+    };
+    handleNewPassSubmit = (e) => {
+        if (this.state.loading) {
+            return;
+        }
+        e.preventDefault();
+        const pass = this.state.newPass;
+        const rePass = this.state.reNewPass;
+        if (!pass) {
+            return this.showNewPassError(TipMessage.newPassIsRequired);
+        }
+        if (!rePass) {
+            return this.showNewPassError(TipMessage.reNewPassIsRequired);
+        }
+        if (pass !== rePass) {
+            return this.showNewPassError(TipMessage.towPassIsDifferent);
+        }
+        const values = {
+            pass,
+            rePass,
+        }
+        this.setState({
+            loading: true,
+        });
+        Request
+            .put('/first_login')
+            .send(values)
+            .end((err, res) => {
+                if (err || !res.ok) {
+                    this.setState({
+                        loading: false,
+                    });
+                    this.showNewPassError(res.body.message);
+                } else {
+                    let refer = res.body.refer || '/';
+                    let menus = res.body.menus || [];
+                    let currentLoginUser = res.body.user;
+                    Storage.session.set('currentLoginUser', currentLoginUser);
+                    Storage.session.set('menus', menus);
+                    location.href = refer;
+                }
+            });
+    }
     handleSubmit = (e) => {
         if (this.state.loading) {
             return;
@@ -68,10 +157,10 @@ class SignIn extends React.Component {
         const name = this.state.name;
         const pass = this.state.pass;
         if (!name) {
-            return this.showError('请输入登录名');
+            return this.showError(TipMessage.loginNameIsRequired);
         }
         if (!pass) {
-            return this.showError('请输入密码');
+            return this.showError(TipMessage.passIsRequired);
         }
         const params = {
             name,
@@ -91,6 +180,13 @@ class SignIn extends React.Component {
                         loading: false,
                     });
                 } else {
+                    if (res.body.user.is_first_login) {
+                        this.setState({
+                            showFirstLogin: true,
+                            loading: false,
+                        });
+                        return false;
+                    }
                     let refer = res.body.refer || '/';
                     let menus = res.body.menus || [];
                     let currentLoginUser = res.body.user;
@@ -105,11 +201,6 @@ class SignIn extends React.Component {
             });
     };
 
-    handleKeyDown = (e) => {
-        if (e.key === 'Enter') {
-            this.handleSubmit(e);
-        }
-    };
 
     render() {
         return (
@@ -130,7 +221,7 @@ class SignIn extends React.Component {
                         <div className="line"></div>
                     </div>
                 </div>
-                <div className="login-box">
+                <div className="login-box" style={{display: !this.state.showFirstLogin ? 'block' : 'none'}}>
                     <h1 className="login-title">用户登录</h1>
                     <div className="form-item">
                         <label htmlFor="name">用户名：</label>
@@ -164,6 +255,44 @@ class SignIn extends React.Component {
                         onClick={this.handleSubmit}
                     >
                         {this.state.loading ? '登录中。。。' : '登录'}
+                    </div>
+                </div>
+                <div className="login-box" style={{display: this.state.showFirstLogin ? 'block' : 'none'}}>
+                    <h1 className="login-title" style={{marginBottom: 0, paddingBottom: 10}}>首次登录</h1>
+                    <div style={{textAlign: 'center', paddingBottom: 15}}>您为首次登录，请修改您的初始密码</div>
+
+                    <div className="form-item">
+                        <label htmlFor="name">新密码：</label>
+                        <input
+                            id="name"
+                            type="password"
+                            value={this.state.newPass}
+                            onChange={this.handleNewPassChange}
+                            onKeyDown={this.handleNewPassKeyDown}
+                            placeholder="请输入新密码"
+                        />
+                    </div>
+                    <div className="form-item">
+                        <label htmlFor="name">确认密码：</label>
+                        <input
+                            id="name"
+                            type="password"
+                            value={this.state.reNewPass}
+                            onChange={this.handleReNewPassChange}
+                            onKeyDown={this.handleNewPassKeyDown}
+                            placeholder="请输入确认新密码"
+                            onContextMenu={noop}
+                            onPaste={noop}
+                            onCopy={noop}
+                            onCut={noop}
+                        />
+                    </div>
+                    <div className="error">{this.state.newPassError}</div>
+                    <div
+                        className={`button ${this.state.loading ? 'loading' : ''}`}
+                        onClick={this.handleNewPassSubmit}
+                    >
+                        {this.state.loading ? '确认中。。。' : '确认'}
                     </div>
                 </div>
             </div>

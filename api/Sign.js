@@ -108,10 +108,10 @@ exports.firstLogin = function (req, res, next) {
     var pass = validator.trim(req.body.pass);
     var rePass = validator.trim(req.body.rePass);
     if (!pass) {
-        return res.sendError(null, '密码不能为空！', 422);
+        return res.sendError(null, '新密码不能为空！', 422);
     }
     if (!rePass) {
-        return res.sendError(null, '确认密码不能为空！', 422);
+        return res.sendError(null, '确认密新码不能为空！', 422);
     }
     if (pass !== rePass) {
         return res.sendError(null, '两次输入密码不一致！', 422);
