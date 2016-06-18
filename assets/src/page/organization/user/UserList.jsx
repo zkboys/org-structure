@@ -138,11 +138,15 @@ class UserList extends BaseComponent {
             key: 'is_locked',
             render: (text, record) => {
                 const id = record._id;
+                let disabled = !this.state.showToggleLock;
+                if (record.loginname === 'admin') { // 硬编码，管理员不可锁定
+                    disabled = true;
+                }
                 return (
                     <SwitchRemote
                         key={id} // 一定要加这个key，否则各分页之间有干扰
                         checked={record.is_locked}
-                        disabled={!this.state.showToggleLock}
+                        disabled={disabled}
                         checkedKey="isLocked"
                         url="/organization/users/toggle_lock"
                         params={{id}}
