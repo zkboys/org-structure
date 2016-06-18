@@ -83,4 +83,5 @@ router.get('/organization/users', permission('user-search'), user.getByPage);
 
 前端`BaseComponent.jsx`组件中，提供了`this.currentUser.permissions;`可以获取当前用户的所有权限。`this.currentUser.hasPermission('user-update');`判断当前用户是否有某个权限。
   
-
+## 存在的问题
+- 关于静态文件缓存问题，目前是使用v=md5，查询字符串，不太可靠，最可靠的是直接修改文件名，loader模块提供一种后端处理方案，但是会把所有的文件打包成一个文件，对于一些第三方库文件，缓存命中率不高，可以参考自己实现一版不合并文件版本。再者可以前端构建html文件，但是crsf字符串需要特殊处理一下。
