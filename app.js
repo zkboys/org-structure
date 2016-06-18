@@ -128,7 +128,7 @@ var bytes = require('bytes')
 
 
 // 静态文件目录
-var staticDir = path.join(__dirname, 'public');
+var staticDir = config.staticDir;
 // assets
 var assets = {};
 

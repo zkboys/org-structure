@@ -159,7 +159,7 @@ var config = {
         // 如果在国内，此项请留空
         uploadURL: 'http://xxxxxxxx',
     },
-
+    staticDir: path.join(__dirname, 'public'),
     // 文件上传配置
     // 注：如果填写 qn_access，则会上传到 7牛，以下配置无效
     upload: {
