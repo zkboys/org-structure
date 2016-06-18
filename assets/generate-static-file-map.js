@@ -21,15 +21,16 @@ staticFilesName.forEach(function (fileName) {
 
 var assetsPath = path.join(__dirname, '../assets.json');
 fs.writeFileSync(assetsPath, JSON.stringify(staticFilesMap));
+console.log(staticFilesMap);
 console.log(colors.magenta("assets.json is here: "), colors.cyan(assetsPath));
 
 function fileNameMap(basedir, realPath) {
     var extname = path.extname(realPath);
     var basename = path.basename(realPath, extname);
-
+    var dirname = path.dirname(realPath);
     var file = fs.readFileSync(path.join(basedir, realPath));
     var hashed = md5(file);
-    var hashedFileName = `${basename}.${hashed}${extname}`;
+    var hashedFileName = `${dirname}/${basename}.${hashed}${extname}`;
     fs.writeFileSync(path.join(basedir, hashedFileName), file);
     return [realPath, hashedFileName];
 }
