@@ -19,6 +19,7 @@ var multiline = require('multiline')
 var kitx = require('kitx');
 var fs = require('fs');
 var path = require('path');
+var asstes = require('../assets');
 
 var md5 = function (content) {
     return kitx.md5(content, 'hex').slice(24);
@@ -71,22 +72,16 @@ exports.escapeSignature = function (signature) {
     }).join('<br>');
 };
 
-var staticFileMd5Cache = {};
 exports.staticFile = function (filePath) {
     if (filePath.indexOf('http') === 0 || filePath.indexOf('//') === 0) {
         return filePath;
     }
-    var staticDir = config.staticDir;
-    var md5Str = new Date().getTime();
-    if(process.env.NODE_ENV === 'production'){
-        md5Str = staticFileMd5Cache[filePath];
-        if (!md5Str) {
-            var fileContent = fs.readFileSync(path.join(staticDir, filePath));
-            var md5Str = md5(fileContent);
-            staticFileMd5Cache[filePath] = md5Str;
-        }
+    if (process.env.NODE_ENV === 'production') {
+        var hashedfilePath = asstes[filePath];
+        return config.site_static_host + hashedfilePath;
     }
-    return config.site_static_host + filePath + '?v=' + md5Str;
+    var queryString = new Date().getTime();
+    return config.site_static_host + filePath + '?v=' + queryString;
 };
 
 exports.tabName = function (tab) {

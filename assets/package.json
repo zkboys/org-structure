@@ -69,12 +69,13 @@
     "whatwg-fetch": "^0.10.1"
   },
   "scripts": {
+    "assets": "node ./generate-static-file-map.js",
     "clean": "rimraf ../public",
     "route":"node generate-routes.js",
     "dev": "npm run route && cross-env NODE_ENV=development webpack-dev-server --port 8088 --progress --inline",
     "build-development": "npm run clean && npm run route && cross-env NODE_ENV=development webpack -d -p --profile --progress --colors --display-modules",
     "build-test": "npm run clean && npm run route && cross-env NODE_ENV=test webpack -d -p --profile --progress --colors --display-modules",
-    "build-production": "npm run clean && npm run route && cross-env NODE_ENV=production webpack -p --profile --progress --colors --display-modules"
+    "build-production": "npm run clean && npm run route && cross-env NODE_ENV=production webpack -p --profile --progress --colors --display-modules && npm run assets"
   },
   "repository": {
     "type": "git",
