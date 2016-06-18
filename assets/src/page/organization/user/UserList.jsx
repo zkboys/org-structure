@@ -137,11 +137,11 @@ class UserList extends BaseComponent {
             dataIndex: 'is_locked',
             key: 'is_locked',
             render: (text, record) => {
+                if (record.loginname === 'admin') { // 硬编码，管理员不可锁定
+                    return '';
+                }
                 const id = record._id;
                 let disabled = !this.state.showToggleLock;
-                if (record.loginname === 'admin') { // 硬编码，管理员不可锁定
-                    disabled = true;
-                }
                 return (
                     <SwitchRemote
                         key={id} // 一定要加这个key，否则各分页之间有干扰
@@ -159,6 +159,9 @@ class UserList extends BaseComponent {
             title: '操作',
             key: 'operator',
             render: (text, record) => {
+                if (record.loginname === 'admin') { // 硬编码，管理员不可锁定
+                    return '';
+                }
                 const id = record._id;
                 const options = [
                     {
