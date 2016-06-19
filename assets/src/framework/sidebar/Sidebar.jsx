@@ -1,29 +1,27 @@
 import React from 'react';
 import {Menu} from 'antd';
-import assign from 'object-assign';
 class Sidebar extends React.Component {
     handleToggle = (info) => {
         this.props.onToggle(info);
     };
 
     render() {
-        const {
-            sidebarStyle,
-            sidebarInnerStyle,
-            sidebarMode,
-            } = this.props.style;
         let {
             hidden,
+            isSidebarCollapsed,
+            innerWidth,
             sidebarMenus,
             openKeys,
             selectedKeys,
             } = this.props.sidebar;
-        let style = assign({}, sidebarStyle, hidden ? {width: 0} : {});
-        let innerStyle = assign({}, sidebarInnerStyle, hidden ? {width: 0} : {});
-
+        let className = isSidebarCollapsed ? 'collapsed' : 'expanded';
+        let sidebarMode = isSidebarCollapsed ? 'vertical' : 'inline';
+        if (hidden) {
+            className = 'hidden';
+        }
         return (
-            <div className="admin-sidebar" style={style}>
-                <div className="admin-sidebar-inner" style={innerStyle}>
+            <div className={`admin-sidebar ${className}`}>
+                <div className="admin-sidebar-inner" style={{width: innerWidth}}>
                     {/* 不同模式的菜单要区分开写，否则互相干扰 */}
                     <Menu
                         style={{display: sidebarMode === 'inline' && !hidden ? 'block' : 'none'}}

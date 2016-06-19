@@ -1,7 +1,8 @@
 @import './variables.less';
 
 @headerHeight: 50px;
-@sideBarWidth: 200px;
+@sideBarMaxWidth: 200px;
+@sideBarMinWidth: 60px;
 
 @headerLogoBgColor: @primaryColor;
 @headerLogoFontColor: #fff;
@@ -31,6 +32,22 @@ body {
     background-color: @headerBgColor;
     box-sizing: border-box;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    &.collapsed {
+        .admin-logo {
+            width: @sideBarMinWidth;
+        }
+        .admin-nav {
+            left: @sideBarMinWidth;
+        }
+    }
+    &.expanded {
+        .admin-logo {
+            width: @sideBarMaxWidth;
+        }
+        .admin-nav {
+            left: @sideBarMaxWidth;
+        }
+    }
     /*logo*/
     .admin-logo {
         display: inline-block;
@@ -143,10 +160,19 @@ body {
     position: absolute;
     top: @headerHeight;
     right: 0;
-    left: @sideBarWidth;
+    left: @sideBarMaxWidth;
     padding: 15px;
     overflow: hidden;
     box-sizing: border-box;
+    &.collapsed {
+        left: @sideBarMinWidth;
+    }
+    &.expanded {
+        left: @sideBarMaxWidth;
+    }
+    &.full-screen {
+        left: 0;
+    }
     .admin-page {
         .admin-page-header {
             background-color: #fff;
@@ -180,11 +206,29 @@ body {
     top: @headerHeight;
     bottom: 0;
     left: 0;
-    width: @sideBarWidth;
+    width: @sideBarMaxWidth;
     background-color: @sideBarBgColor;
     overflow: hidden;
     box-sizing: border-box;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    &.collapsed,
+    &.collapsed .admin-sidebar-inner {
+        width: @sideBarMinWidth;
+        overflow: visible;
+
+    }
+    &.expanded {
+        width: @sideBarMaxWidth;
+        overflow: hidden;
+        .admin-sidebar-inner {
+            width: @sideBarMaxWidth;
+            overflowY: 'scroll'
+        }
+    }
+    &.hidden {
+        width: 0;
+        overflow: hidden;
+    }
     .admin-sidebar-inner {
         position: relative;
         z-index: 999;

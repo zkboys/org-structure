@@ -77,11 +77,11 @@ exports.staticFile = function (filePath) {
         return filePath;
     }
     var queryString = new Date().getTime();
-    var assetFilePath = path.join(config.site_static_host, filePath) + '?v=' + queryString;
+    var assetFilePath = config.site_static_host + filePath + '?v=' + queryString;
     if (process.env.NODE_ENV === 'production') {
         var hashedfilePath = asstes[filePath];
         if (hashedfilePath) {
-            assetFilePath = path.join(config.site_static_host, hashedfilePath);
+            assetFilePath = config.site_static_host + hashedfilePath;
         }
     }
     return assetFilePath;

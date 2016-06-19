@@ -16,6 +16,7 @@ class Container extends React.Component {
 
     handleToggleSidebar = () => {
         this.props.dispatch(toggleSidebar());
+        this.props.dispatch(setSidebarMenus());
     };
 
     handleToggleMenu = (info) => {
@@ -41,12 +42,16 @@ class Container extends React.Component {
     }
 
     render() {
-        let centerLeft = this.props.sidebar.hidden ? 0 : this.props.style.centerLeft;
+        const {isSidebarCollapsed, hidden} = this.props.sidebar;
+        let className = isSidebarCollapsed ? 'collapsed' : 'expanded';
+        if (hidden) {
+            className = 'full-screen';
+        }
         return (
             <div>
                 <HeaderBar {...this.props} onToggleSidebar={this.handleToggleSidebar}/>
                 <Sidebar {...this.props} onToggle={this.handleToggleMenu}/>
-                <div className="admin-container" style={{left: centerLeft}}>
+                <div className={`admin-container ${className}`}>
                     {this.props.children}
                 </div>
             </div>

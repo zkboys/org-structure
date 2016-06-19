@@ -21,13 +21,14 @@ class Header extends React.Component {
 
     render() {
         const {
-            headerLogoWidth,
-            headerLogo,
-            } = this.props.style;
-        const {
             current,
             headMenus, // TODO item.subMenus如果有子菜单，再处理
             } = this.props.headerNav;
+        const {isSidebarCollapsed} = this.props.sidebar;
+        let minLogo = 'super';
+        let maxLogo = '超级管理系统';
+        const headerLogo = isSidebarCollapsed ? minLogo : maxLogo;
+        const className = isSidebarCollapsed ? 'collapsed' : 'expanded';
 
         let headMenusJsx = [];
         headMenus.forEach((item) => {
@@ -43,9 +44,9 @@ class Header extends React.Component {
         });
         const currentLoginUser = getCurrentLoginUser();
         return (
-            <header className="admin-header">
-                <div className="admin-logo" style={{width: headerLogoWidth}}><Link to="/">{headerLogo}</Link></div>
-                <div className="admin-nav" style={{left: headerLogoWidth}}>
+            <header className={`admin-header ${className}`}>
+                <div className="admin-logo"><Link to="/">{headerLogo}</Link></div>
+                <div className="admin-nav">
                     <a className="admin-sidebar-toggle" onClick={this.props.onToggleSidebar}><FAIcon type="fa-bars"/></a>
                     <Menu
                         className="admin-header-sys"
