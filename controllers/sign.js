@@ -81,7 +81,7 @@ exports.signup = function (req, res, next) {
  * @param  {HttpResponse} res
  */
 exports.showLogin = function (req, res) {
-    res.render('sign/signin');
+    res.render('signin');
 };
 /**
  * 首次登录，修改密码页面

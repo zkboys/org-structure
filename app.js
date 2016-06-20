@@ -150,7 +150,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
 app.engine('html', require('ejs-mate'));
-app.locals._layoutFile = 'layout.html';// 默认模板文件，可以通过<% layout('layout.html') -%>为具体文件单独指定模板文件
+// app.locals._layoutFile = 'layout.html';// 默认模板文件，可以通过<% layout('layout.html') -%>为具体文件单独指定模板文件
 app.enable('trust proxy');//通过启用“信任代理”设置app.enable(“trust proxy”),Express有一些反向代理的技巧,
 
 // Request logger。请求花费时间log
