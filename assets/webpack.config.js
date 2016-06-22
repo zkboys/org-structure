@@ -19,6 +19,7 @@ var configs = {
             {from: 'node_modules/react/dist/react.js', to: 'react.min.js'},
             {from: 'node_modules/react-dom/dist/react-dom.js', to: 'react-dom.min.js'},
             {from: 'node_modules/moment/min/moment-with-locales.min.js', to: 'moment.min.js'},
+            {from: 'node_modules/superagent/superagent.js', to: 'superagent.min.js'},
         ]
     },
     test: {
@@ -35,6 +36,7 @@ var configs = {
             {from: 'node_modules/react/dist/react.min.js'},
             {from: 'node_modules/react-dom/dist/react-dom.min.js'},
             {from: 'node_modules/moment/min/moment-with-locales.min.js', to: 'moment.min.js'},
+            {from: 'node_modules/superagent/superagent.js', to: 'superagent.min.js'}, // TODO 这个js不是压缩版本的。
         ]
     }
 };
@@ -107,7 +109,7 @@ module.exports = {
         'react-dom': 'ReactDOM',
         'antd': 'antd',
         'moment': 'moment',
-        'request': 'request',
+        'superagent': 'superagent',
     },
     module: {
         loaders: [
