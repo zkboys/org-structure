@@ -23,7 +23,12 @@ var assetsPath = path.join(__dirname, '../assets.json');
 fs.writeFileSync(assetsPath, JSON.stringify(staticFilesMap));
 console.log(staticFilesMap);
 console.log(colors.magenta("assets.json is here: "), colors.cyan(assetsPath));
-
+/**
+ * 生成源文件与哈希重命名文件对应关系
+ * @param {String} basedir
+ * @param {String} realPath
+ * @returns {*[]}
+ */
 function fileNameMap(basedir, realPath) {
     var extname = path.extname(realPath);
     var basename = path.basename(realPath, extname);
@@ -37,7 +42,7 @@ function fileNameMap(basedir, realPath) {
 
 /**
  * 根据文件内容，扫描文件
- * @param fileContent
+ * @param {String} fileContent
  * @returns {Array}
  */
 function scanFile(fileContent) {
@@ -86,17 +91,4 @@ function scanDir(dirpath) {
 
     return combo;
 };
-/**
- * 数组去重
- * @param arr
- * @returns {Array}
- */
-function uniqueArray(arr) {
-    var n = [];
-    for (var i = 0; i < arr.length; i++) {
-        if (n.indexOf(arr[i]) == -1) {
-            n.push(arr[i]);
-        }
-    }
-    return n;
-}
+
