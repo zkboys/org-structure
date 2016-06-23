@@ -20,6 +20,11 @@ var configs = {
             {from: 'node_modules/react-dom/dist/react-dom.js', to: 'react-dom.min.js'},
             {from: 'node_modules/moment/min/moment-with-locales.min.js', to: 'moment.min.js'},
             {from: 'node_modules/superagent/superagent.js', to: 'superagent.min.js'},
+            // 登录页面相关
+            {from: 'src/page/sign-in/background.jpg'},
+            {from: 'src/page/sign-in/des-img.png'},
+            {from: 'src/page/sign-in/sign-in.css', to: 'sign-in.min.css'},
+            {from: 'src/page/sign-in/sign-in.js', to: 'sign-in.min.js'},
         ]
     },
     test: {
@@ -36,7 +41,12 @@ var configs = {
             {from: 'node_modules/react/dist/react.min.js'},
             {from: 'node_modules/react-dom/dist/react-dom.min.js'},
             {from: 'node_modules/moment/min/moment-with-locales.min.js', to: 'moment.min.js'},
-            {from: 'node_modules/superagent/superagent.js', to: 'superagent.min.js'}, // TODO 这个js不是压缩版本的。
+            {from: 'node_modules/superagent/superagent.js', to: 'superagent.min.js'},
+            // 登录页面相关
+            {from: 'src/page/sign-in/background.jpg'},
+            {from: 'src/page/sign-in/des-img.png'},
+            {from: 'src/page/sign-in/sign-in.css', to: 'sign-in.min.css'},
+            {from: 'src/page/sign-in/sign-in.js', to: 'sign-in.min.js'},
         ]
     }
 };
@@ -57,7 +67,6 @@ var library = cfg.library;
 var _entry = {
     //"index": ["./src/home/home.jsx", "./src/home/home-content.jsx"],//会合并成一个index.js
     "index": './src/entry/index.jsx',
-    "signin": './src/entry/signin.jsx',
 };
 
 /*

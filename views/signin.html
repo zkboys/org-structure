@@ -6,18 +6,68 @@
     <link rel="icon" href="<%- staticFile('favicon.png') %>" type="image/x-icon"/>
     <% } %>
     <title>登录</title>
-    <link rel="stylesheet" href="<%- staticFile('antd.min.css') %>">
-    <link rel="stylesheet" href="<%- staticFile('signin.min.css') %>">
+    <link rel="stylesheet" href="<%- staticFile('sign-in.min.css') %>">
     <meta content="_csrf" name="csrf-param">
     <meta content="<%= csrf %>" name="csrf-token">
 </head>
 <body>
-<div id="framework"></div>
+<div id="framework">
+    <div data-reactroot="" class="login-wrap" style="background-image: url(<%- staticFile('background.jpg') %>);">
+        <div class="img-box loaded"><img src="<%- staticFile('des-img.png') %>" alt="img">
+            <label class="circle-label small yellow position1">监控</label>
+            <label class="circle-label large blue position2">智能</label>
+            <label class="circle-label large red position3">巡检</label>
+            <label class="circle-label large purple position4">安全</label>
+            <div class="massage position2">
+                <span>智能方便</span>
+                <div class="line"></div>
+            </div>
+            <div class="massage position3">
+                <span>快速巡检</span>
+                <div class="line"></div>
+            </div>
+            <div class="massage position4">
+                <span>安全可靠的技术支持</span>
+                <div class="line"></div>
+            </div>
+        </div>
+        <div class="login-box" id="login-box" style="display: block;">
+            <h1 class="login-title">用户登录</h1>
+            <div class="form-item">
+                <label for="name">用户名：</label>
+                <input type="text" id="name" placeholder="请输入登录名" autofocus>
+            </div>
+            <div class="form-item">
+                <label for="pass">密码：</label>
+                <input type="password" id="pass" placeholder="请输入密码">
+            </div>
+            <div class="error" id="login-error"></div>
+            <div class="button " id="login-btn">登录</div>
+        </div>
+        <div class="login-box" id="first-login-box" style="display: none;">
+            <h1 class="login-title" style="margin-bottom: 0px; padding-bottom: 10px;">首次登录</h1>
+            <div style="text-align: center; padding-bottom: 15px;">您为首次登录，请修改您的初始密码</div>
+            <div class="form-item">
+                <label for="new-pass">新密码：</label>
+                <input type="password" id="new-pass" placeholder="请输入新密码">
+            </div>
+            <div class="form-item">
+                <label for="re-new-pass">确认密码：</label>
+                <input type="password" id="re-new-pass" placeholder="请输入确认新密码">
+            </div>
+            <div class="error" id="reset-pass-error"></div>
+            <div class="button " id="reset-pass-btn">确认</div>
+        </div>
+    </div>
+</div>
 <script src="<%- staticFile('superagent.min.js') %>"></script>
-<script src="<%- staticFile('react.min.js') %>"></script>
-<script src="<%- staticFile('react-dom.min.js') %>"></script>
-<script src="<%- staticFile('antd.min.js') %>"></script>
-<script src="<%- staticFile('common.min.js') %>"></script>
-<script src="<%- staticFile('signin.min.js') %>"></script>
+<script src="<%- staticFile('sign-in.min.js') %>"></script>
+
+<script>
+
+    // TODO 预加载
+    window.onload = function () {
+    }
+</script>
 </body>
 </html>
