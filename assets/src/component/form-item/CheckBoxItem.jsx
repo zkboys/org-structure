@@ -61,7 +61,7 @@ class RadioItem extends React.Component {
     handleExpandBtnClick = (e)=> {
         let button = e.currentTarget;
         let btnClassNames = button.className.split(' ');
-        if (btnClassNames.includes('expanded')) {
+        if (btnClassNames.indexOf('expanded') > -1) {
             btnClassNames.splice(btnClassNames.indexOf('expanded'), 1);
             button.title = "显示更多";
             this.setState({
@@ -112,7 +112,7 @@ class RadioItem extends React.Component {
                         return <span key={key}>{v.label}</span>;
                     }
                     let className = ['checkbox-btn'];
-                    if (value.includes(v.value)) {
+                    if (value.indexOf(v.value) > -1) {
                         className.push('checkbox-btn-checked');
                     }
                     if (button) {
