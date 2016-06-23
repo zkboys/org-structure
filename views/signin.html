@@ -65,8 +65,42 @@
 
 <script>
 
-    // TODO 预加载
+    // 预加载
+    var beforePreScript = "<%- staticFile('react.min.js') %>";
+    var preScript = [
+        "<%- staticFile('superagent.min.js') %>",
+        "<%- staticFile('moment.min.js') %>",
+        "<%- staticFile('react-dom.min.js') %>",
+        "<%- staticFile('antd.min.js') %>",
+        "<%- staticFile('common.min.js') %>"
+    ];
+    var preCss = [
+        "<%- staticFile('antd.min.css') %>"
+    ];
+    function loadjs(fileurl, fn) {
+        var sct = document.createElement("script");
+        sct.src = fileurl;
+        if (fn) {
+            sct.onload = fn;
+        }
+        document.head.appendChild(sct);
+    }
     window.onload = function () {
+        //  react.js加载完成再加载其他文件，否则会报错。
+        loadjs(beforePreScript, function () {
+            for (var i = 0; i < preScript.length; i++) {
+                var script = window.document.createElement('script');
+                script.src = preScript[i];
+                window.document.head.appendChild(script);
+            }
+        });
+
+        for (var j = 0; j < preCss.length; j++) {
+            var link = window.document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = preCss[j];
+            window.document.head.appendChild(link);
+        }
     }
 </script>
 </body>
