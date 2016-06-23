@@ -475,7 +475,7 @@ class SystemMenu extends BaseComponent {
             wrapperCol: {span: 10},
         };
         return (
-            <Page header={'auto'} loading={this.state.loading}>
+            <Page loading={this.state.loading}>
                 <Alert message="菜单存在Storage.session中，修改该保存之后，重新登陆会获取最新菜单。 菜单数据的key，唯一不可重复，有可能和权限关联，添加后不可修改。" type="warning" showIcon/>
                 <Row>
                     <Col span={8} style={{textAlign: 'right'}}>

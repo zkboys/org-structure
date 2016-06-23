@@ -10,6 +10,7 @@ const RadioGroup = Radio.Group;
 
 class ProfileMessage extends BaseComponent {
     state = {
+        loading: false,
         isSaving: false,
         user: {},
     };
@@ -83,7 +84,7 @@ class ProfileMessage extends BaseComponent {
             wrapperCol: {span: 12},
         };
         return (
-            <Page header="auto">
+            <Page loading={this.state.loading}>
                 <Form horizontal form={this.props.form}>
                     <FormItem
                         {...formItemLayout}

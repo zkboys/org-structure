@@ -10,19 +10,8 @@ class Home extends BaseComponent {
     }
 
     render() {
-        let pageHeader = (
-            <div>
-                <h1 className="admin-page-header-title">Dashboard</h1>
-                <Breadcrumb>
-                    <Breadcrumb.Item>首页</Breadcrumb.Item>
-                    <Breadcrumb.Item href="">应用中心</Breadcrumb.Item>
-                    <Breadcrumb.Item href="">应用列表</Breadcrumb.Item>
-                    <Breadcrumb.Item>某应用</Breadcrumb.Item>
-                </Breadcrumb>
-            </div>
-        );
         return (
-            <Page header={pageHeader} loading={this.state.loading}>
+            <Page title="首页" breadcrumb="" loading={this.state.loading}>
                 <h1>首页</h1>
                 <p>测试缓存啊</p>
                 <p>这个坑啊 </p>

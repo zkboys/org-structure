@@ -229,47 +229,28 @@ browserHistory.listen(function (data) {
 ```
 
 ### 各个页面头部的写法：
-#### 目前一共三种写法：
-
-第一种，直接写jsx：
-
+#### 标题
 ```
-let pageHeader = <div>
-    <h1 className="admin-page-header-title">Dashboard</h1>
-    <Breadcrumb>
-        <Breadcrumb.Item>首页</Breadcrumb.Item>
-        <Breadcrumb.Item href="">应用中心</Breadcrumb.Item>
-        <Breadcrumb.Item href="">应用列表</Breadcrumb.Item>
-        <Breadcrumb.Item>某应用</Breadcrumb.Item>
-    </Breadcrumb>
-</div>;
-<Page header={pageHeader}>
-    ...
-</Page>
+// 缺省title属性，自动根据菜单获取，这种场景最常见，为了方便编码，直接缺省
+<Page>...</Page>
+// 指定具体title
+<Page title="首页">...</Page>
+// title为空，这种场景不常见，如果需要，title属性传入空字符串
+<Page title="">...</Page>
 ```
-
-第二种，js对象：
-
+#### 面包屑
 ```
-let pageHeader = {
-    title: '表单校验', // 缺省将不显示标题；'auto' 将会根据左侧导航，自动获取当前菜单名作为标题
-    breadcrumbItems: [// 缺省将不显示面包屑导航； 'auto' 将会根据左侧导航，自动获取当前菜单展开状态作为面包屑导航。
-        {text: '某应用'},
-        {text: '我的时间', path: '/myTime3'},
-        {text: '表单校验'}
-    ]
-};  
-<Page header={pageHeader}>
-    ...
-</Page>
-```
+// 缺省breadcrumb属性，自动根据菜单获取，这种场景最常见，为了方便编码，直接缺省
+<Page>...</Page>
+// 指定具体的breadcrumb
+const breadcrumb = [
+    {text: 'xxx', path: 'xxx'},
+    {text: 'xxx', path: 'xxx'},
+]
+<Page breadcrumb = {breadcrumb}>...</Page>
 
-第三种，根据左侧菜单自动获取：
-
-```
-<Page header='auto'>
-    ...
-</Page>
+// breadcrumb为空，这种场景不常见，如果需要，breadcrumb属性传入空字符串
+<Page breadcrumb="">...</Page>
 ```
 
 ### 页面加载状态切换

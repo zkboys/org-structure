@@ -339,7 +339,7 @@ class UserList extends BaseComponent {
             },
         };
         return (
-            <Page header={'auto'} loading={this.state.loading}>
+            <Page loading={this.state.loading}>
                 <QueryTerms options={this.queryOptions}/>
                 <ToolBar style={{display: this.state.showAddBtn ? 'block' : 'none'}}>
                     <Button type="primary" onClick={this.handleAdd}> 添加</Button>

@@ -2,30 +2,32 @@ import React from 'react';
 import {Breadcrumb, Spin} from 'antd';
 import {Link} from 'react-router';
 import {getCurrentSidebarMenu} from '../sidebar/SidebarMenuUtil';
-import Settings from '../settings/Settings';
 import PubSubMsg from '../../common/pubsubmsg';
 class Page extends React.Component {
     state = {
         pageHeader: '',
-        showPageAnimate: Settings.pageAnimate(),
     };
     static defaultProps = {
         loading: false,
-        animConfig: [
-            {opacity: [1, 0], translateY: [0, 50]},
-            {opacity: [1, 0], translateY: [0, -50]},
-        ],
+    };
+    static propTypes = {
+        title: React.PropTypes.string,
+        breadcrumb: React.PropTypes.oneOfType([
+            React.PropTypes.array,
+            React.PropTypes.string,
+        ]),
     };
 
     getPageHeaderDateByMenu() {
         let currentMenu = getCurrentSidebarMenu();
         let parentText = currentMenu ? currentMenu.parentText : [];
         let title = currentMenu ? currentMenu.text : '';
+        let path = currentMenu ? currentMenu.path : '';
         let breadcrumbItems = [];
         for (let i = 0; i < parentText.length; i++) {
             breadcrumbItems.push({text: parentText[i]});
         }
-        breadcrumbItems.push({text: title});
+        breadcrumbItems.push({text: title, path});
         return {
             title,
             breadcrumbItems,
@@ -34,67 +36,61 @@ class Page extends React.Component {
 
     setPageHeader() {
         let pageHeaderJsx = '';
-        let pageHeaderDate = null;
-        if (this.props.header === 'auto') {
-            pageHeaderDate = this.getPageHeaderDateByMenu();
-        } else if (typeof this.props.header === 'object') {
-            if (this.props.header.title || this.props.header.breadcrumbItems) {
-                pageHeaderDate = {};
-                if (this.props.header.title === 'auto') {
-                    pageHeaderDate.title = this.getPageHeaderDateByMenu().title;
-                } else if (this.props.header.title) {
-                    pageHeaderDate.title = this.props.header.title;
-                } else {
-                    pageHeaderDate.title = ' ';
-                }
-                if (this.props.header.breadcrumbItems === 'auto') {
-                    pageHeaderDate.breadcrumbItems = this.getPageHeaderDateByMenu().breadcrumbItems;
-                } else if (this.props.header.breadcrumbItems) {
-                    pageHeaderDate.breadcrumbItems = this.props.header.breadcrumbItems;
-                } else {
-                    pageHeaderDate.breadcrumbItems = '';
-                }
-            } else {
-                pageHeaderJsx = (
-                    <div className="admin-page-header">
-                        {this.props.header}
-                    </div>
-                );
-            }
+        let title = '';
+        let breadcrumb = '';
+        if (this.props.title) {
+            title = this.props.title;
+        } else if (this.props.title === '') { // 传入空字符串，表示没有title
+            title = '';
+        } else { // 默认自动获取
+            title = this.getPageHeaderDateByMenu().title;
         }
-        if (pageHeaderDate) {
+
+        if (this.props.breadcrumb) {
+            breadcrumb = this.props.breadcrumb;
+        } else if (this.props.breadcrumb === '') {
+            breadcrumb = '';
+        } else { // 默认自动获取
+            breadcrumb = this.getPageHeaderDateByMenu().breadcrumbItems;
+        }
+
+        let breadcrumbJsx = '';
+        if (breadcrumb && breadcrumb.length) {
+            const lastOne = breadcrumb[breadcrumb.length - 1];
+            if (lastOne.text !== title && title) {
+                breadcrumb.push({
+                    text: title,
+                });
+            }
             let breadcrumbItems = [];
-            let items = pageHeaderDate.breadcrumbItems;
-            for (let i = 0; i < items.length; i++) {
-                let item = items[i];
+            for (let i = 0; i < breadcrumb.length; i++) {
+                let item = breadcrumb[i];
                 let key = `page-breadcrumb-item${i}`;
-                breadcrumbItems.push(
-                    item.path ? <Breadcrumb.Item key={key}><Link to={item.path}>{item.text}</Link></Breadcrumb.Item>
-                        : <Breadcrumb.Item key={key}>{item.text}</Breadcrumb.Item>
-                );
+                let breadJxs = '';
+                if (item.path) {
+                    breadJxs = <Breadcrumb.Item key={key}><Link to={item.path}>{item.text}</Link></Breadcrumb.Item>;
+                } else {
+                    breadJxs = <Breadcrumb.Item key={key}>{item.text}</Breadcrumb.Item>;
+                }
+                breadcrumbItems.push(breadJxs);
             }
-            let breadcrumb = '';
-            if (pageHeaderDate.breadcrumbItems) {
-                breadcrumb = (
-                    <Breadcrumb>
-                        {breadcrumbItems}
-                    </Breadcrumb>
-                );
-            }
+            breadcrumbJsx = (
+                <Breadcrumb>
+                    {breadcrumbItems}
+                </Breadcrumb>
+            );
+        }
+        if (title || breadcrumbJsx) {
             pageHeaderJsx = (
                 <div className="admin-page-header">
-                    <h1 className="admin-page-header-title">{pageHeaderDate.title}</h1>
-                    {breadcrumb}
+                    <h1 className="admin-page-header-title">{title}</h1>
+                    {breadcrumbJsx}
                 </div>
             );
         }
         this.setState({
             pageHeader: pageHeaderJsx,
         });
-    }
-
-    componentWillMount() {
-
     }
 
     componentDidMount() {

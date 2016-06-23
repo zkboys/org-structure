@@ -320,7 +320,7 @@ class Organization extends BaseComponent {
             wrapperCol: {span: 10},
         };
         return (
-            <Page header={'auto'} loading={this.state.loading}>
+            <Page loading={this.state.loading}>
                 <Row>
                     <Col span={12} style={{textAlign: 'right'}}>
                         <div style={{textAlign: 'left', display: 'inline-block'}}>

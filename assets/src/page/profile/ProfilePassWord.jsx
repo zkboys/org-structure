@@ -1,13 +1,13 @@
 import React from 'react';
 import {Button, Form, Input, message} from 'antd';
-import {Request} from 'common';
 import {Page} from 'framework';
+import {BaseComponent} from 'component';
 const createForm = Form.create;
 const FormItem = Form.Item;
 function noop() {
     return false;
 }
-class ProfilePassWord extends React.Component {
+class ProfilePassWord extends BaseComponent {
     state = {
         loading: false,
     }
@@ -25,22 +25,13 @@ class ProfilePassWord extends React.Component {
             if (!!errors) {
                 return false;
             }
-            this.setState({
-                loading: true,
-            });
-            Request
+            this.request()
                 .put('/system/pass')
-                .send(values)
-                .end((err, res) => {
-                    this.setState({
-                        loading: false,
-                    });
-                    if (err || !res.ok) {
-                        message.error(res.body.message);
-                    } else {
-                        message.success('修改成功！');
-                    }
-                });
+                .params(values)
+                .success(() => {
+                    message.success('修改成功！');
+                })
+                .end();
         });
     }
 
@@ -91,7 +82,7 @@ class ProfilePassWord extends React.Component {
             wrapperCol: {span: 12},
         };
         return (
-            <Page header="auto">
+            <Page>
                 <Form horizontal form={this.props.form}>
                     <FormItem
                         {...formItemLayout}
@@ -136,7 +127,7 @@ class ProfilePassWord extends React.Component {
                         />
                     </FormItem>
                     <FormItem wrapperCol={{ span: 12, offset: 7 }}>
-                        <Button type="primary" loading={this.state.loading} onClick={this.handleSubmit} >确定</Button>
+                        <Button type="primary" loading={this.state.loading} onClick={this.handleSubmit}>确定</Button>
                         &nbsp;&nbsp;&nbsp;
                         <Button type="ghost" onClick={this.handleReset}>重置</Button>
                     </FormItem>
