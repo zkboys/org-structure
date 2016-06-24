@@ -438,3 +438,10 @@ render() {
 - cookie:
 - 本地存储：
 - 时间处理：moment
+
+## 问题
+热重载问题：
+--hot 失败，无法热重载
+使用reat-hot-loader，只能热重载整个组件，不能单独重载组件中的某个部分，而且react script方式引入需要特殊配置
+https://github.com/gaearon/react-hot-loader/tree/master/docs#usage-with-external-react
+

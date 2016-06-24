@@ -76,7 +76,7 @@
     "assets": "node ./generate-static-file-map.js",
     "clean": "rimraf ../public",
     "route": "node generate-routes.js",
-    "dev": "npm run route && cross-env NODE_ENV=dev webpack-dev-server --port 8088 --progress --inline --hot",
+    "dev": "npm run route && cross-env NODE_ENV=dev webpack-dev-server --port 8088 --progress --inline",
     "build-dev": "npm run clean && npm run route && cross-env NODE_ENV=dev webpack -d -p --profile --progress --colors --display-modules",
     "build-test": "npm run clean && npm run route && cross-env NODE_ENV=test webpack -d -p --profile --progress --colors --display-modules",
     "build-pro": "npm run clean && npm run route && cross-env NODE_ENV=pro webpack -p --profile --progress --colors --display-modules && npm run uglifyjs &&  npm run assets",
