@@ -39,8 +39,8 @@ class Organization extends BaseComponent {
             .end();
     }
 
-    onDragEnter = (info) => {
-        console.log(info);
+    onDragEnter = (/* info */) => {
+        // console.log(info);
         // expandedKeys 需要受控时设置
         // this.setState({
         //   expandedKeys: info.expandedKeys,
@@ -106,8 +106,8 @@ class Organization extends BaseComponent {
             description: selectNodeData.description,
         });
     };
-    handleRightClick = (e) => {
-        console.log(e.node.props.eventKey);
+    handleRightClick = (/* e */) => {
+        // console.log(e.node.props.eventKey);
     };
     handleReset = (e) => {
         e.preventDefault();
@@ -150,7 +150,6 @@ class Organization extends BaseComponent {
             }
         });
         loop(data);
-        console.log(painData);
         this.request()
             .post('/organization/organizations')
             .params({organizations: painData})

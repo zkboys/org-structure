@@ -47,8 +47,8 @@ class SystemMenu extends BaseComponent {
             .end();
     }
 
-    onDragEnter = (info) => {
-        console.log(info);
+    onDragEnter = (/* info */) => {
+        // console.log(info);
         // expandedKeys 需要受控时设置
         // this.setState({
         //   expandedKeys: info.expandedKeys,
@@ -116,8 +116,8 @@ class SystemMenu extends BaseComponent {
             icon: selectNodeData.icon,
         });
     };
-    handleRightClick = (e) => {
-        console.log(e.node.props.eventKey);
+    handleRightClick = (/* e */) => {
+        // console.log(e.node.props.eventKey);
     };
     handleReset = (e) => {
         e.preventDefault();

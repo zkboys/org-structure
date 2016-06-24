@@ -20,9 +20,9 @@ cd assets
 npm install
 npm run dev #开启前端静态服务器，结合后端服务器可以做到浏览器自动刷新，方便开发。详见下面说明
 
-npm run build-development #构建development（开发）环境前端代码
+npm run build-dev #构建development（开发）环境前端代码
 npm run build-test #构建test（测试）环境前端代码
-npm run build-production #构建production（生产）环境前端代码
+npm run build-pro #构建production（生产）环境前端代码
 ```
 
 ## dev模式
@@ -41,7 +41,7 @@ site_static_host: 'http://localhost:8086/s/' //这个指向webpack-dev-server服
 前端webpack.config.js添加一个启动模式:
 
 ```
-development: {
+dev: {
     ...
     publicPath: 'http://localhost:8088/s/',
     ...
@@ -53,7 +53,7 @@ webpack-dev-server 启动方式:(以dev方式启动)
 *可以在assets目录中直接执行`npm run dev`*    
 
 ```
-cross-env NODE_ENV=development webpack-dev-server --port 8088 --progress --inline
+cross-env NODE_ENV=dev webpack-dev-server --port 8088 --progress --inline
 ```
 
 后端启动方式:(以devserver方式启动)
@@ -61,7 +61,7 @@ cross-env NODE_ENV=development webpack-dev-server --port 8088 --progress --inlin
 *可以在根目录中直接执行`npm run dev`*
 
 ```
-cross-env PORT=3001 cross-env NODE_ENV=development supervisor -w ./api,./common,./controllers,./middlewares,./models,./proxy ./app.js
+cross-env PORT=3001 cross-env NODE_ENV=dev supervisor -w ./api,./common,./controllers,./middlewares,./models,./proxy ./app.js
 ```
 
 浏览器输入下面连接访问,就可以达到浏览器自动刷新,尤其适合双屏开发，调整页面细节情况.
