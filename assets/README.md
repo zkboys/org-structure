@@ -443,5 +443,6 @@ render() {
 热重载问题：
 --hot 失败，无法热重载
 使用reat-hot-loader，只能热重载整个组件，不能单独重载组件中的某个部分，而且react script方式引入需要特殊配置
+比如组件A中包含组件B，组件B修改了，组件B会重载，组件A不会，组件B中如果只改了一个文字，组件B也会全部重载，对于表单调试，并没有什么卵用。
 https://github.com/gaearon/react-hot-loader/tree/master/docs#usage-with-external-react
 
