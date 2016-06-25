@@ -10,5 +10,13 @@ export default [
             });
         },
     },
+    {
+        path: '/dev/query-terms',
+        getComponent: (location, cb) => {
+            require.ensure([], (require) => {
+                cb(null, require('../component/query-terms/Demo.jsx'));
+            });
+        },
+    },
 ];
 

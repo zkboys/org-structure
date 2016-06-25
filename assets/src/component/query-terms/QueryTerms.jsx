@@ -43,9 +43,12 @@ class QueryTerms extends React.Component {
     getItem = (options, itemOptions) => {
         const {getFieldProps, getFieldValue, getFieldsValue} = this.props.form;
         const defaultItemOptions = {
-            fieldWidth: options.fieldWidth || '150px',
+            fieldWidth: options.fieldWidth || 150,
             labelWidth: options.labelWidth || 'auto',
             labelFontSize: options.labelFontSize || 12,
+            initialValue: '',
+            startInitialValue: '',
+            endInitialValue: '',
         };
         itemOptions = assign({}, defaultItemOptions, itemOptions);
         const resultDateToString = options.resultDateToString;
@@ -77,11 +80,13 @@ class QueryTerms extends React.Component {
         }
         //  处理事件
         itemOptions.onChange = (e) => {
+            // getFieldValue 获取的值是上一个值，这里通过e获取。
+            const value = e && e.target ? e.target.value : e;
             if (onChange) {
-                itemOptions.onChange(getFieldValue(name), e);
+                onChange(value, e);
             }
             if (options.onChange) {
-                options.onChange(getFieldsValue(), e);
+                options.onChange(assign(getFieldsValue(), {[name]: value}), e); // 不这么做，获取name的value是上一个值
             }
             if (searchOnChange) {
                 if (['input', 'inputNumber', 'combobox'].indexOf(itemType) > -1) {
@@ -137,30 +142,30 @@ class QueryTerms extends React.Component {
                 };
             }
             return {};
-        }
+        };
         if (name) {
             let fp = assign({}, getValueFn());
             fieldPropsOptions = getFieldProps(name, assign({}, fp, itemOptions));
             fieldPropsOptions = assign({}, itemOptions, fieldPropsOptions, eleProps);
             fieldPropsOptions.onKeyDown = onKeyDownFn;
+        } else {
+            if (startName) {
+                let fp = assign({
+                    initialValue: itemOptions.startInitialValue,
+                }, getValueFn());
+                startFieldPropsOptions = getFieldProps(startName, assign({}, fp, itemOptions));
+                startFieldPropsOptions = assign({}, itemOptions, startFieldPropsOptions, eleProps);
+                startFieldPropsOptions.onKeyDown = onKeyDownFn;
+            }
+            if (endName) {
+                let fp = assign({
+                    initialValue: itemOptions.endInitialValue,
+                }, getValueFn());
+                endFieldPropsOptions = getFieldProps(startName, assign({}, fp, itemOptions));
+                endFieldPropsOptions = assign({}, itemOptions, endFieldPropsOptions, eleProps);
+                endFieldPropsOptions.onKeyDown = onKeyDownFn;
+            }
         }
-        if (startName) {
-            let fp = assign({
-                initialValue: itemOptions.startInitialValue,
-            }, getValueFn());
-            startFieldPropsOptions = getFieldProps(startName, assign({}, fp, itemOptions));
-            startFieldPropsOptions = assign({}, itemOptions, startFieldPropsOptions, eleProps);
-            startFieldPropsOptions.onKeyDown = onKeyDownFn;
-        }
-        if (endName) {
-            let fp = assign({
-                initialValue: itemOptions.endInitialValue,
-            }, getValueFn());
-            endFieldPropsOptions = getFieldProps(startName, assign({}, fp, itemOptions));
-            endFieldPropsOptions = assign({}, itemOptions, endFieldPropsOptions, eleProps);
-            endFieldPropsOptions.onKeyDown = onKeyDownFn;
-        }
-
         const labelJsx = label ? (
             <div {...labelProps}>
                 {label}：
@@ -182,6 +187,34 @@ class QueryTerms extends React.Component {
                     {labelJsx}
                     <FormItem {...itemProps}>
                         <InputNumber {...fieldPropsOptions}/>
+                    </FormItem>
+                </Col>
+            );
+        }
+        if (itemType === 'combobox') {
+            return (
+                <Col>
+                    {labelJsx}
+                    <FormItem {...itemProps}>
+                        <ComboboxItem {...fieldPropsOptions} />
+                    </FormItem>
+                </Col>
+            );
+        }
+        if (itemType === 'select'
+            || itemType === 'selectSearch'
+            || itemType === 'selectMultiple') {
+            if (itemType === 'selectSearch') {
+                fieldPropsOptions = assign({}, {showSearch: true}, fieldPropsOptions);
+            }
+            if (itemType === 'selectMultiple') {
+                fieldPropsOptions = assign({}, {multiple: true}, fieldPropsOptions);
+            }
+            return (
+                <Col>
+                    {labelJsx}
+                    <FormItem {...itemProps}>
+                        <SelectItem {...fieldPropsOptions} />
                     </FormItem>
                 </Col>
             );

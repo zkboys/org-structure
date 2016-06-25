@@ -1,8 +1,8 @@
-import "./style.less";
-import React from "react";
-import Request from "superagent";
-import {Spin, Select, Button} from "antd";
-
+import './style.less';
+import React from 'react';
+import Request from 'superagent';
+import {Select} from 'antd';
+const Option = Select.Option;
 class ComboboxItem extends React.Component {
     state = {
         options: this.props.options,
@@ -10,7 +10,8 @@ class ComboboxItem extends React.Component {
     static defaultProps = {
         size: 'large',
         options: [],
-        optionsFilter(res){
+        separator: '@',
+        optionsFilter(res) {
             return res.body.results;
         },
 
@@ -23,29 +24,27 @@ class ComboboxItem extends React.Component {
         const url = this.props.url;
         let options = this.props.options;
         if (url) {
-            //options.push(<div className="spin-wrap"><Spin /></div>);
             const optionsFilter = this.props.optionsFilter;
             Request
                 .get(url)
-                .end((err, res)=> {
-                    //options = options.filter((v)=> {
-                    //    return !(v instanceof Object);
-                    //});
+                .end((err, res) => {
                     if (err) {
                         options.push(<div className="spin-wrap error">获取数据失败</div>);
                     } else {
                         const newOptions = optionsFilter(res);
                         options = options.concat(newOptions);
                     }
-
                     this.setState({
                         options,
-                    })
+                    });
+                    if (this.props.onComplete) {
+                        this.props.onComplete(options);
+                    }
                 });
         }
-    };
+    }
 
-    handleChange = (value)=> {
+    handleChange = (value) => {
         let comboboxOptions;
         const separator = this.props.separator;
         if (!value || value.indexOf(separator) >= 0) {
@@ -57,9 +56,11 @@ class ComboboxItem extends React.Component {
             });
         }
         this.setState({
-            comboboxOptions
+            comboboxOptions,
         });
-        this.props.onChange && this.props.onChange(value)
+        if (this.props.onChange) {
+            this.props.onChange(value);
+        }
     };
 
     render() {
@@ -72,7 +73,7 @@ class ComboboxItem extends React.Component {
             >
                 {this.state.comboboxOptions}
             </Select>
-        )
-    };
+        );
+    }
 }
 export default ComboboxItem;

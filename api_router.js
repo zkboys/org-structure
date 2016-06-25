@@ -7,7 +7,17 @@ var user = require('./api/User');
 var role = require('./api/Role');
 var sign = require('./api/Sign');
 var permission = require('./middlewares/permission').permission;
-
+// 查询条件模拟数据
+router.get('/options', function (req, res, next) {
+    var data = [];
+    for (var i = 0; i < 30; i++) {
+        data.push({
+            label: '模拟数据' + i,
+            value: i,
+        })
+    }
+    res.send(data);
+});
 // 登录 登出
 router.post('/signout', sign.signout);
 router.post('/signin', sign.login);
@@ -37,7 +47,7 @@ router.delete('/organization/users', permission('user-delete'), user.delete);
 router.put('/organization/users/toggle_lock', permission('user-toggle-lock'), user.toggleLock);
 
 // 角色
-router.get('/organization/roles',/* permission('role-search'), */role.getByPage); // 这里不要添加权限限制，也不会产生安全性问题，而且用户相关会用到这个接口。
+router.get('/organization/roles', /* permission('role-search'), */role.getByPage); // 这里不要添加权限限制，也不会产生安全性问题，而且用户相关会用到这个接口。
 router.get('/organization/roles/:id', role.getById);
 router.post('/organization/roles', permission('role-add'), role.addAndSave);
 router.put('/organization/roles', permission('role-update'), role.update);
