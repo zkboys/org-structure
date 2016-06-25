@@ -4,7 +4,7 @@
   "description": "webpack demo build width webpack and ant.design",
   "main": "index.js",
   "devDependencies": {
-    "antd": "^1.0.1",
+    "antd": "^1.6.1",
     "argv": "0.0.2",
     "autoprefixer-loader": "~3.1.0",
     "babel-cli": "~6.3.17",
