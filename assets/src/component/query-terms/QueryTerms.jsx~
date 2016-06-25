@@ -5,7 +5,7 @@ import moment from 'moment';
 import {CheckBoxItem, RadioItem, SelectItem, ComboboxItem, DateTimeAreaItem} from '../form-item/index';
 import {Button, DatePicker, TimePicker, InputNumber, Input, Form, Cascader, Row, Col, Tabs} from 'antd';
 
-const createForm = Form.create;
+const createForm = Form.create; 
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
 
@@ -19,7 +19,7 @@ class QueryTerms extends React.Component {
         dateTime: 'yyyy-MM-dd HH:mm',
         dateTimeArea: 'yyyy-MM-dd HH:mm',
         month: 'yyyy-MM',
-    };
+    }
 
     componentWillMount() {
 
@@ -30,6 +30,41 @@ class QueryTerms extends React.Component {
     }
 
     static defaultProps = {};
+    setDefaultValue = (itemOptions) => {
+        const type = itemOptions.type;
+        let defaultValue = itemOptions.defaultValue;
+        const name = itemOptions.name;
+        const startName = itemOptions.startName;
+        const endName = itemOptions.endName;
+        let startDefaultValue = itemOptions.startDefaultValue;
+        let endDefaultValue = itemOptions.endDefaultValue;
+        let options = itemOptions.options;
+
+        itemOptions.format = itemOptions.format || format[type];
+
+        // 日期相关的默认值，如果时string，转为date，方便处理
+        if (['date', 'time', 'dateTime', 'month'].indexOf(type) > -1) {
+            if (typeof defaultValue === 'string') {
+                defaultValue = this.stringToDate(defaultValue, format[type]);
+            }
+            if (typeof startDefaultValue === 'string') {
+                startDefaultValue = this.stringToDate(startDefaultValue, format[type]);
+            }
+            if (typeof endDefaultValue === 'string') {
+                endDefaultValue = this.stringToDate(endDefaultValue, format[type]);
+            }
+        }
+        // tabs相关默认值
+        if ((type === 'tabs' || type === 'tabsCard') && !defaultValue) {
+            defaultValue = options[0].value;
+        }
+        this.props.form.setFieldsValue({
+            [name]: defaultValue,
+            [startName]: startDefaultValue,
+            [endName]: endDefaultValue,
+        });
+    };
+
     handleSubmit = (e) => {
         if (e) {
             e.preventDefault();
@@ -40,8 +75,19 @@ class QueryTerms extends React.Component {
         }
     };
 
+    dateToString = (date, format) => {
+        format = format.replace('yyyy', 'YYYY');
+        format = format.replace('dd', 'DD');
+        return moment(date).format(format);
+    };
+    stringToDate = (str, format) => {
+        format = format.replace('yyyy', 'YYYY');
+        format = format.replace('dd', 'DD');
+        return moment(str, format).toDate();
+    };
+
     getItem = (options, itemOptions) => {
-        const {getFieldProps, getFieldValue, getFieldsValue} = this.props.form;
+        const {getFieldProps, setFieldsValue, getFieldValue, getFieldsValue} = this.props.form;
         const defaultItemOptions = {
             fieldWidth: options.fieldWidth || '150px',
             labelWidth: options.labelWidth || 'auto',
@@ -53,6 +99,7 @@ class QueryTerms extends React.Component {
         const itemType = itemOptions.type;
         const label = itemOptions.label;
         const name = itemOptions.name;
+        const initialValue = itemOptions.initialValue;
         const startName = itemOptions.startName;
         const endName = itemOptions.endName;
         const fieldWidth = itemOptions.fieldWidth;
@@ -94,6 +141,15 @@ class QueryTerms extends React.Component {
                 }
             }
         };
+        itemOptions.onKeyDown = (e) => {
+            if (onKeyDown) {
+                onKeyDown(e);
+            }
+            if (e.key === 'Enter') {
+                this.handleSubmit();
+            }
+        };
+
         const labelProps = {
             className: 'query-terms-label',
             style: {
@@ -114,18 +170,31 @@ class QueryTerms extends React.Component {
             },
         };
 
+
         let fieldPropsOptions;
         let startFieldPropsOptions;
         let endFieldPropsOptions;
-        const onKeyDownFn = (e) => {
-            if (onKeyDown) {
-                onKeyDown(e);
-            }
-            if (e.key === 'Enter') {
-                this.handleSubmit();
-            }
-        };
-        const getValueFn = () => {
+        if (name) {
+            let fp = assign({}, getDateValue());
+            fieldPropsOptions = getFieldProps(name, assign({}, fp, itemOptions));
+            fieldPropsOptions = assign({}, fieldPropsOptions, eleProps);
+        }
+        if (startName) {
+            let fp = assign({
+                initialValue: itemOptions.startInitialValue,
+            }, getDateValue());
+            startFieldPropsOptions = getFieldProps(startName, assign({}, fp, itemOptions));
+            startFieldPropsOptions = assign({}, startFieldPropsOptions, eleProps);
+        }
+        if (endName) {
+            let fp = assign({
+                initialValue: itemOptions.endInitialValue,
+            }, getDateValue());
+            endFieldPropsOptions = getFieldProps(startName, assign({}, fp, itemOptions));
+            endFieldPropsOptions = assign({}, endFieldPropsOptions, eleProps);
+        }
+
+        function getDateValue() {
             if (['date', 'time', 'dateTime', 'month'].indexOf(itemType) > -1) {
                 return {
                     getValueFromEvent(date, dateString) {
@@ -137,28 +206,6 @@ class QueryTerms extends React.Component {
                 };
             }
             return {};
-        }
-        if (name) {
-            let fp = assign({}, getValueFn());
-            fieldPropsOptions = getFieldProps(name, assign({}, fp, itemOptions));
-            fieldPropsOptions = assign({}, itemOptions, fieldPropsOptions, eleProps);
-            fieldPropsOptions.onKeyDown = onKeyDownFn;
-        }
-        if (startName) {
-            let fp = assign({
-                initialValue: itemOptions.startInitialValue,
-            }, getValueFn());
-            startFieldPropsOptions = getFieldProps(startName, assign({}, fp, itemOptions));
-            startFieldPropsOptions = assign({}, itemOptions, startFieldPropsOptions, eleProps);
-            startFieldPropsOptions.onKeyDown = onKeyDownFn;
-        }
-        if (endName) {
-            let fp = assign({
-                initialValue: itemOptions.endInitialValue,
-            }, getValueFn());
-            endFieldPropsOptions = getFieldProps(startName, assign({}, fp, itemOptions));
-            endFieldPropsOptions = assign({}, itemOptions, endFieldPropsOptions, eleProps);
-            endFieldPropsOptions.onKeyDown = onKeyDownFn;
         }
 
         const labelJsx = label ? (
@@ -176,25 +223,11 @@ class QueryTerms extends React.Component {
                 </Col>
             );
         }
-        if (itemType === 'inputNumber') {
-            return (
-                <Col>
-                    {labelJsx}
-                    <FormItem {...itemProps}>
-                        <InputNumber {...fieldPropsOptions}/>
-                    </FormItem>
-                </Col>
-            );
-        }
     }
 
     render() {
-        let options = this.props.options;
-        const defaultOptions = {
-            searchBtnText: '查询',
-        };
-        options = assign({}, defaultOptions, options);
-        const searchBtnText = options.searchBtnText;
+        const options = this.props.options;
+        const searchBtnText = options.searchBtnText || '查询';
         const extraAfterSearchButton = options.extraAfterSearchButton;
         const items = options.items.map((value, index, array) => {
             if (value.hidden) return '';

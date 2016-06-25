@@ -11,9 +11,10 @@ labelWidth|否|全局设置label长度，每个条件可以覆盖这个属性。
 fieldWidth|否|全局元素长度，每个条件可以覆盖这个属性。|String|150px
 resultDateToString|否|查询条件日期相关数据是否转为字符串|Bool|true
 extraAfterSearchButton|否|跟在查询按钮之后的内容，比如&lt;Button&gt;导出&lt;/Button&gt;|String|undefined
+onComplete|否|查询组件所有数据装载完成之后（会有异步获取数据），会触发，data为初始化时，各个元素的值。|Function|-
 onChange|否|元素onchange后触发，data为所有得元素数据|Function|-
-onDidMount|否|查询组件DidMount之后，会触发，data为初始化时，各个元素的值。|Function|-
 onSubmit|是|点击查询按钮时的回调函数 data为所有的查询条件数据，可以在这个函数中发起请求等操作。|Function|-
+getAllOptions|否|获取所有的items的options，这是异步操作，用户后端统一返回数据，而不是发多个ajax|Function|-
 items|是|数组元素如果是对象，自己占据一行， 如果是数组，数组中所有的组件共占一行。下面是items属性的详细介绍|Array|-
 
 ### items API

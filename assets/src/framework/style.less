@@ -166,9 +166,15 @@ body {
     box-sizing: border-box;
     &.collapsed {
         left: @sideBarMinWidth;
+        .admin-page > .ant-spin-nested-loading > .ant-spin {
+            margin-left: -80px;
+        }
     }
     &.expanded {
         left: @sideBarMaxWidth;
+        .admin-page > .ant-spin-nested-loading > .ant-spin {
+            margin-left: -150px;
+        }
     }
     &.full-screen {
         left: 0;
