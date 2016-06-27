@@ -1,8 +1,8 @@
-import "./style.less";
-import React from "react";
-import Request from "superagent";
-import FAIcon from "../faicon/FAIcon";
-import {Spin, Radio, Button} from "antd";
+import './style.less';
+import React from 'react';
+import Request from 'superagent';
+import FAIcon from '../faicon/FAIcon';
+import {Spin, Radio, Button} from 'antd';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -16,7 +16,7 @@ class RadioItem extends React.Component {
         minCount: 10,
         expandable: false,
         options: [],
-        optionsFilter(res){
+        optionsFilter(res) {
             return res.body.results;
         },
 
@@ -34,46 +34,49 @@ class RadioItem extends React.Component {
         if (url) {
             options.push({
                 value: this.loadingValue,
-                label: <div className="spin-wrap"><Spin /></div>
+                label: <div className="spin-wrap"><Spin /></div>,
             });
             const optionsFilter = this.props.optionsFilter;
             Request
                 .get(url)
-                .end((err, res)=> {
-                    options = options.filter((v)=> {
+                .end((err, res) => {
+                    options = options.filter((v) => {
                         return v.value !== this.loadingValue;
                     });
                     if (err) {
                         options.push({
                             value: this.loadingValue,
-                            label: <div className="spin-wrap error">获取数据失败</div>
+                            label: <div className="spin-wrap error">获取数据失败</div>,
                         });
                     } else {
                         const newOptions = optionsFilter(res);
                         options = options.concat(newOptions);
                     }
+                    if (this.props.onComplete) {
+                        this.props.onComplete(options);
+                    }
                     this.setState({
-                        options
-                    })
+                        options,
+                    });
                 });
         }
-    };
+    }
 
-    handleExpandBtnClick = (e)=> {
+    handleExpandBtnClick = (e) => {
         let button = e.currentTarget;
         let btnClassNames = button.className.split(' ');
         if (btnClassNames.indexOf('expanded') > -1) {
             btnClassNames.splice(btnClassNames.indexOf('expanded'), 1);
-            button.title = "显示更多";
+            button.title = '显示更多';
             this.setState({
                 expanded: false,
-            })
+            });
         } else {
             btnClassNames.push('expanded');
-            button.title = "收起更多";
+            button.title = '收起更多';
             this.setState({
                 expanded: true,
-            })
+            });
         }
         button.className = btnClassNames.join(' ');
     };
@@ -84,7 +87,7 @@ class RadioItem extends React.Component {
         const showCount = this.props.minCount;
         const expandable = this.props.expandable;
         const showExpandedBtn = expandable && options.length > showCount;
-        options = expandable ? options.filter((v, i, a)=> {
+        options = expandable ? options.filter((v, i) => {
             if (this.state.expanded) {
                 return true;
             }
@@ -94,7 +97,7 @@ class RadioItem extends React.Component {
         return (
             <div className="form-item form-item-radio ">
                 <RadioGroup {...this.props}>
-                    {options.map((v, i)=> {
+                    {options.map((v, i) => {
                         const key = i;
                         let radioProps = {};
                         if (v.disabled) {
@@ -105,17 +108,15 @@ class RadioItem extends React.Component {
                         }
                         if (button) {
                             return <RadioButton key={key} value={v.value} {...radioProps}>{v.label}</RadioButton>;
-                        } else {
-                            return <Radio key={key} value={v.value} {...radioProps}>{v.label}</Radio>;
                         }
-
+                        return <Radio key={key} value={v.value} {...radioProps}>{v.label}</Radio>;
                     })}
                     {
                         showExpandedBtn ?
                             <Button
                                 type="ghost"
                                 title="显示更多"
-                                style={{padding:'0 25px',paddingTop:'1px', fontSize:button?'19px':'12px'}}
+                                style={{padding: '0 25px', paddingTop: '1px', fontSize: button ? '19px' : '12px'}}
                                 onClick={this.handleExpandBtnClick}
                             >
                                 <FAIcon type="fa-angle-double-down"/>
@@ -124,7 +125,7 @@ class RadioItem extends React.Component {
                     }
                 </RadioGroup>
             </div>
-        )
-    };
+        );
+    }
 }
 export default RadioItem;

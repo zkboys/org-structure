@@ -2,15 +2,18 @@ import './style.less';
 import React from 'react';
 import assign from 'object-assign';
 import moment from 'moment';
+import EventProxy from 'eventproxy';
 import {CheckBoxItem, RadioItem, SelectItem, ComboboxItem, DateTimeAreaItem} from '../form-item/index';
 import {Button, DatePicker, TimePicker, InputNumber, Input, Form, Cascader, Row, Col, Tabs} from 'antd';
-
 const createForm = Form.create;
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
+const ep = new EventProxy();
 
 class QueryTerms extends React.Component {
-    state = {};
+    state = {
+        allOptions: {},
+    };
     format = {
         date: 'yyyy-MM-dd',
         dateArea: 'yyyy-MM-dd',
@@ -22,7 +25,39 @@ class QueryTerms extends React.Component {
     };
 
     componentWillMount() {
+        let eventNames = [];
+        const getAllOptions = this.props.options.getAllOptions;
+        const items = this.props.options.items;
+        const onComplete = this.props.options.onComplete;
+        if (getAllOptions) {
+            eventNames.push('all');
+            getAllOptions((allOptions) => {
+                this.setState({
+                    allOptions,
+                });
+                ep.emit('all', allOptions);
+            });
+        }
+        // 提取所有的异步（根据是否有url判断）
+        items.forEach((item) => {
+            if (item instanceof Array) {
+                item.forEach((i) => {
+                    if (i.url) {
+                        eventNames.push(i.name);
+                    }
+                });
+            } else if (item.url) {
+                eventNames.push(item.name);
+            }
+        });
 
+        if (eventNames.length) {
+            ep.all(eventNames, () => {
+                if (onComplete) {
+                    onComplete(this.props.form.getFieldsValue());
+                }
+            });
+        }
     }
 
     componentDidMount() {
@@ -42,6 +77,12 @@ class QueryTerms extends React.Component {
 
     getItem = (options, itemOptions) => {
         const {getFieldProps, getFieldValue, getFieldsValue} = this.props.form;
+        const name = itemOptions.name;
+        const itemType = itemOptions.type;
+        const isRadioOrCheckBox = ['radio', 'radioButton', 'checkboxButton', 'checkbox'].indexOf(itemType) > -1;
+        if (isRadioOrCheckBox && !itemOptions.fieldWidth) {
+            itemOptions.fieldWidth = 'auto';
+        }
         const defaultItemOptions = {
             fieldWidth: options.fieldWidth || 150,
             labelWidth: options.labelWidth || 'auto',
@@ -51,20 +92,66 @@ class QueryTerms extends React.Component {
             endInitialValue: '',
         };
         itemOptions = assign({}, defaultItemOptions, itemOptions);
+        if (this.state.allOptions[name]) {
+            itemOptions.options = this.state.allOptions[name];
+        }
         const resultDateToString = options.resultDateToString;
         const searchOnChange = itemOptions.searchOnChange;
-        const itemType = itemOptions.type;
         const label = itemOptions.label;
-        const name = itemOptions.name;
         const startName = itemOptions.startName;
         const endName = itemOptions.endName;
         const fieldWidth = itemOptions.fieldWidth;
         const labelUnifiedFontCount = itemOptions.labelUnifiedFontCount;
         const labelFontSize = itemOptions.labelFontSize;
+        const initialFirst = itemOptions.initialFirst;
+        const onComplete = itemOptions.onComplete;
         let onChange = itemOptions.onChange;
         let onKeyDown = itemOptions.onKeyDown;
         let labelWidth = itemOptions.labelWidth;
         let placeholder = itemOptions.placeholder;
+        const hasOptions = itemOptions.options && itemOptions.options.length;
+        const isSelect = ['select', 'selectSearch', 'selectMultiple'].indexOf(itemType) > -1;
+        // 从options根据selected checked属性，获取默认值
+        if ((isSelect || isRadioOrCheckBox) && hasOptions) {
+            if (['selectMultiple', 'checkbox', 'checkboxButton'].indexOf(itemType) > -1) {
+                let initialValues = [];
+                itemOptions.options.forEach((opt) => {
+                    if (opt.selected || opt.checked) {
+                        initialValues.push(opt.value);
+                    }
+                });
+                itemOptions.initialValue = initialValues;
+            } else {
+                for (let opt of itemOptions.options) {
+                    if (opt.selected || opt.checked) {
+                        itemOptions.initialValue = opt.value;
+                        break;
+                    }
+                }
+            }
+        }
+        // 处理异步数据，默认第一个
+        if (initialFirst && hasOptions) {
+            const firstOption = itemOptions.options[0];
+            if (typeof firstOption === 'string') {
+                itemOptions.initialValue = itemOptions.options[0];
+            } else {
+                itemOptions.initialValue = itemOptions.options[0].value;
+            }
+        }
+        // 统一处理默认值
+        if (itemOptions.initialValue
+            && !(itemOptions.initialValue instanceof Array)
+            && ['selectMultiple', 'checkbox', 'checkboxButton'].indexOf(itemType) > -1) {
+            itemOptions.initialValue = [itemOptions.initialValue];
+        }
+        // 处理异步数据完成之后回调
+        itemOptions.onComplete = (data) => {
+            ep.emit(name, data);
+            if (onComplete) {
+                onComplete(data);
+            }
+        };
 
         // 处理label宽度，优先级 px > labelUnifiedFontCount > auto
         if (labelWidth === 'auto' && labelUnifiedFontCount) {
@@ -201,9 +288,7 @@ class QueryTerms extends React.Component {
                 </Col>
             );
         }
-        if (itemType === 'select'
-            || itemType === 'selectSearch'
-            || itemType === 'selectMultiple') {
+        if (isSelect) {
             if (itemType === 'selectSearch') {
                 fieldPropsOptions = assign({}, {showSearch: true}, fieldPropsOptions);
             }
@@ -215,6 +300,51 @@ class QueryTerms extends React.Component {
                     {labelJsx}
                     <FormItem {...itemProps}>
                         <SelectItem {...fieldPropsOptions} />
+                    </FormItem>
+                </Col>
+            );
+        }
+        if (itemType === 'cascader') {
+            return (
+                <Col>
+                    {labelJsx}
+                    <FormItem {...itemProps}>
+                        <Cascader
+                            {...fieldPropsOptions}
+                        />
+                    </FormItem>
+                </Col>
+            );
+        }
+        if (isRadioOrCheckBox) {
+            itemProps.style.marginBottom = '0px';
+            const type = ['radioButton', 'checkboxButton'].indexOf(itemType) > -1 ? 'button' : 'radio';
+            const expandable = itemOptions.expandable;
+            const Element = ['checkbox', 'checkboxButton'].indexOf(itemType) > -1 ? CheckBoxItem : RadioItem;
+            if (type === 'button') {
+                fieldPropsOptions.button = true;
+            }
+            if (expandable) {
+                fieldPropsOptions.expandable = true;
+            }
+            let marginLeft = '0px';
+            if (labelWidth !== 'auto') {
+                marginLeft = labelWidth;
+            } else if (label) {
+                marginLeft = `${(label.length + 1) * labelFontSize}px`;
+            }
+            return (
+
+                <Col>
+                    <FormItem {...itemProps} >
+                        <div className="text-label" ref="label">
+                            {labelJsx}
+                        </div>
+                        <div style={{marginLeft}}>
+                            <Element
+                                {...fieldPropsOptions}
+                            />
+                        </div>
                     </FormItem>
                 </Col>
             );

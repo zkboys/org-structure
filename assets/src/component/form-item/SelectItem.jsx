@@ -45,14 +45,14 @@ class SelectItem extends React.Component {
                         const newOptions = optionsFilter(res);
                         options = options.concat(newOptions);
                     }
-                    options = options.map((v) => {
-                        return {value: v.value.toString(), label: v.label};
-                    });
+                    //options = options.map((v) => {
+                    //    return {value: v.value.toString(), label: v.label};
+                    //});
                     this.setState({
                         options,
                     });
-                    if (this.props.complete) {
-                        this.props.complete(options);
+                    if (this.props.onComplete) {
+                        this.props.onComplete(options);
                     }
                 });
         }
