@@ -26,7 +26,7 @@ class CheckBoxItem extends React.Component {
         initialValue: React.PropTypes.array,
         value: React.PropTypes.array,
     };
-    loadingValue = 123456;
+    loadingValue = Symbol();
 
     componentDidMount() {
         const url = this.props.url;

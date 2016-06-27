@@ -30,12 +30,13 @@ class QueryTerms extends React.Component {
         const items = this.props.options.items;
         const onComplete = this.props.options.onComplete;
         if (getAllOptions) {
-            eventNames.push('all');
+            const allOptionsEvenName = Symbol();
+            eventNames.push(allOptionsEvenName);
             getAllOptions((allOptions) => {
                 this.setState({
                     allOptions,
                 });
-                ep.emit('all', allOptions);
+                ep.emit(allOptionsEvenName, allOptions);
             });
         }
         // 提取所有的异步（根据是否有url判断）
