@@ -9,7 +9,7 @@ class Demo extends React.Component {
             showSearchBtn: true,              // 可选，默认true 是否显示查询按钮
             searchBtnText: '查询',            // 可选，默认 查询 ，查询按钮的text
             extraAfterSearchButton: '',       // 可选，默认 undefined，跟在查询按钮之后的内容，比如<Button>导出</Button>
-            labelWidth: '300px',               // 可选，默认：‘auto’,全局设置label长度，每个条件可以覆盖这个属性。
+            labelWidth: '100px',               // 可选，默认：‘auto’,全局设置label长度，每个条件可以覆盖这个属性。
             fieldWidth: '150px',              // 可选，默认：‘150px’,全局元素长度，每个条件可以覆盖这个属性。
             resultDateToString: true,         // 可选，默认 true，查询条件日期相关数据是否转为字符串
             getAllOptions: (callBack) => {
@@ -29,10 +29,10 @@ class Demo extends React.Component {
                 console.log('查询', data);
             },
             onChange: (data) => { // 可选 元素onchange后触发，data为所有得元素数据
-                console.log('options 顶级 change', data);
+                console.log('options 顶级 change， 得到的数据为：', data);
             },
             onComplete: (data) => { // 可选，查询组件所有（异步）数据加载完成之后，会触发，data为初始化时，各个元素的值。一般用于查询条件初始化完成之后，进行一次查询
-                console.log('onComplete 可以做页面初始化时的查询', data);
+                console.log('onComplete 可以做页面初始化时的查询， 得到的数据为：', data);
             },
             items: [
                 {
@@ -53,8 +53,7 @@ class Demo extends React.Component {
                     // 下拉，多选，单选，提示输入框
                     // url: '', // 可选， 默认- 获取options的url，如果url和options同时存在，异步获取的数据将push到options中
                     options: [], // 必填 默认- 下拉，多选，单选的数据
-                    optionsFilter: (res) => { // 可选， 默认- 对url异步获取的数据进行处理
-                        console.log(res);
+                    optionsFilter: (/* res */) => { // 可选， 默认- 对url异步获取的数据进行处理
                         return [ // 返回数据格式
                             {label: 'xxx', value: 'xxx'},
                             {label: 'xxx', value: 'xxx'},
@@ -105,7 +104,6 @@ class Demo extends React.Component {
                         'in options',
                     ],
                     optionsFilter: (res) => {
-                        console.log(res.body);
                         return res.body.map((d) => d.label);
                     },
                 },
@@ -135,7 +133,7 @@ class Demo extends React.Component {
                         console.log('url select ', value);
                     },
                     onComplete: (options) => { // 可选， 默认- ，异步请求完成事件
-                        console.log('urlselect onComplete', options);
+                        console.log('urlselect onComplete', options.length);
                     },
                     options: [
                         {label: '全部', value: 'all'},
@@ -197,6 +195,45 @@ class Demo extends React.Component {
                         {value: 1111, label: 'a', checked: true},
                         {value: 2222, label: 'b', checked: true},
                         {value: 3333, label: 'c'},
+                    ],
+                },
+
+                // 'date', 'dateTime', 'time', 'month',
+                {
+                    type: 'month',
+                    name: 'date',
+                    label: '日期',
+                    // initialValue: '2016-06-30',
+                },
+                // 'dateArea', 'timeArea', 'dateTimeArea'
+                {
+                    type: 'dateArea',
+                    startName: 'startDateAreaName',
+                    endName: 'endDateAreaName',
+                    label: '日期区间',
+                    // initialValue: '2016-06-30',
+                },
+                // tabsCard', 'tabs
+                {
+                    type: 'tabs',
+                    name: 'tabs',
+                    label: '日期区间',
+                    initialValue: 'tab2',
+                    options: [
+                        {value: 'tab1', label: 'Tab页1'},
+                        {value: 'tab2', label: 'Tab页2'},
+                        {value: 'tab3', label: 'Tab页3'},
+                    ],
+                },
+                {
+                    type: 'tabsCard',
+                    name: 'tabsCard',
+                    label: '日期区间',
+                    initialValue: 'tab2',
+                    options: [
+                        {value: 'tab1', label: 'Tab页1'},
+                        {value: 'tab2', label: 'Tab页2'},
+                        {value: 'tab3', label: 'Tab页3'},
                     ],
                 },
             ],

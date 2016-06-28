@@ -88,9 +88,11 @@ class QueryTerms extends React.Component {
             fieldWidth: options.fieldWidth || 150,
             labelWidth: options.labelWidth || 'auto',
             labelFontSize: options.labelFontSize || 12,
-            initialValue: '',
-            startInitialValue: '',
-            endInitialValue: '',
+            size: 'large',
+            //initialValue: '',
+            //startInitialValue: '',
+            //endInitialValue: '',
+            format: this.format[itemType],
         };
         itemOptions = assign({}, defaultItemOptions, itemOptions);
         if (this.state.allOptions[name]) {
@@ -174,7 +176,9 @@ class QueryTerms extends React.Component {
                 onChange(value, e);
             }
             if (options.onChange) {
-                options.onChange(assign(getFieldsValue(), {[name]: value}), e); // 不这么做，获取name的value是上一个值
+                setTimeout(() => { // 不这么做，获取name的value是上一个值
+                    options.onChange(getFieldsValue());
+                });
             }
             if (searchOnChange) {
                 if (['input', 'inputNumber', 'combobox'].indexOf(itemType) > -1) {
@@ -249,7 +253,7 @@ class QueryTerms extends React.Component {
                 let fp = assign({
                     initialValue: itemOptions.endInitialValue,
                 }, getValueFn());
-                endFieldPropsOptions = getFieldProps(startName, assign({}, fp, itemOptions));
+                endFieldPropsOptions = getFieldProps(endName, assign({}, fp, itemOptions));
                 endFieldPropsOptions = assign({}, itemOptions, endFieldPropsOptions, eleProps);
                 endFieldPropsOptions.onKeyDown = onKeyDownFn;
             }
@@ -350,12 +354,91 @@ class QueryTerms extends React.Component {
                 </Col>
             );
         }
+        if (['date', 'dateTime', 'time', 'month'].indexOf(itemType) > -1) {
+            let Element = DatePicker;
+            if (itemType === 'month') {
+                Element = DatePicker.MonthPicker;
+            }
+            if (itemType === 'time') {
+                Element = TimePicker;
+            }
+            if (itemType === 'dateTime') {
+                fieldPropsOptions.showTime = true;
+            }
+            return (
+                <Col>
+                    {labelJsx}
+                    <FormItem {...itemProps}>
+                        <Element
+                            {...fieldPropsOptions}
+                        />
+                    </FormItem>
+                </Col>
+            );
+        }
+        if (['dateArea', 'timeArea', 'dateTimeArea'].indexOf(itemType) > -1) {
+            let typeProps = {
+                [itemType]: true,
+            };
+            if (options.resultDateToString) {
+                eleProps.resultDateToString = true;
+            }
+            let width = window.parseInt(itemProps.style.width);
+            itemProps.style.width = width * 2 + 10; // 10为中间的分隔符宽度
+            return (
+                <Col>
+                    {labelJsx}
+                    <FormItem {...itemProps}>
+                        <DateTimeAreaItem
+                            {...typeProps}
+                            width={fieldWidth}
+                            startFieldProps={startFieldPropsOptions}
+                            endFieldProps={endFieldPropsOptions}
+                            {...eleProps}
+                        />
+                    </FormItem>
+                </Col>
+            );
+        }
+        if (['tabsCard', 'tabs'].indexOf(itemType) > -1) {
+            if (itemType === 'tabsCard') {
+                fieldPropsOptions.type = 'card';
+            }
+            return (
+                <Tabs
+                    {...fieldPropsOptions}
+                    defaultActiveKey={itemOptions.initialValue}
+                >
+                    {itemOptions.options.map((v) => {
+                        return (
+                            <TabPane tab={v.label} key={v.value}/>
+                        );
+                    })}
+                </Tabs>
+            );
+        }
+        if (itemType === 'customer') {
+            let Component = itemOptions.component;
+            return (
+                <Col>
+                    {labelJsx}
+                    <FormItem {...itemProps}>
+                        <Component
+                            {...fieldPropsOptions}
+                        />
+                    </FormItem>
+
+                </Col>
+            );
+        }
+        throw Error(`查询条件没有此类型type:${itemType}`);
     }
 
     render() {
         let options = this.props.options;
         const defaultOptions = {
             searchBtnText: '查询',
+            resultDateToString: true,
         };
         options = assign({}, defaultOptions, options);
         const searchBtnText = options.searchBtnText;
