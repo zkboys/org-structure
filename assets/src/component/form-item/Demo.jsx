@@ -1,7 +1,4 @@
 import React from 'react';
-import assign from 'object-assign'
-import QueryTerms from '../../component/query-terms/QueryTerms';
-import PaginationComponent from '../../component/pagination/PaginationComponent';
 import Page from '../../framework/page/Page';
 import BaseComponent from '../base-component/BaseComponent';
 
@@ -11,13 +8,10 @@ import {
     SelectItem,
     ComboboxItem,
     DateTimeAreaItem,
-} from './index'
+} from './index';
 import {
     Form,
-    Table,
-    Icon,
     Button,
-    Radio,
 } from 'antd';
 const createForm = Form.create;
 const FormItem = Form.Item;
@@ -38,15 +32,15 @@ class Demo extends BaseComponent {
             startTimeArea: '11:11',
             endTimeArea: '22:22',
         });
-    };
+    }
 
-    handleReset = (e)=> {
+    handleReset = (e) => {
         e.preventDefault();
         // FIXME 自定义组件reset无效
         this.props.form.resetFields();
     };
 
-    handleSubmit = (e)=> {
+    handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((errors, values) => {
             if (!!errors) {
@@ -76,17 +70,17 @@ class Demo extends BaseComponent {
         });
         const selectProps = getFieldProps('select', {
             rules: [
-                //{required: true, message: '选择一个select！'},
+                // {required: true, message: '选择一个select！'},
             ],
         });
         const checkboxprops = getFieldProps('checkbox', {
             rules: [
                 // checkbox 返回得是一个数组，required默认检测得是string，这里会出问题，如果想检测不为空，可以自己写validator实现。
-                //{ required: true, message: '选择一个！' },
+                // { required: true, message: '选择一个！' },
             ],
         });
         return (
-            <Page header='auto' loading={this.state.loading}>
+            <Page loading={this.state.loading}>
                 <Form horizontal form={this.props.form}>
                     <FormItem
                         {...formItemLayout}
@@ -94,16 +88,14 @@ class Demo extends BaseComponent {
                         <RadioItem
                             button
                             size={'large'}
-                            url='/api/m/1/stores.json'
+                            url="/api/options"
                             expandable
                             minCount={5}
-                            options={[//如果存在url，这里的options会拼接到url返回数据之前。
-                                {value:'all', label:'全部'},
+                            options={[ // 如果存在url，这里的options会拼接到url返回数据之前。
+                                {value: 'all', label: '全部'},
                             ]}
-                            optionsFilter={function(res){// 对ajax返回的数据进行处理
-                                return res.body.results.map(function(v){
-                                    return {value: v.id, label: v.name}
-                                })
+                            optionsFilter={(res) => { // 对ajax返回的数据进行处理
+                                return res.body;
                             }}
                             {...radioProps}
                         />
@@ -115,17 +107,15 @@ class Demo extends BaseComponent {
                         <CheckBoxItem
                             button
                             size={'large'}
-                            url='/api/m/1/stores.json'
+                            url="/api/options"
                             expandable
                             minCount={5}
                             defaultValue={['all']}
                             options={[
-                                {value:'all', label:'全部'},
+                                {value: 'all', label: '全部'},
                             ]}
-                            optionsFilter={function(res){// 对ajax返回的数据进行处理
-                                return res.body.results.map(function(v){
-                                    return {value: v.id, label: v.name}
-                                })
+                            optionsFilter={(res) => { // 对ajax返回的数据进行处理
+                                return res.body;
                             }}
                             {...checkboxprops}
                         />
@@ -135,20 +125,16 @@ class Demo extends BaseComponent {
                         {...formItemLayout}
                         label="下拉：">
                         <SelectItem
-                            //multiple
-                            //showSearch
+                            // multiple
+                            // showSearch
                             size={'large'}
-                            url='/api/m/1/stores.json'
-                            defaultValue='all'
+                            url="/api/options"
+                            defaultValue="all"
                             options={[
-                                {value:'all', label:'全部'},
+                                {value: 'all', label: '全部'},
                             ]}
-                            style={{width:'200px'}}
-                            optionsFilter={function(res){// 对ajax返回的数据进行处理
-                                return res.body.results.map(function(v){
-                                    return {value: v.id, label: v.name}
-                                })
-                            }}
+                            style={{width: '200px'}}
+                            optionsFilter={(res) => res.body}
                             {...selectProps}
                         />
                     </FormItem>
@@ -158,21 +144,17 @@ class Demo extends BaseComponent {
                         label="提示输入框：">
                         <ComboboxItem
                             size={'large'}
-                            url='/api/m/1/stores.json'
-                            defaultValue='all'
-                            separator='@'
+                            url="/api/options"
+                            defaultValue="all"
+                            separator="@"
                             options={[
                                 '163.com',
                                 'qq.com',
                                 '126.com',
                                 'xx.com',
                             ]}
-                            style={{width:'200px'}}
-                            optionsFilter={function(res){// 对ajax返回的数据进行处理
-                                return res.body.results.map(function(v){
-                                    return v.name;
-                                })
-                            }}
+                            style={{width: '200px'}}
+                            optionsFilter={(res) => res.body.map((d) => d.label)}
                             {...comboboxProps}
                         />
                     </FormItem>
@@ -184,7 +166,7 @@ class Demo extends BaseComponent {
                             resultDateToString
                             disableBefore={'2016-05-12'}
                             disableAfter={'2016-05-15'}
-                            startFieldProps={getFieldProps('startDateArea',{})}
+                            startFieldProps={getFieldProps('startDateArea', {})}
                             endFieldProps={getFieldProps('endDateArea')}
                         />
                     </FormItem>
@@ -196,7 +178,7 @@ class Demo extends BaseComponent {
                             resultDateToString
                             disableBefore={'2016-01-12'}
                             disableAfter={'2016-01-15'}
-                            startFieldProps={getFieldProps('startDateTimeArea',{})}
+                            startFieldProps={getFieldProps('startDateTimeArea', {})}
                             endFieldProps={getFieldProps('endDateTimeArea')}
                         />
                     </FormItem>
@@ -206,7 +188,7 @@ class Demo extends BaseComponent {
                         <DateTimeAreaItem
                             timeArea
                             resultDateToString
-                            startFieldProps={getFieldProps('startTimeArea',{})}
+                            startFieldProps={getFieldProps('startTimeArea', {})}
                             endFieldProps={getFieldProps('endTimeArea')}
                         />
                     </FormItem>
@@ -218,8 +200,7 @@ class Demo extends BaseComponent {
                     </FormItem>
                 </Form>
             </Page>
-        )
-    };
+        );
+    }
 }
-Demo = createForm()(Demo);
-export default Demo;
+export default createForm()(Demo);
