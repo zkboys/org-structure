@@ -25,10 +25,6 @@ class Index extends React.Component {
             title: '远程开关组件',
         },
         {
-            folder: 'panel',
-            title: '面板组件',
-        },
-        {
             folder: 'preview-image',
             title: '图片预览',
         },

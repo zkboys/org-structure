@@ -17,10 +17,10 @@ class Demo extends React.Component {
             pageSize,
             currentPage,
             totalCount: 100,
-            onChange: (currentPage, pageSize) => {
+            onChange: (current, size) => {
                 this.setState({
-                    currentPage,
-                    pageSize,
+                    currentPage: current,
+                    pageSize: size,
                 });
                 console.log(currentPage, pageSize);
             },
