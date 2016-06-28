@@ -1,7 +1,6 @@
 import './style.less';
 import React from 'react';
 import assign from 'object-assign';
-import moment from 'moment';
 import EventProxy from 'eventproxy';
 import {CheckBoxItem, RadioItem, SelectItem, ComboboxItem, DateTimeAreaItem} from '../form-item/index';
 import {Button, DatePicker, TimePicker, InputNumber, Input, Form, Cascader, Row, Col, Tabs} from 'antd';
@@ -77,7 +76,7 @@ class QueryTerms extends React.Component {
     };
 
     getItem = (options, itemOptions) => {
-        const {getFieldProps, getFieldValue, getFieldsValue} = this.props.form;
+        const {getFieldProps, getFieldsValue} = this.props.form;
         const name = itemOptions.name;
         const itemType = itemOptions.type;
         const isRadioOrCheckBox = ['radio', 'radioButton', 'checkboxButton', 'checkbox'].indexOf(itemType) > -1;
@@ -89,9 +88,6 @@ class QueryTerms extends React.Component {
             labelWidth: options.labelWidth || 'auto',
             labelFontSize: options.labelFontSize || 12,
             size: 'large',
-            //initialValue: '',
-            //startInitialValue: '',
-            //endInitialValue: '',
             format: this.format[itemType],
         };
         itemOptions = assign({}, defaultItemOptions, itemOptions);
@@ -223,11 +219,11 @@ class QueryTerms extends React.Component {
             }
         };
         const getValueFn = () => {
-            if (['date', 'time', 'dateTime', 'month'].indexOf(itemType) > -1) {
+            if (['date', 'time', 'dateTime', 'month', 'dateArea', 'timeArea', 'dateTimeArea'].indexOf(itemType) > -1) {
                 return {
                     getValueFromEvent(date, dateString) {
                         if (resultDateToString) {
-                            return dateString;
+                            return dateString || date;
                         }
                         return date;
                     },

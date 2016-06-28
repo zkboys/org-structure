@@ -11,7 +11,7 @@ class Demo extends React.Component {
             extraAfterSearchButton: '',       // 可选，默认 undefined，跟在查询按钮之后的内容，比如<Button>导出</Button>
             labelWidth: '100px',               // 可选，默认：‘auto’,全局设置label长度，每个条件可以覆盖这个属性。
             fieldWidth: '150px',              // 可选，默认：‘150px’,全局元素长度，每个条件可以覆盖这个属性。
-            resultDateToString: true,         // 可选，默认 true，查询条件日期相关数据是否转为字符串
+            resultDateToString: false,         // 可选，默认 true，查询条件日期相关数据是否转为字符串
             getAllOptions: (callBack) => {
                 // 发送ajax请求，一次性获取多个options,如果具体item中写了options，item中的options将被合并。
                 const tempOptions = {

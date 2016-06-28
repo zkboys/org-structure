@@ -127,6 +127,7 @@ class RadioItem extends React.Component {
 
 
     render() {
+        const resultDateToString = this.props.resultDateToString;
         const isDateArea = this.props.dateArea;
         const isTimeArea = this.props.timeArea;
         const isDateTimeArea = this.props.dateTimeArea;
@@ -142,8 +143,27 @@ class RadioItem extends React.Component {
         }
         const startFieldPropsOptions = this.props.startFieldProps;
         const endFieldPropsOptions = this.props.endFieldProps;
-        const startEleProps = assign({}, eleProps);
-        const endEleProps = assign({}, eleProps);
+        let handleChange = (name) => { //  柯里化
+            return (value) => {
+                this.setState({
+                    [name]: value,
+                });
+                if (resultDateToString && value) {
+                    value = this.dateToString(value);
+                }
+                if (name === 'startValue' && startFieldPropsOptions.onChange) {
+                    startFieldPropsOptions.onChange(value);
+                }
+                if (name === 'endValue' && endFieldPropsOptions.onChange) {
+                    endFieldPropsOptions.onChange(value);
+                }
+                if (this.props.onChange) {
+                    this.props.onChange(value, name);
+                }
+            };
+        };
+        const startEleProps = assign({}, eleProps, {onChange: handleChange('startValue')});
+        const endEleProps = assign({}, eleProps, {onChange: handleChange('endValue')});
 
         let startDefaultValue = startFieldPropsOptions.value || this.props.startDefaultValue;
         let endDefaultValue = endFieldPropsOptions.value || this.props.endDefaultValue;
