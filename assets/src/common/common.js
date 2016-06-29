@@ -116,7 +116,7 @@ export function hasParent(rows, row) {
 
 /**
  * js构造树方法。
- * @param rows 具有key，parentKey关系的扁平数据结构
+ * @param rows 具有key，parentKey关系的扁平数据结构，标题字段为text
  * @param parentNode 开始节点
  * @returns {array}
  */
