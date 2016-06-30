@@ -41,6 +41,8 @@ module.exports = {
     externals: {// 这些在页面上通过script标签引入，不参与webpack的构建，提高构建速度。这些文件本身九构建好的，浏览器可以直接执行的，如果需要构建的，使用dll插件解决。
         'react': 'React',
         'react-dom': 'ReactDOM',
+        'react-redux': 'ReactRedux',
+        'react-router': 'ReactRouter',
         'antd': 'antd',
         'moment': 'moment',
         'superagent': 'superagent',
@@ -62,12 +64,13 @@ module.exports = {
         ],
         loaders: [
             {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                loader: 'babel',
-                query: babelQuery
-            }, {
-                test: /\.jsx$/,
+                test: /\.js(x)*$/,
+                // exclude: /node_modules/, // 成熟的 npm 包会在发布前将自己 es5，甚至 es3 化，所以我们可以使用 exclude，大胆地屏蔽掉 npm 里的包，从而使整包的构建效率飞速提高
+                include: [ // 甚至，在我们十分确信的情况下，使用include 来限定 babel 的使用范围，进一步提高效率。
+                    // 只会去解析裕兴目录下的src 和 demo 文件夹，
+                    path.join(process.cwd(), './src'),
+                    //path.join(process.cwd(), './demo'),
+                ],
                 loader: 'babel',
                 query: babelQuery
             },
@@ -105,6 +108,7 @@ module.exports = {
             },
         ]
     },
+    devtool:'#cheap-source-map',
     plugins: [
         //new webpack.optimize.CommonsChunkPlugin('common', 'common.js'),
         new webpack.optimize.CommonsChunkPlugin({ // 公共文件配置
