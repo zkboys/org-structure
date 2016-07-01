@@ -77,9 +77,6 @@ class RoleEdit extends BaseComponent {
     }
 
     handleSubmit = () => {
-        if (this.state.loading) {
-            return;
-        }
         const fields = [
             'name',
             'description',
