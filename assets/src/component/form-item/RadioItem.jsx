@@ -83,7 +83,7 @@ class RadioItem extends React.Component {
 
     render() {
         const button = this.props.button;
-        let options = this.state.options;
+        let options = this.props.url ? this.state.options : this.props.options;
         const showCount = this.props.minCount;
         const expandable = this.props.expandable;
         const showExpandedBtn = expandable && options.length > showCount;

@@ -20,6 +20,9 @@ class Demo extends React.Component {
                         '222.com',
                         '333.com',
                     ],
+                    urlCombobx: [
+                        {value: 1, label: 2},
+                    ],
                 };
                 setTimeout(() => {
                     callBack(tempOptions);

@@ -69,10 +69,12 @@ class QueryTerms extends React.Component {
         if (e) {
             e.preventDefault();
         }
-        const formData = this.props.form.getFieldsValue();
-        if (formData) {
-            this.props.options.onSubmit(formData);
-        }
+        setTimeout(() => {
+            const formData = this.props.form.getFieldsValue();
+            if (formData) {
+                this.props.options.onSubmit(formData);
+            }
+        });
     };
 
     getItem = (options, itemOptions) => {
@@ -146,6 +148,11 @@ class QueryTerms extends React.Component {
         }
         // 处理异步数据完成之后回调
         itemOptions.onComplete = (data) => {
+            let allOptions = assign({}, this.state.allOptions);
+            allOptions[name] = data;
+            this.setState({
+                allOptions,
+            });
             ep.emit(name, data);
             if (onComplete) {
                 onComplete(data);

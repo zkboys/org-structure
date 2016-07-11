@@ -5,6 +5,7 @@
 ## API
 属性|必填|说明|类型|默认值
 ----|----|---|------
+labelFontSize|否|跟labelUnifiedFontCount配合使用，确定label宽度|Number|12
 showSearchBtn|否|是否显示查询按钮|Bool|true
 searchBtnText|否|查询按钮的text|String|查询
 labelWidth|否|全局设置label长度，每个条件可以覆盖这个属性。|String|auto
@@ -29,19 +30,29 @@ labelUnifiedFontCount|否|用于上下两行label对其，比如上一行label5�
 fieldWidth|否|全局fieldWidth，控制输入框等大小，如果是Number类型，默认单位为px,|String|-
 searchOnChange|否|值改变是否出发onSearch函数|Function|-
 placeholder|否|默认为请输入[label],如果是select等选择类型|String|请选择\[label\]
-defaultValue|否|筛选条件的初始值.checkbox，checkboxButton这个值为数组。|String,Array|-
-fieldPropsOptions|否|form 的 getFieldProps方法第二个参数，用来添加校验等，[参见这里](http://ant.design/components/form/#this-props-form-getfieldprops-id-options)|Function|-
-props|否|加在表单元素上的props 一般情况下不要用。|-|-
+initialValue|否|筛选条件的初始值.checkbox，checkboxButton这个值为数组。|String,Array|-
+initialFirst|否|options的第一个为默认项|String,Array|-
 options|可选/必须|单值条件（input等）没有这个属性，多值条件（checkbox，checkboxButton,radioButton等）组件专用属性|Array|-
 expandable|可选|是否启用展开收起功能|Bool|false
 minCount|可选|如果使用展开收起功能，收起时显示的个数|Number|10
 format|否|日期筛选格式化 yyyy-MM-dd yyyy-MM-dd HH:mm:ss HH:mm|String|-
-startDefaultValue|否|日期、时间区间开始默认值|String|-
-endDefaultValue|否|日期、时间区间结束默认值|String|-
+startInitialValue|否|日期、时间区间开始默认值|String|-
+endInitialValue|否|日期、时间区间结束默认值|String|-
 min|否|type = inputNumber 专用。控制最小值|Number|-
 max|否|type = inputNumber 专用。控制最大值|Number|-
 url|否|请求地址，一般配合optionsFilter方法使用，对ajax返回的数据进行处理|String|-
 component|否|当type = customer是，需要有这个属性，用于指定自定义的筛选组件。|Object|-
 
+### options API
+`selected` 或 `checked`用来标记选中项，和`initialValue` `initialValue` 作用类似 
+```js
+options: [
+    {label: '全部', value: 'all'},
+    {label: '选项1', value: 1111, selected: true},
+    {label: '选项2', value: 2222},
+    {label: '选项3', value: 3333},
+    {label: '选项4', value: 4444},
+],
+```
 
 

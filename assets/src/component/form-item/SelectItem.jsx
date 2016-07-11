@@ -59,7 +59,7 @@ class SelectItem extends React.Component {
     }
 
     render() {
-        let options = this.state.options;
+        let options = this.props.url ? this.state.options : this.props.options;
         let props = this.props;
         if (this.props.showSearch) {
             props = assign({}, {
