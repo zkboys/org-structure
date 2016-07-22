@@ -1,0 +1,43 @@
+<%
+var staticFile = htmlWebpackPlugin.options.staticFile;
+var title = htmlWebpackPlugin.options.title;
+%>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title><%= title %></title>
+  <!-- Core CSS - Include with every page -->
+  <link href="<%= staticFile('sb-admin-v2/css/bootstrap.min.css') %>" rel="stylesheet">
+  <link href="<%= staticFile('sb-admin-v2/font-awesome/css/font-awesome.css') %>" rel="stylesheet">
+
+  <!-- Page-Level Plugin CSS - Dashboard -->
+  <link href="<%= staticFile('sb-admin-v2/css/plugins/morris/morris-0.4.3.min.css') %>" rel="stylesheet">
+  <link href="<%= staticFile('sb-admin-v2/css/plugins/timeline/timeline.css') %>" rel="stylesheet">
+
+  <!-- SB Admin CSS - Include with every page -->
+  <link href="<%= staticFile('sb-admin-v2/css/sb-admin.css') %>" rel="stylesheet">
+</head>
+<body>
+<div id="app"></div>
+<!-- Core Scripts - Include with every page -->
+<script src="<%= staticFile('sb-admin-v2/js/jquery-1.10.2.js') %>"></script>
+<script src="<%= staticFile('sb-admin-v2/js/bootstrap.min.js') %>"></script>
+<script src="<%= staticFile('sb-admin-v2/js/plugins/metisMenu/jquery.metisMenu.js') %>"></script>
+
+<!-- Page-Level Plugin Scripts - Flot -->
+<!--[if lte IE 8]><script src="<%= staticFile('sb-admin-v2/js/excanvas.min.js') %>"></script><![endif]-->
+<script src="<%= staticFile('sb-admin-v2/js/plugins/flot/jquery.flot.js') %>"></script>
+<script src="<%= staticFile('sb-admin-v2/js/plugins/flot/jquery.flot.tooltip.min.js') %>"></script>
+<script src="<%= staticFile('sb-admin-v2/js/plugins/flot/jquery.flot.resize.js') %>"></script>
+<script src="<%= staticFile('sb-admin-v2/js/plugins/flot/jquery.flot.pie.js') %>"></script>
+
+<!-- Page-Level Plugin Scripts - Dashboard -->
+<script src="<%= staticFile('sb-admin-v2/js/plugins/morris/raphael-2.1.0.min.js') %>"></script>
+<script src="<%= staticFile('sb-admin-v2/js/plugins/morris/morris.js') %>"></script>
+
+<!-- SB Admin Scripts - Include with every page -->
+<script src="<%= staticFile('sb-admin-v2/js/sb-admin.js') %>"></script>
+
+</body>
+</html>
