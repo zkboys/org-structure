@@ -14,7 +14,14 @@
     components: {
       Navbar,
     },
+    ready() {
+      console.log('ready');
+      this.$on('testEvent', () => {
+        alert('trigger testEvent in App component');
+      });
+    },
   };
+
 </script>
 
 <style>
