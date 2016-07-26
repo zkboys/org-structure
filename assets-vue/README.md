@@ -34,3 +34,8 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 <style src="./style.css"></style>
 <script src="./script.js"></script>
 ```
+js 还是放回*.vue
+```
+<script lang="js">，这样在webstorm下就有正常的提示/格式化。但是提示上部支持es6
+<script type="text/javascript">，webstorm显示一个绿色的块。
+```
