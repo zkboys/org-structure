@@ -242,7 +242,6 @@ class RoleEdit extends BaseComponent {
         keys = keys.concat(this.state.defaultCheckedKeys);
         return (
             <Modal
-                width="60%"
                 title={title}
                 visible={this.props.show}
                 confirmLoading={this.state.isSaving}
