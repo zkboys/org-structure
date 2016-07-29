@@ -1,5 +1,5 @@
 /*!
- * antd v1.6.1
+ * antd v1.6.2
  * 
  * Copyright 2015-present, Alipay, Inc.
  * All rights reserved.
