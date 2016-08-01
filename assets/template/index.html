@@ -11,28 +11,28 @@
 
     <link title="RSS" type="application/rss+xml" rel="alternate" href="/rss"/>
 
-    <link rel="icon" href="/public/favicon.png?v=1470024230855" type="image/x-icon"/>
+    <link rel="icon" href="<%- staticFile('favicon.png') %>" type="image/x-icon"/>
 
-    <link rel="stylesheet" href="/public/antd.min.css?v=1470024230855">
-    <link rel="stylesheet" href="/public/index.min.css?v=1470024230855">
+    <link rel="stylesheet" href="<%- staticFile('antd.min.css') %>">
+    <link rel="stylesheet" href="<%- staticFile('index.min.css') %>">
     <!--[if lt IE 10]>
     <script src="https://as.alipayobjects.com/component/??console-polyfill/0.2.2/index.js,es5-shim/4.1.14/es5-shim.js,es5-shim/4.1.14/es5-sham.js,html5shiv/3.7.2/html5shiv.js"></script>
     <![endif]-->
     <title>人员管理系统</title>
     <meta content="_csrf" name="csrf-param">
-    <meta content="<%= csrf %>" name="csrf-token">
+    <meta content="<%%= csrf %%>" name="csrf-token">
 </head>
 <body>
 <div id="framework" class="admin-framework"></div>
 <!-- scripts -->
-<script src="/public/superagent.min.js?v=1470024230855"></script>
-<script src="/public/react.min.js?v=1470024230855"></script>
-<script src="/public/moment.min.js?v=1470024230855"></script>
-<script src="/public/react-dom.min.js?v=1470024230855"></script>
-<script src="/public/react-redux.min.js?v=1470024230855"></script>
-<script src="/public/react-router.min.js?v=1470024230855"></script>
-<script src="/public/antd.min.js?v=1470024230855"></script>
-<script src="/public/common.min.js?v=1470024230855"></script>
-<script src="/public/index.min.js?v=1470024230855"></script>
+<script src="<%- staticFile('superagent.min.js') %>"></script>
+<script src="<%- staticFile('react.min.js') %>"></script>
+<script src="<%- staticFile('moment.min.js') %>"></script>
+<script src="<%- staticFile('react-dom.min.js') %>"></script>
+<script src="<%- staticFile('react-redux.min.js') %>"></script>
+<script src="<%- staticFile('react-router.min.js') %>"></script>
+<script src="<%- staticFile('antd.min.js') %>"></script>
+<script src="<%- staticFile('common.min.js') %>"></script>
+<script src="<%- staticFile('index.min.js') %>"></script>
 </body>
 </html>

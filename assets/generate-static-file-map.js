@@ -9,7 +9,7 @@ var kitx = require('kitx');
 var md5 = function (content) {
     return kitx.md5(content, 'hex').slice(24);
 };
-var viewsDir = path.join(__dirname, '../views/');
+var viewsDir = path.join(__dirname, './template/');
 var staticDir = path.join(__dirname, '../public/');
 
 var staticFilesName = scanDir(viewsDir);
@@ -19,7 +19,7 @@ staticFilesName.forEach(function (fileName) {
     staticFilesMap[fileMap[0]] = fileMap[1];
 });
 
-var assetsPath = path.join(__dirname, '../assets.json');
+var assetsPath = path.join(__dirname, './assets.json');
 fs.writeFileSync(assetsPath, JSON.stringify(staticFilesMap));
 console.log(staticFilesMap);
 console.log(colors.magenta("assets.json is here: "), colors.cyan(assetsPath));

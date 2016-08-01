@@ -19,7 +19,6 @@ var multiline = require('multiline')
 var kitx = require('kitx');
 var fs = require('fs');
 var path = require('path');
-var asstes = require('../assets');
 
 var md5 = function (content) {
     return kitx.md5(content, 'hex').slice(24);
@@ -78,12 +77,6 @@ exports.staticFile = function (filePath) {
     }
     var queryString = new Date().getTime();
     var assetFilePath = config.site_static_host + filePath + '?v=' + queryString;
-    if (process.env.NODE_ENV === 'production') {
-        var hashedfilePath = asstes[filePath];
-        if (hashedfilePath) {
-            assetFilePath = config.site_static_host + hashedfilePath;
-        }
-    }
     return assetFilePath;
 };
 

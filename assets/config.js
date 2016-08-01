@@ -1,5 +1,5 @@
 module.exports = {
-    dev: {
+    development: {
         path: '../public',
         publicPath: 'http://localhost:8088/s/',
         port: 5001,
@@ -24,7 +24,7 @@ module.exports = {
         path: '../public',
         publicPath: '/public/',
     },
-    pro: {
+    production: {
         path: '../public',
         publicPath: '/public/',
         library: [

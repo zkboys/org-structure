@@ -1,5 +1,6 @@
 webpack.config.js
 generate-routes.js
 generate-static-file-map.js
+generate-html.js
 src/page/sign-in/sign-in.js
 .eslintrc

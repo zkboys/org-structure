@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="/public/favicon.png?v=1470024230867" type="image/x-icon"/>
+    <link rel="icon" href="<%- staticFile('favicon.png') %>" type="image/x-icon"/>
     <title>登录</title>
-    <link rel="stylesheet" href="/public/sign-in.min.css?v=1470024230867">
+    <link rel="stylesheet" href="<%- staticFile('sign-in.min.css') %>">
     <meta content="_csrf" name="csrf-param">
-    <meta content="<%= csrf %>" name="csrf-token">
+    <meta content="<%%= csrf %%>" name="csrf-token">
 </head>
 <body>
 <div id="framework">
-    <div data-reactroot="" class="login-wrap" style="background-image: url(/public/background.jpg?v=1470024230867);">
-        <div class="img-box loaded"><img src="/public/des-img.png?v=1470024230867" alt="img">
+    <div data-reactroot="" class="login-wrap" style="background-image: url(<%- staticFile('background.jpg') %>);">
+        <div class="img-box loaded"><img src="<%- staticFile('des-img.png') %>" alt="img">
             <label class="circle-label small yellow position1">监控</label>
             <label class="circle-label large blue position2">智能</label>
             <label class="circle-label large red position3">巡检</label>
@@ -58,24 +58,24 @@
         </div>
     </div>
 </div>
-<script src="/public/superagent.min.js?v=1470024230867"></script>
-<script src="/public/sign-in.min.js?v=1470024230867"></script>
+<script src="<%- staticFile('superagent.min.js') %>"></script>
+<script src="<%- staticFile('sign-in.min.js') %>"></script>
 
 <script>
 
     // 预加载
-    var beforePreScript = "/public/react.min.js?v=1470024230867";
+    var beforePreScript = "<%- staticFile('react.min.js') %>";
     var preScript = [
-        "/public/superagent.min.js?v=1470024230867",
-        "/public/moment.min.js?v=1470024230867",
-        "/public/react-dom.min.js?v=1470024230867",
-        "/public/react-redux.min.js?v=1470024230867",
-        "/public/react-router.min.js?v=1470024230867",
-        "/public/antd.min.js?v=1470024230867",
-        "/public/common.min.js?v=1470024230867"
+        "<%- staticFile('superagent.min.js') %>",
+        "<%- staticFile('moment.min.js') %>",
+        "<%- staticFile('react-dom.min.js') %>",
+        "<%- staticFile('react-redux.min.js') %>",
+        "<%- staticFile('react-router.min.js') %>",
+        "<%- staticFile('antd.min.js') %>",
+        "<%- staticFile('common.min.js') %>"
     ];
     var preCss = [
-        "/public/antd.min.css?v=1470024230867"
+        "<%- staticFile('antd.min.css') %>"
     ];
     function loadjs(fileurl, fn) {
         var sct = document.createElement("script");

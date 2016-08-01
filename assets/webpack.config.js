@@ -4,9 +4,9 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var webpack = require('webpack');
 var child_process = require('child_process');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
-var nodeENV = process.env.NODE_ENV || 'dev';
+var nodeENV = process.env.NODE_ENV || 'development';
 var config = require('./config');
-var cfg = config[nodeENV] || config.dev; // 获取不同的环境配置
+var cfg = config[nodeENV] || config.development; // 获取不同的环境配置
 var library = cfg.library; // 第三方js库，分离出来能提高打包速度
 
 var babelQuery = {

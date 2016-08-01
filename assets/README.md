@@ -83,6 +83,7 @@ http://localhost:3001/
         -page                   业务相关,平时开发主要在这个文件夹下进行
             -allFiles           各个页面/模块业务代码,详见下面说明
             -AllRoutes.js       前端路由配置,通过脚本生成的文件，整合了所有得Routes.js
+    -template                   html模板，用来生成最终的html
     -.eslintrc                  ESLint配置
     -favicon.png                网站图标
     -LICENSE                    协议
@@ -314,7 +315,8 @@ react-router改成如下写法就可以按需加载:
     这样一个路由,会导致Dashboard渲染页面特别慢
     ```
 - [x] *前端代码生成工具，主要针对CRUD页面。done webstorm等ide有文件模板*    
-
+- [ ] 后端config有些冗余，基于但页面用用，config不需要写的这么复杂。
+- [ ] 前后端分离，后端只提供api，其他的尽量有前端提供，比如 html, CDN， 页面中一些配置等。 
 
 ## React ES6+写法
 ```
