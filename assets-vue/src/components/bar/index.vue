@@ -1,7 +1,7 @@
 <template src="./template.html"></template>
 <style scoped lang="less" src="./style.less"></style>
 
-<script>
+<script lang="babel">
   export default {
     data() {
       return {

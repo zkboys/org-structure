@@ -7,7 +7,7 @@
   </div>
 </template>
 
-<script>
+<script lang="babel">
   import Navbar from './components/navbar';
 
   export default {

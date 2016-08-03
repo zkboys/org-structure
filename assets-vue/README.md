@@ -36,6 +36,8 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 ```
 js 还是放回*.vue
 ```
-<script lang="js">，这样在webstorm下就有正常的提示/格式化。但是提示上部支持es6
-<script type="text/javascript">，webstorm显示一个绿色的块。
+<script lang="es6">，这样在webstorm下，可以正常提示/格式化，并且支持es6语法，但是编译报错
+<script lang="js">，这样在webstorm下就有正常的提示/格式化。但是提示上不支持es6
+<script lang="babel">，这样在webstorm下，可以正常提示/格式化，并且支持es6语法，编译不报错
+<script type="text/javascript">，webstorm显示一个绿色的块，很不爽
 ```
