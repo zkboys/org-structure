@@ -86,6 +86,8 @@ exports.login = function (req, res, next) {
                         loginname: user.loginname,
                         email: user.email,
                         avatar: user.avatar,
+                        mobile: user.mobile,
+                        gender: user.gender,
                         is_first_login: user.is_first_login,
                     };
                     Menu.getMenusByUser(user, function (err, menus) {
@@ -146,6 +148,8 @@ exports.firstLogin = function (req, res, next) {
                         loginname: user.loginname,
                         email: user.email,
                         avatar: user.avatar,
+                        mobile: user.mobile,
+                        gender: user.gender,
                         is_first_login: user.is_first_login,
                     };
                     Menu.getMenusByUser(user, function (err, menus) {
