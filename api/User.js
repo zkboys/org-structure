@@ -82,10 +82,12 @@ exports.toggleLock = function (req, res, next) {
 
 exports.update = function (req, res, next) {
     var user = req.body;
+    console.log(user);
     User.update(user, function (err, doc) {
         if (err) {
             return res.sendError(err, '修改用户失败！', 422);
         }
+        // res.sendError('', '测试出错');
         res.send(doc)
     })
 
