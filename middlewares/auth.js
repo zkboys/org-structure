@@ -91,7 +91,7 @@ exports.authUser = function (req, res, next) {
     if (config.debug) {
         var mockUser = req.params.mock_user || req.body.mock_user;
         req.session.user = new UserModel(mockUser);
-        if (mockUser.is_admin) {
+        if (mockUser && mockUser.is_admin) {
             req.session.user.is_admin = true;
         }
         return next();
