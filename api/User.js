@@ -68,14 +68,14 @@ exports.toggleLock = function (req, res, next) {
             if (err) {
                 return res.sendError(err, '解锁用户失败！', 422);
             }
-            res.send({})
+            res.send(docs)
         });
     } else {
         User.lock(id, function (err, docs) {
             if (err) {
                 return res.sendError(err, '锁定用户失败！', 422);
             }
-            res.send({})
+            res.send(docs)
         });
     }
 };
