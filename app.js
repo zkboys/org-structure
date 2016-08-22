@@ -205,7 +205,7 @@ app.use(auth.authUser);// 如果用户登录了，存用户到session中，如�
 app.use(auth.userRequired);//判断用户是否登录，如果未登录，跳转到登录，否则next
 app.use(auth.blockUser());//是否已锁定，未锁定，next
 app.use(function (req, res, next) {
-    if (req.path === '/api' || req.path.indexOf('/api') === -1) {
+    if (req.path === '/api' || req.path.indexOf('/api') !== -1) {
         csurf()(req, res, next);
         return;
     }
