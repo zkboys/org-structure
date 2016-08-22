@@ -87,11 +87,10 @@ exports.authUser = function (req, res, next) {
     // Ensure current_user always has defined.
     res.locals.current_user = null;
 
-
-    if (config.debug) {
-        var mockUser = req.params.mock_user || req.body.mock_user;
+    if (config.debug && req.cookies['mock_user']) {
+        var mockUser = JSON.parse(req.cookies['mock_user']);
         req.session.user = new UserModel(mockUser);
-        if (mockUser && mockUser.is_admin) {
+        if (mockUser.is_admin) {
             req.session.user.is_admin = true;
         }
         return next();
