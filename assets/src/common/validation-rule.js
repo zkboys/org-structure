@@ -64,7 +64,7 @@ export default {
                             return callback([new Error(res && res.body && res.body.message || '未知系统错误')]);
                         }
                         if (res.body && value === res.body.loginname) {
-                            return callback([new Error('抱歉，该登录名已被占用！')]);
+                            return callback([new Error('抱歉，该角色名已被占用！')]);
                         }
                         callback();
                     });

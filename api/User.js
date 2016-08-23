@@ -46,7 +46,7 @@ exports.getByLoginNameFromAll = function (req, res, next) {
         if (err) {
             return res.sendError(err, '获取人员信息失败！', 422);
         }
-        res.send(docs)
+        res.send(docs || false)
     });
 };
 
