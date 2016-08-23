@@ -134,7 +134,7 @@ exports.addAndSave = function (req, res, next) {
                 if (err) {
                     return res.sendError(err, '保存用户信息失败', 422);
                 }
-                return res.send({})
+                return res.send(doc)
             });
 
         });
