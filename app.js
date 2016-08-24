@@ -205,9 +205,9 @@ app.use(auth.authUser);// 如果用户登录了，存用户到session中，如�
 app.use(auth.userRequired);//判断用户是否登录，如果未登录，跳转到登录，否则next
 app.use(auth.blockUser());//是否已锁定，未锁定，next
 // TODO 前后端分离开发，先注释掉
-/*app.use(function (req, res, next) {
+app.use(function (req, res, next) {
     csurf()(req, res, next);
-});*/
+});
 if (!config.debug) {
     app.set('view cache', true);
 }
@@ -229,7 +229,15 @@ _.extend(app.locals, {
 
 _.extend(app.locals, require('./common/render_helper'));
 app.use(function (req, res, next) {
-    res.locals.csrf = req.csrfToken ? req.csrfToken() : '';
+    var csrfToken = req.csrfToken ? req.csrfToken() : '';
+    res.locals.csrf = csrfToken;
+    var opts = {
+        path: '/',
+        //maxAge: 1000 * 3, //cookie 有效期30天，30天都不用登录了,记住用户可以用这个做。
+        signed: false,
+        httpOnly: false
+    };
+    res.cookie('_csrf', csrfToken, opts);
     next();
 });
 
