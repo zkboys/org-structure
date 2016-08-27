@@ -75,6 +75,6 @@ exports.addAndSave = function (req, res, next) {
         if (err) {
             return res.sendError(err, '保存失败！', 422);
         }
-        return res.sendSuccess()
+        return res.send(doc)
     });
 };
